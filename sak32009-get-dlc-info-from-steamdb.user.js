@@ -3,7 +3,7 @@
 // @namespace        sak32009-get-dlc-info-from-steamdb
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
-// @version          1.8.0
+// @version          1.8.1
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
