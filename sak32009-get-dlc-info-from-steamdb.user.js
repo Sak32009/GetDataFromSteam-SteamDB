@@ -3,27 +3,24 @@
 // @namespace        sak32009-get-dlc-info-from-steamdb
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
+// @contributor      CS.RIN.RU Users
 // @version          1.8.1
 // @license          MIT
+// @homepage         https://github.com/Sak32009/GetDLCInfoFromSteamDB
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB
+// @website          https://github.com/Sak32009/GetDLCInfoFromSteamDB
+// @source           https://github.com/Sak32009/GetDLCInfoFromSteamDB
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
 // @updateURL        https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.meta.js
 // @downloadURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.user.js
 // @icon             https://steamdb.info/static/logos/favicon-32x32.png
-// @include          http://steamdb.info/app/*
-// @include          https://steamdb.info/app/*
+// @iconURL          https://steamdb.info/static/logos/favicon-32x32.png
+// @defaulticon      https://steamdb.info/static/logos/favicon-32x32.png
+// @include          *//steamdb.info/app/*
 // @grant            none
 // @run-at           document-end
 // @noframes
 // ==/UserScript==
-
-// CS.RIN.RU USERS
-// @thanks lespaul
-// @thanks b4byhuey
-// @thanks Haoose
-// @thanks DieAnna
-// @thanks machine4578
-// @thanks syahmixp
 
 // GET DLC INFO FROM STEAMDB
 var GetDLCInfoFromSteamDB = {
@@ -41,9 +38,11 @@ var GetDLCInfoFromSteamDB = {
 
     // SCRIPT INFO
     script: {
-        name: "Get DLC Info from SteamDB",
-        version: "1.8.0",
-        homepage: "http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837",
+        name: GM_info.script.name,
+        version: GM_info.script.version,
+        homepage: "https://github.com/Sak32009/GetDLCInfoFromSteamDB",
+        support: "http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837",
+        contributor: "CS.RIN.RU Users",
         author: "Sak32009"
     },
 
@@ -69,6 +68,8 @@ var GetDLCInfoFromSteamDB = {
             GetDLCInfoFromSteamDB.loadOptionsWrapper();
             // CREATE OPTIONS EVENTS
             GetDLCInfoFromSteamDB.createOptionsEvents();
+            // LOAD URL OPTIONS
+            GetDLCInfoFromSteamDB.loadUrlOptions();
 
         }
 
@@ -116,7 +117,7 @@ var GetDLCInfoFromSteamDB = {
             "#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs .nav-tabs-link.selected{border-color:#ddd #ddd white}" +
             "#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs-content > .nav-tabs-pane{display:none}" +
             "#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs-content > .nav-tabs-pane.selected{display:block}" +
-            ".tabbable > .tabnav > .tabnav-tabs > .tabnav-tab[data-target='#gear_dlcs'] > .counter{background-color:darkmagenta;color:white}").appendTo("head");
+            ".tabbable > .tabnav > .tabnav-tabs > .tabnav-tab[data-target='#GetDLCInfoFromSteamDBOptions'] > .counter{background-color:darkmagenta;color:white}").appendTo("head");
 
         // ADD TEXTAREA
         $("<textarea>").attr({
@@ -233,7 +234,8 @@ var GetDLCInfoFromSteamDB = {
                 "; AppID: " + GetDLCInfoFromSteamDB.steamdb.appid + "\n" +
                 "; AppID Name: " + GetDLCInfoFromSteamDB.steamdb.appid_name + "\n" +
                 "; SteamDB: " + GetDLCInfoFromSteamDB.steamdb.url + "\n" +
-                "; Topic: " + GetDLCInfoFromSteamDB.script.homepage + "\n\n";
+                "; Userscript: " + GetDLCInfoFromSteamDB.script.homepage + "\n" +
+                "; Support: " + GetDLCInfoFromSteamDB.script.support + "\n\n";
 
             // FORMAT
             result += GetDLCInfoFromSteamDB.steamdb.format[format_name];
@@ -261,18 +263,19 @@ var GetDLCInfoFromSteamDB = {
 
     },
 
+    // CREATE OPTIONS WRAPPER
     createOptionsWrapper: function () {
 
         // NAV
-        $("<a href='#' data-target='#gear_dlcs' class='tabnav-tab'><span class='octicon octicon-gear'></span> Settings DLCs <span class='counter'>!</span></a>").insertAfter(".tabbable > .tabnav > .tabnav-tabs > .tabnav-tab[data-target='#dlc']");
+        $("<a href='#' data-target='#GetDLCInfoFromSteamDBOptions' class='tabnav-tab'><span class='octicon octicon-gear'></span> Settings DLCs <span class='counter'>!</span></a>").insertAfter(".tabbable > .tabnav > .tabnav-tabs > .tabnav-tab[data-target='#dlc']");
 
         // CONTENT
-        var gear_dlcs = $("<div>").attr("id", "gear_dlcs").addClass("tab-pane");
+        var GetDLCInfoFromSteamDBOptions = $("<div>").attr("id", "GetDLCInfoFromSteamDBOptions").addClass("tab-pane");
 
         $("<h2>").css({
             "padding-bottom": "5px",
             "text-align": "center"
-        }).html(GetDLCInfoFromSteamDB.script.name + " <small>by " + GetDLCInfoFromSteamDB.script.author + " v" + GetDLCInfoFromSteamDB.script.version + "</small>").appendTo(gear_dlcs);
+        }).html(GetDLCInfoFromSteamDB.script.name + " <small>by " + GetDLCInfoFromSteamDB.script.author + " v" + GetDLCInfoFromSteamDB.script.version + "</small>").appendTo(GetDLCInfoFromSteamDBOptions);
 
         $("<h2>Global Options<div class='pull-right'><button class='btn btn-sm' type='button' id='GetDLCInfoFromSteamDB_resetOptions'>Reset All Options</button></div></h2>" +
             "<form id='GetDLCInfoFromSteamDB_submit_options'>" +
@@ -365,6 +368,17 @@ var GetDLCInfoFromSteamDB = {
             "<div class='nav-tabs-pane' id='tab_smartsteamemu_options'>In work...</div>" +
             "</div>" +
             "</div>" +
+            "<h2>Userscript</h2>" +
+            "<table class='table table-bordered table-fixed'>" +
+            "<tbody>" +
+            "<tr><td>Homepage</td>" +
+            "<td><a href='" + GetDLCInfoFromSteamDB.script.homepage + "' target='_blank'>GITHUB</a></td></tr>" +
+            "<tr><td>Support</td>" +
+            "<td><a href='" + GetDLCInfoFromSteamDB.script.support + "' target='_blank'>CS.RIN.RU</a></td></tr>" +
+            "<tr><td>Contributor</td>" +
+            "<td>" + GetDLCInfoFromSteamDB.script.contributor + "</td></tr>" +
+            "</tbody>" +
+            "</table>" +
             "<h2>Infos Extracted</h2>" +
             "<table class='table table-bordered table-fixed'>" +
             "<thead><tr><th>Key</th><th>Value</th></tr></thead>" +
@@ -373,7 +387,7 @@ var GetDLCInfoFromSteamDB = {
             "<td>" + GetDLCInfoFromSteamDB.steamdb.appid + "</td></tr>" +
             "<tr><td>AppID Name</td>" +
             "<td>" + GetDLCInfoFromSteamDB.steamdb.appid_name + "</td></tr>" +
-            "<tr><td>URL</td>" +
+            "<tr><td>URL (if it's incorrect it's not a problem)</td>" +
             "<td>" + GetDLCInfoFromSteamDB.steamdb.url + "</td></tr>" +
             "<tr><td>DLCs</td>" +
             "<td>" + GetDLCInfoFromSteamDB.dlcEach("{0}, ") + "</td></tr>" +
@@ -387,9 +401,9 @@ var GetDLCInfoFromSteamDB = {
             "<tr><td>" + GetDLCInfoFromSteamDB.steamdb.config_exe + "</td>" +
             "<td>" + GetDLCInfoFromSteamDB.steamdb.config_arg + "</td></tr>" +
             "</tbody>" +
-            "</table>").appendTo(gear_dlcs);
+            "</table>").appendTo(GetDLCInfoFromSteamDBOptions);
 
-        gear_dlcs.appendTo(".tabbable > .tab-content");
+        GetDLCInfoFromSteamDBOptions.appendTo(".tabbable > .tab-content");
 
     },
 
@@ -431,11 +445,23 @@ var GetDLCInfoFromSteamDB = {
     createOptionsEvents: function () {
 
         // NAV-TABS
-        $(".tabbable > .tabnav > .tabnav-tabs > .tabnav-tab[data-target='#gear_dlcs'], #GetDLCInfoFromSteamDB_nav_tabs .nav-tabs-link").click(function (e) {
+        $("#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs-link").click(function (e) {
 
             e.preventDefault();
 
-            return $(this).tab("show");
+            $(this).tab("show");
+
+        });
+
+        $(".tabbable > .tabnav > .tabnav-tabs > .tabnav-tab[data-target='#GetDLCInfoFromSteamDBOptions']").click(function (e) {
+
+            e.preventDefault();
+
+            window.history.replaceState({
+                section: $(this).attr("data-target")
+            }, null, $(this).attr("data-target"));
+
+            $(this).tab("show");
 
         });
 
@@ -481,6 +507,19 @@ var GetDLCInfoFromSteamDB = {
             alert("Saved!");
 
         });
+
+    },
+
+    // LOAD URL OPTIONS
+    loadUrlOptions: function () {
+
+        var hash = window.location.hash.substring(1);
+
+        if (hash == "GetDLCInfoFromSteamDBOptions") {
+
+            $(".tabbable > .tabnav > .tabnav-tabs > .tabnav-tab[data-target='#GetDLCInfoFromSteamDBOptions']").tab("show");
+
+        }
 
     },
 
