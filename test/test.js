@@ -1,3 +1,5 @@
-﻿var array = array || [];
+﻿var array = [];
 
 array["test"] = "Test";
+
+window.localStorage.setItem("test", array);
