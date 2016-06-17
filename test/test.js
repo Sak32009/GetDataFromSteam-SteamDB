@@ -1,3 +1,3 @@
-﻿var array = array || [];
+﻿var window.clArray = window.clArray || [];
 
-array["test"] = "Test";
+window.clArray["test"] = "Test";
