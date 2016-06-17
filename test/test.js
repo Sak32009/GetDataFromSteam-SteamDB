@@ -1,4 +1,4 @@
-﻿var array = {};
+﻿var array = [];
 
 array["test"] = "Test";
 
