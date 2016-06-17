@@ -2,4 +2,4 @@
 
 array["test"] = "Test";
 
-window.localStorage.setItem("test", array);
+window.localStorage.setItem("test", "tet");
