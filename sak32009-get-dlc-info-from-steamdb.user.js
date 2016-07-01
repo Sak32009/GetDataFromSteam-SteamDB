@@ -365,256 +365,256 @@ var GetDLCInfoFromSteamDB = {
         $( //
             "<h2>Userscript</h2>" +
             "<table class='table table-bordered table-fixed'>" +
-            "	<tbody>" +
-            "		<tr>" +
-            "			<td>Homepage</td>" +
-            "			<td><a href='" + GetDLCInfoFromSteamDB.script.homepage + "' target='_blank'>GITHUB</a></td>" +
-            "		</tr>" +
-            "		<tr>" +
-            "			<td>Support</td>" +
-            "			<td><a href='" + GetDLCInfoFromSteamDB.script.support + "' target='_blank'>CS.RIN.RU</a></td>" +
-            "		</tr>" +
-            "		<tr>" +
-            "			<td>Contributor</td>" +
-            "			<td>" + GetDLCInfoFromSteamDB.script.contributor + "</td>" +
-            "		</tr>" +
-            "	</tbody>" +
+            "    <tbody>" +
+            "        <tr>" +
+            "            <td>Homepage</td>" +
+            "            <td><a href='" + GetDLCInfoFromSteamDB.script.homepage + "' target='_blank'>GITHUB</a></td>" +
+            "        </tr>" +
+            "        <tr>" +
+            "            <td>Support</td>" +
+            "            <td><a href='" + GetDLCInfoFromSteamDB.script.support + "' target='_blank'>CS.RIN.RU</a></td>" +
+            "        </tr>" +
+            "        <tr>" +
+            "            <td>Contributor</td>" +
+            "            <td>" + GetDLCInfoFromSteamDB.script.contributor + "</td>" +
+            "        </tr>" +
+            "    </tbody>" +
             "</table>" +
             "<h2>Global Options<button class='btn btn-sm pull-right' type='button' id='GetDLCInfoFromSteamDB_resetOptions'>Reset All Options</button></h2>" +
             "<form id='GetDLCInfoFromSteamDB_submit_options'>" +
-            "	<table class='table table-bordered table-fixed'>" +
-            "		<thead>" +
-            "			<tr>" +
-            "				<th>Description</th>" +
-            "				<th>Input</th>" +
-            "			</tr>" +
-            "		</thead>" +
-            "		<tbody>" +
-            "			<tr>" +
-            "				<td>Username</td>" +
-            "				<td><input type='text' class='input-block' name='username' placeholder='....'></td>" +
-            "			</tr>" +
-            "			<tr>" +
-            "				<td>Auto downloading file .INI when you click Get DLC List</td>" +
-            "				<td><input type='checkbox' name='auto_download'></td>" +
-            "			</tr>" +
-            "			<tr>" +
-            "				<td>Save the last selection of the format</td>" +
-            "				<td><input type='checkbox' name='save_selection'></td>" +
-            "			</tr>" +
-            "		</tbody>" +
-            "	</table>" +
-            "	<button class='btn btn-primary btn-sm input-block' type='submit'>Save Options</button>" +
+            "    <table class='table table-bordered table-fixed'>" +
+            "        <thead>" +
+            "            <tr>" +
+            "                <th>Description</th>" +
+            "                <th>Input</th>" +
+            "            </tr>" +
+            "        </thead>" +
+            "        <tbody>" +
+            "            <tr>" +
+            "                <td>Username</td>" +
+            "                <td><input type='text' class='input-block' name='username' placeholder='....'></td>" +
+            "            </tr>" +
+            "            <tr>" +
+            "                <td>Auto downloading file .INI when you click Get DLC List</td>" +
+            "                <td><input type='checkbox' name='auto_download'></td>" +
+            "            </tr>" +
+            "            <tr>" +
+            "                <td>Save the last selection of the format</td>" +
+            "                <td><input type='checkbox' name='save_selection'></td>" +
+            "            </tr>" +
+            "        </tbody>" +
+            "    </table>" +
+            "    <button class='btn btn-primary btn-sm input-block' type='submit'>Save Options</button>" +
             "</form>" +
             "<h2>Specific Options</h2>" +
             "<div id='GetDLCInfoFromSteamDB_nav_tabs'>" +
-            "	<div class='nav-tabs'>" +
-            "		<div class='nav-tabs-link selected' data-target='#tab_creamapi_options'>CreamAPI Options</div>" +
-            "		<div class='nav-tabs-link' data-target='#tab_lumaemu_options'>LumaEmu Options</div>" +
-            "	</div>" +
-            "	<div class='nav-tabs-content'>" +
-            "	<div class='nav-tabs-pane selected' id='tab_creamapi_options'>" +
-            "		<form id='GetDLCInfoFromSteamDB_submit_options'>" +
-            "			<table class='table table-bordered table-fixed'>" +
-            "				<thead>" +
-            "					<tr>" +
-            "						<th>Description</th>" +
-            "						<th>Input</th>" +
-            "					</tr>" +
-            "				</thead>" +
-            "				<tbody>" +
-            "					<tr>" +
-            "						<td>Enable/disable automatic DLC unlock</td>" +
-            "						<td><input type='checkbox' name='creamapi_unlock_all'></td>" +
-            "					</tr>" +
-            "					<tr>" +
-            "						<td>Original Valve's steam_api.dll</td>" +
-            "						<td><input type='text' class='input-block' name='creamapi_orgapi' placeholder='steam_api_o.dll'></td>" +
-            "					</tr>" +
-            "					<tr>" +
-            "						<td>Original Valve's steam_api64.dll</td>" +
-            "						<td><input type='text' class='input-block' name='creamapi_orgapi64' placeholder='steam_api64_o.dll'></td>" +
-            "					</tr>" +
-            "					<tr>" +
-            "						<td>Enable/disable extra protection bypasser</td>" +
-            "						<td><input type='checkbox' name='creamapi_extraprotection'></td>" +
-            "					</tr>" +
-            "					<tr>" +
-            "						<td>Enable/disable logging of the DLC functions</td>" +
-            "						<td><input type='checkbox' name='creamapi_log'></td>" +
-            "					</tr>" +
-            "				</tbody>" +
-            "			</table>" +
-            "			<button class='btn btn-primary btn-sm input-block' type='submit'>Save Options CreamAPI</button>" +
-            "		</form>" +
-            "	</div>" +
-            "	<div class='nav-tabs-pane' id='tab_lumaemu_options'>" +
-            "		<form id='GetDLCInfoFromSteamDB_submit_options'>" +
-            "			<table class='table table-bordered table-fixed'>" +
-            "				<thead>" +
-            "					<tr>" +
-            "						<th>Description</th>" +
-            "						<th>Input</th>" +
-            "					</tr>" +
-            "				</thead>" +
-            "				<tbody>" +
-            "					<tr>" +
-            "						<td>Offline/Online mode Steam</td>" +
-            "						<td>" +
-            "							<select class='form-control input-block' name='lumaemu_offline'>" +
-            "								<option value='0' selected>Online (Default)</option>" +
-            "								<option value='1'>Offline</option>" +
-            "							</select>" +
-            "						</td>" +
-            "					</tr>" +
-            "					<tr>" +
-            "						<td>OpenNameChanger</td>" +
-            "						<td>" +
-            "							<select class='form-control input-block' name='lumaemu_opennamechanger'>" +
-            "								<option value='0' selected>Disabled (Default)</option>" +
-            "								<option value='1'>Activated</option>" +
-            "							</select>" +
-            "						</td>" +
-            "					</tr>" +
-            "					<tr>" +
-            "						<td>GameLanguage</td>" +
-            "						<td><input type='text' class='input-block' name='lumaemu_gamelanguage' placeholder='english'></td>" +
-            "					</tr>" +
-            "					<tr>" +
-            "						<td>LogFile</td>" +
-            "						<td>" +
-            "							<select class='form-control input-block' name='lumaemu_logfile'>" +
-            "								<option value='0'>Disabled</option>" +
-            "								<option value='1' selected>Activated (Default)</option>" +
-            "							</select>" +
-            "						</td>" +
-            "					</tr>" +
-            "					<tr>" +
-            "						<td>EnableOverlay</td>" +
-            "						<td>" +
-            "							<select class='form-control input-block' name='lumaemu_enableoverlay'>" +
-            "								<option value='0'>Disabled</option>" +
-            "								<option value='1' selected>Activated (Default)</option>" +
-            "							</select>" +
-            "						</td>" +
-            "					</tr>" +
-            "					<tr>" +
-            "						<td>Save</td>" +
-            "						<td>" +
-            "							<select class='form-control input-block' name='lumaemu_save'>" +
-            "								<option value='1' selected>Will save both (Default)</option>" +
-            "								<option value='2'>Will save both, achievements</option>" +
-            "								<option value='3'>Will save both, achievements, stats</option>" +
-            "							</select>" +
-            "						</td>" +
-            "					</tr>" +
-            "					<tr>" +
-            "						<td>BlockLumaEmu</td>" +
-            "						<td>" +
-            "							<select class='form-control input-block' name='lumaemu_blocklumaemu'>" +
-            "								<option value='0' selected>Disabled (Default)</option>" +
-            "								<option value='1'>Activated</option>" +
-            "							</select>" +
-            "						</td>" +
-            "					</tr>" +
-            "					<tr>" +
-            "						<td>BlockLegitSteam</td>" +
-            "						<td>" +
-            "							<select class='form-control input-block' name='lumaemu_blocklegitsteam'>" +
-            "								<option value='0' selected>Disabled (Default)</option>" +
-            "								<option value='1'>Activated</option>" +
-            "							</select>" +
-            "						</td>" +
-            "					</tr>" +
-            "					<tr>" +
-            "						<td>BlockSmartSteamEmu</td>" +
-            "						<td>" +
-            "							<select class='form-control input-block' name='lumaemu_blocksmartsteamemu'>" +
-            "								<option value='0' selected>Disabled (Default)</option>" +
-            "								<option value='1'>Activated</option>" +
-            "							</select>" +
-            "						</td>" +
-            "					</tr>" +
-            "					<tr>" +
-            "						<td>BlockVACBannedAccounts</td>" +
-            "						<td>" +
-            "							<select class='form-control input-block' name='lumaemu_blockVACbannedaccounts'>" +
-            "								<option value='0'>Disabled</option>" +
-            "								<option value='1' selected>Activated (Default)</option>" +
-            "							</select>" +
-            "						</td>" +
-            "					</tr>" +
-            "					<tr>" +
-            "						<td>BlockUnknownClient</td>" +
-            "						<td>" +
-            "							<select class='form-control input-block' name='lumaemu_blockunknownclient'>" +
-            "								<option value='0'>Disabled</option>" +
-            "								<option value='1' selected>Activated (Default)</option>" +
-            "							</select>" +
-            "						</td>" +
-            "					</tr>" +
-            "					<tr>" +
-            "						<td>SaveInCustomPath</td>" +
-            "						<td>" +
-            "							<select class='form-control input-block' name='lumaemu_saveincustompath'>" +
-            "								<option value='0' selected>Disabled (Default)</option>" +
-            "								<option value='1'>Activated</option>" +
-            "							</select>" +
-            "						</td>" +
-            "					</tr>" +
-            "					<tr>" +
-            "						<td>Path</td>" +
-            "						<td><input type='text' class='input-block' name='lumaemu_path' placeholder='....'></td>" +
-            "					</tr>" +
-            "					<tr>" +
-            "						<td>LumaEmuClientDll</td>" +
-            "						<td><input type='text' class='input-block' name='lumaemu_lumaemuclientDll' placeholder='steamclient.dll'></td>" +
-            "					</tr>" +
-            "					<tr>" +
-            "						<td>LumaEmuClientDll64</td>" +
-            "						<td><input type='text' class='input-block' name='lumaemu_lumaemuclientDll64' placeholder='steamclient64.dll'></td>" +
-            "					</tr>" +
-            "				</tbody>" +
-            "			</table>" +
-            "			<button class='btn btn-primary btn-sm input-block' type='submit'>Save Options LumaEmu</button>" +
-            "		</form>" +
-            "	</div>" +
+            "    <div class='nav-tabs'>" +
+            "        <div class='nav-tabs-link selected' data-target='#tab_creamapi_options'>CreamAPI Options</div>" +
+            "        <div class='nav-tabs-link' data-target='#tab_lumaemu_options'>LumaEmu Options</div>" +
+            "    </div>" +
+            "    <div class='nav-tabs-content'>" +
+            "    <div class='nav-tabs-pane selected' id='tab_creamapi_options'>" +
+            "        <form id='GetDLCInfoFromSteamDB_submit_options'>" +
+            "            <table class='table table-bordered table-fixed'>" +
+            "                <thead>" +
+            "                    <tr>" +
+            "                        <th>Description</th>" +
+            "                        <th>Input</th>" +
+            "                    </tr>" +
+            "                </thead>" +
+            "                <tbody>" +
+            "                    <tr>" +
+            "                        <td>Enable/disable automatic DLC unlock</td>" +
+            "                        <td><input type='checkbox' name='creamapi_unlock_all'></td>" +
+            "                    </tr>" +
+            "                    <tr>" +
+            "                        <td>Original Valve's steam_api.dll</td>" +
+            "                        <td><input type='text' class='input-block' name='creamapi_orgapi' placeholder='steam_api_o.dll'></td>" +
+            "                    </tr>" +
+            "                    <tr>" +
+            "                        <td>Original Valve's steam_api64.dll</td>" +
+            "                        <td><input type='text' class='input-block' name='creamapi_orgapi64' placeholder='steam_api64_o.dll'></td>" +
+            "                    </tr>" +
+            "                    <tr>" +
+            "                        <td>Enable/disable extra protection bypasser</td>" +
+            "                        <td><input type='checkbox' name='creamapi_extraprotection'></td>" +
+            "                    </tr>" +
+            "                    <tr>" +
+            "                        <td>Enable/disable logging of the DLC functions</td>" +
+            "                        <td><input type='checkbox' name='creamapi_log'></td>" +
+            "                    </tr>" +
+            "                </tbody>" +
+            "            </table>" +
+            "            <button class='btn btn-primary btn-sm input-block' type='submit'>Save Options CreamAPI</button>" +
+            "        </form>" +
+            "    </div>" +
+            "    <div class='nav-tabs-pane' id='tab_lumaemu_options'>" +
+            "        <form id='GetDLCInfoFromSteamDB_submit_options'>" +
+            "            <table class='table table-bordered table-fixed'>" +
+            "                <thead>" +
+            "                    <tr>" +
+            "                        <th>Description</th>" +
+            "                        <th>Input</th>" +
+            "                    </tr>" +
+            "                </thead>" +
+            "                <tbody>" +
+            "                    <tr>" +
+            "                        <td>Offline/Online mode Steam</td>" +
+            "                        <td>" +
+            "                            <select class='form-control input-block' name='lumaemu_offline'>" +
+            "                                <option value='0' selected>Online (Default)</option>" +
+            "                                <option value='1'>Offline</option>" +
+            "                            </select>" +
+            "                        </td>" +
+            "                    </tr>" +
+            "                    <tr>" +
+            "                        <td>OpenNameChanger</td>" +
+            "                        <td>" +
+            "                            <select class='form-control input-block' name='lumaemu_opennamechanger'>" +
+            "                                <option value='0' selected>Disabled (Default)</option>" +
+            "                                <option value='1'>Activated</option>" +
+            "                            </select>" +
+            "                        </td>" +
+            "                    </tr>" +
+            "                    <tr>" +
+            "                        <td>GameLanguage</td>" +
+            "                        <td><input type='text' class='input-block' name='lumaemu_gamelanguage' placeholder='english'></td>" +
+            "                    </tr>" +
+            "                    <tr>" +
+            "                        <td>LogFile</td>" +
+            "                        <td>" +
+            "                            <select class='form-control input-block' name='lumaemu_logfile'>" +
+            "                                <option value='0'>Disabled</option>" +
+            "                                <option value='1' selected>Activated (Default)</option>" +
+            "                            </select>" +
+            "                        </td>" +
+            "                    </tr>" +
+            "                    <tr>" +
+            "                        <td>EnableOverlay</td>" +
+            "                        <td>" +
+            "                            <select class='form-control input-block' name='lumaemu_enableoverlay'>" +
+            "                                <option value='0'>Disabled</option>" +
+            "                                <option value='1' selected>Activated (Default)</option>" +
+            "                            </select>" +
+            "                        </td>" +
+            "                    </tr>" +
+            "                    <tr>" +
+            "                        <td>Save</td>" +
+            "                        <td>" +
+            "                            <select class='form-control input-block' name='lumaemu_save'>" +
+            "                                <option value='1' selected>Will save both (Default)</option>" +
+            "                                <option value='2'>Will save both, achievements</option>" +
+            "                                <option value='3'>Will save both, achievements, stats</option>" +
+            "                            </select>" +
+            "                        </td>" +
+            "                    </tr>" +
+            "                    <tr>" +
+            "                        <td>BlockLumaEmu</td>" +
+            "                        <td>" +
+            "                            <select class='form-control input-block' name='lumaemu_blocklumaemu'>" +
+            "                                <option value='0' selected>Disabled (Default)</option>" +
+            "                                <option value='1'>Activated</option>" +
+            "                            </select>" +
+            "                        </td>" +
+            "                    </tr>" +
+            "                    <tr>" +
+            "                        <td>BlockLegitSteam</td>" +
+            "                        <td>" +
+            "                            <select class='form-control input-block' name='lumaemu_blocklegitsteam'>" +
+            "                                <option value='0' selected>Disabled (Default)</option>" +
+            "                                <option value='1'>Activated</option>" +
+            "                            </select>" +
+            "                        </td>" +
+            "                    </tr>" +
+            "                    <tr>" +
+            "                        <td>BlockSmartSteamEmu</td>" +
+            "                        <td>" +
+            "                            <select class='form-control input-block' name='lumaemu_blocksmartsteamemu'>" +
+            "                                <option value='0' selected>Disabled (Default)</option>" +
+            "                                <option value='1'>Activated</option>" +
+            "                            </select>" +
+            "                        </td>" +
+            "                    </tr>" +
+            "                    <tr>" +
+            "                        <td>BlockVACBannedAccounts</td>" +
+            "                        <td>" +
+            "                            <select class='form-control input-block' name='lumaemu_blockVACbannedaccounts'>" +
+            "                                <option value='0'>Disabled</option>" +
+            "                                <option value='1' selected>Activated (Default)</option>" +
+            "                            </select>" +
+            "                        </td>" +
+            "                    </tr>" +
+            "                    <tr>" +
+            "                        <td>BlockUnknownClient</td>" +
+            "                        <td>" +
+            "                            <select class='form-control input-block' name='lumaemu_blockunknownclient'>" +
+            "                                <option value='0'>Disabled</option>" +
+            "                                <option value='1' selected>Activated (Default)</option>" +
+            "                            </select>" +
+            "                        </td>" +
+            "                    </tr>" +
+            "                    <tr>" +
+            "                        <td>SaveInCustomPath</td>" +
+            "                        <td>" +
+            "                            <select class='form-control input-block' name='lumaemu_saveincustompath'>" +
+            "                                <option value='0' selected>Disabled (Default)</option>" +
+            "                                <option value='1'>Activated</option>" +
+            "                            </select>" +
+            "                        </td>" +
+            "                    </tr>" +
+            "                    <tr>" +
+            "                        <td>Path</td>" +
+            "                        <td><input type='text' class='input-block' name='lumaemu_path' placeholder='....'></td>" +
+            "                    </tr>" +
+            "                    <tr>" +
+            "                        <td>LumaEmuClientDll</td>" +
+            "                        <td><input type='text' class='input-block' name='lumaemu_lumaemuclientDll' placeholder='steamclient.dll'></td>" +
+            "                    </tr>" +
+            "                    <tr>" +
+            "                        <td>LumaEmuClientDll64</td>" +
+            "                        <td><input type='text' class='input-block' name='lumaemu_lumaemuclientDll64' placeholder='steamclient64.dll'></td>" +
+            "                    </tr>" +
+            "                </tbody>" +
+            "            </table>" +
+            "            <button class='btn btn-primary btn-sm input-block' type='submit'>Save Options LumaEmu</button>" +
+            "        </form>" +
+            "    </div>" +
             "</div>" +
             "</div>" +
             "<h2>Infos Extracted</h2>" +
             "<table class='table table-bordered table-fixed'>" +
-            "	<thead>" +
-            "		<tr>" +
-            "			<th>Key</th>" +
-            "			<th>Value</th>" +
-            "		</tr>" +
-            "	</thead>" +
-            "	<tbody>" +
-            "		<tr>" +
-            "			<td>AppID</td>" +
-            "			<td>" + GetDLCInfoFromSteamDB.steamdb.appid + "</td>" +
-            "		</tr>" +
-            "		<tr>" +
-            "			<td>AppID Name</td>" +
-            "			<td>" + GetDLCInfoFromSteamDB.steamdb.appid_name + "</td>" +
-            "		</tr>" +
-            "		<tr>" +
-            "			<td>DLCs</td>" +
-            "			<td>" + GetDLCInfoFromSteamDB.dlcEach("{0}, ") + "</td>" +
-            "		</tr>" +
-            "	</tbody>" +
-            "	<thead>" +
-            "		<tr>" +
-            "			<th>ExE</th>" +
-            "			<th>Arguments</th>" +
-            "		</tr>" +
-            "	</thead>" +
-            "	<tbody>" +
-            "		<tr>" +
-            "			<td>" + GetDLCInfoFromSteamDB.steamdb.config_exe + "</td>" +
-            "			<td>" + GetDLCInfoFromSteamDB.steamdb.config_arg + "</td>" +
-            "		</tr>" +
-            "	</tbody>" +
+            "    <thead>" +
+            "        <tr>" +
+            "            <th>Key</th>" +
+            "            <th>Value</th>" +
+            "        </tr>" +
+            "    </thead>" +
+            "    <tbody>" +
+            "        <tr>" +
+            "            <td>AppID</td>" +
+            "            <td>" + GetDLCInfoFromSteamDB.steamdb.appid + "</td>" +
+            "        </tr>" +
+            "        <tr>" +
+            "            <td>AppID Name</td>" +
+            "            <td>" + GetDLCInfoFromSteamDB.steamdb.appid_name + "</td>" +
+            "        </tr>" +
+            "        <tr>" +
+            "            <td>DLCs</td>" +
+            "            <td>" + GetDLCInfoFromSteamDB.dlcEach("{0}, ") + "</td>" +
+            "        </tr>" +
+            "    </tbody>" +
+            "    <thead>" +
+            "        <tr>" +
+            "            <th>ExE</th>" +
+            "            <th>Arguments</th>" +
+            "        </tr>" +
+            "    </thead>" +
+            "    <tbody>" +
+            "        <tr>" +
+            "            <td>" + GetDLCInfoFromSteamDB.steamdb.config_exe + "</td>" +
+            "            <td>" + GetDLCInfoFromSteamDB.steamdb.config_arg + "</td>" +
+            "        </tr>" +
+            "    </tbody>" +
             "</table>"
             //
         ).appendTo(GetDLCInfoFromSteamDBOptions);
