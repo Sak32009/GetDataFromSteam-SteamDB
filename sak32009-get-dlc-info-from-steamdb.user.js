@@ -4,18 +4,13 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          1.8.1
+// @version          1.8.2
 // @license          MIT
 // @homepage         https://github.com/Sak32009/GetDLCInfoFromSteamDB
-// @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB
-// @website          https://github.com/Sak32009/GetDLCInfoFromSteamDB
-// @source           https://github.com/Sak32009/GetDLCInfoFromSteamDB
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
 // @updateURL        https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.meta.js
 // @downloadURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.user.js
-// @icon             https://steamdb.info/static/logos/favicon-32x32.png
-// @iconURL          https://steamdb.info/static/logos/favicon-32x32.png
-// @defaulticon      https://steamdb.info/static/logos/favicon-32x32.png
+// @icon             data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAQAAADZc7J/AAAFJklEQVRIx22VW4zV1RXGf9/e538OMwwMA0NFHWC4DhQGGKdempqmjFWwrY0JiaE0pZcovYSSNOpDExJqbExjME1r+0AN1VKJaZM2TaGpSoUmaiJEi0gFZwy2AkUME5BhDnNu//31YQ4j2q6Hnb0e1v371lI/7VSoR1HPRYjZUt2sfpYwmxm0UsTUGOUcJznm13ywfmLIiwgRQh6ooRtACq15Il+pr7JWS8i4WowJV77AIL/30wxJteCEtUohxJxb9GMNIAASRggQBsQlDuoEZSKzfCvXg/d6q4+kmJJ6VVB4VPcDiUS4Eq3pKnCKrWmPFzCDAmLMg4WMR1hP7ofbHroYdDvDu7WBBiLyUamT8bZvzuvxMR3nJUaUeQ7r0r7wOx7kUfCO4ne04mFtpUpAhGbiH5YR2MwveYRONlFIDQnTrWfdz2S9QyvyFvW+4j6KV7UsRwRAHGGzX0rELn7iF/0yoxToCl/RIe9kCz+jQYEhLSnoOvXQy0qWewHtgJFO64flpzO1UabNlVY+TbtyoKa3arW4TfciW/JoM+VuRiiGKZ1hnlZxwZc9w6f0/tCb3UKkFsmN5dzNFKarn1WIRCAROKaF1/jG+OrUcyEfZQ0/ZT4n6NDMazXfa9woPTRNZz+pe1ivxRNYMDmF8Vf3ahu/3cXXOMYbPqrDYZ8zK11WIHlReJxN3q3PICA5ASgQMGAC2/2gFil47Afa7qBE4AntYj5lyrRrXnqb7zFAjifwYRImWqr6u9mTiuqNWV7YWH1idKyC2oER3uC8kku0s4I26sQmoGE8uvxBS6GtWLzPuypR/eSPs1nob//a2Hqf19LHpHH80sSxJ2YsuMxh7RndueAZf97wi/h99d6v7VRdYj+3OYQ0fL1XssI9dNHJlCYbywxzSoMc0esj780NIfECA6pS8gNadpLZNCjwWtunzk5yrZECFcosI3IyOsNqzMwbnKGVgAkhFK+plF+lnwYFTmlJhVJzQGt4Pi/WXbcxpJDCRBF5IAiRKVOscYeea1ZV1aLXWUlOQFzwBj0rXSZEYdvGTVZLkkl5K8ncqd10YBKRI1pwl/9EkJut+gOPZYda0iVOfIyaC2lnLFZu5AHWYRAWSXerG33DTxolcgIR8xYv+CCDOssl1cBFpniWeriFAZYCOYnoIPRNnlJP0bV0e/prLcqIKmFipVUZpQqUaLvSJ+okStgq5uHOsE9F9ZGWFXZxw9jQhX/qrqaxyYE4sR0+qte8t2N5y2L+0dgY3lTvwnCALtCBfOB8dxrwavo8lzb+V0b1bw7rQNg//d2436uB02m1lu/hS1Qp8ffi6loYTWMQ6GS2r1Wnp1ICqhphmDOc5pw9mcmhmGoH+BxVSuzV0jEmkQicYenxkbmTqnUlW7z3sfCzAMmxWDhZWTqV41xHIlDR4ouaCuRE/4pvS7VgNdzAIH/IAYsCBcnFlKwd2kROBI9o4U6+RZ2MRPDzbPGgdNEFFYJ01XVxIzXcLpue8HPuIBGok/FrzZ/m57iJOgGI1PgLu/XyPWd38AkGm+Y9vM8XeGWWb2UDX6RIDiQyDmqt5hKn5b/xlzGmTqYALjPEIO8yzBjQwkzm0EOPWsGJOhlC+nP4evpA8wLkyeu8zb0YkZMrQ/9njHadSMRIR/Uj/TEGUDeIQJ5i47Os923MIzTPqEkyePzkjPtMvKP9PFN4MeaOJKw5CJEXnM6nDijlvb6JPhbT5Q5Ndgaqu6zz/IchDutQPEr1AtODQmwY819y11e0hd2kqgAAAABJRU5ErkJggg==
 // @include          *//steamdb.info/app/*
 // @grant            none
 // @run-at           document-end
@@ -58,6 +53,8 @@ var GetDLCInfoFromSteamDB = {
             GetDLCInfoFromSteamDB.getInfo();
             // CREATE DLC FORMAT
             GetDLCInfoFromSteamDB.createDLCFormat();
+            // CREATE STYLE
+            GetDLCInfoFromSteamDB.createStyle();
             // CREATE WRAPPER
             GetDLCInfoFromSteamDB.createWrapper();
             // CREATE WRAPPER EVENTS
@@ -100,24 +97,99 @@ var GetDLCInfoFromSteamDB = {
 
     },
 
+    // CREATE STYLE
+    createStyle: function () {
+
+        var styles = {
+            // BUTTONS WRAPPER
+            "#GetDLCInfoFromSteamDB_buttons > * + *": {
+                "margin-left": "10px"
+            },
+            // TEXTAREA
+            "#GetDLCInfoFromSteamDB_textarea": {
+                "resize": "none",
+                "width": "100%",
+                "margin-bottom": "10px",
+                "display": "none"
+            },
+            // SELECT
+            "#GetDLCInfoFromSteamDB_select": {
+                "height": "auto",
+                "min-height": "auto",
+                "padding": "2px 10px"
+            },
+            // DROPDOWN
+            "#GetDLCInfoFromSteamDB_dropdown": {
+                "display": "inline-block"
+            },
+            // DROPDOWN MENU
+            "#GetDLCInfoFromSteamDB_dropdown .dropdown-menu": {
+                "border-color": "#ddd",
+                "padding": "0"
+            },
+            "#GetDLCInfoFromSteamDB_dropdown .dropdown-menu a": {
+                "font-size": "14px",
+                "border-bottom": "1px solid #ddd",
+                "padding": "5px 15px"
+            },
+            "#GetDLCInfoFromSteamDB_dropdown .dropdown-menu li:last-child a": {
+                "border-bottom": "0"
+            },
+            // NAV TABS
+            "#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs-link": {
+                "display": "inline-block",
+                "padding": "8px 15px",
+                "border": "1px solid transparent",
+                "cursor": "pointer",
+                "margin-bottom": "-1px"
+            },
+            "#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs-link + .nav-tabs-link": {
+                "margin-left": "5px"
+            },
+            "#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs-link:hover": {
+                "border-color": "#eceeef #eceeef white"
+            },
+            "#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs-link.selected": {
+                "border-color": "#ddd #ddd white"
+            },
+            "#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs-pane": {
+                "display": "none"
+            },
+            "#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs-pane.selected": {
+                "display": "block"
+            },
+            // TABBABLE
+            "a[data-target='#GetDLCInfoFromSteamDBOptions'] > .counter": {
+                "background-color": "darkmagenta",
+                "color": "white"
+            }
+        };
+        var styleT = "";
+
+        for (var style_selector in styles) {
+            if (styles.hasOwnProperty(style_selector)) {
+
+                var style_selector_values = styles[style_selector];
+
+                styleT += style_selector + "{";
+
+                for (var style_selector_value in style_selector_values) {
+                    if (style_selector_values.hasOwnProperty(style_selector_value)) {
+                        styleT += style_selector_value + ":" + style_selector_values[style_selector_value] + ";";
+                    }
+                }
+
+                styleT += "}";
+
+            }
+        }
+
+        $("<style>").text(styleT).appendTo("head");
+
+    },
+
     // CREATE WRAPPER
     createWrapper: function () {
-
-        // ADD CUSTOM STYLE
-        $("<style>").text("#GetDLCInfoFromSteamDB_buttons > * + *{margin-left:10px}" +
-            "#GetDLCInfoFromSteamDB_textarea{resize:none;width:100%;margin-bottom:10px;display:none}" +
-            "#GetDLCInfoFromSteamDB_select{height:auto!important;min-height:auto!important;padding:2px 10px}" +
-            "#GetDLCInfoFromSteamDB_dropdown{display:inline-block}" +
-            "#GetDLCInfoFromSteamDB_dropdown > .dropdown-menu{border-color:#ddd}" +
-            "#GetDLCInfoFromSteamDB_dropdown > .dropdown-menu a{font:14px/20px 'Lato',Arial,sans-serif;border-bottom:1px solid #ddd;padding:5px 15px}" +
-            "#GetDLCInfoFromSteamDB_dropdown > .dropdown-menu li:last-child a{border:0}" +
-            "#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs .nav-tabs-link{text-decoration: none;display: inline-block;padding: .5em 1em;border: 1px solid transparent;color: black;margin-bottom: -1px;}" +
-            "#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs .nav-tabs-link + .nav-tabs-link{margin-left:.2rem}" +
-            "#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs .nav-tabs-link:focus, #GetDLCInfoFromSteamDB_nav_tabs .nav-tabs .nav-tabs-link:hover{border-color:#eceeef #eceeef white}" +
-            "#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs .nav-tabs-link.selected{border-color:#ddd #ddd white}" +
-            "#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs-content > .nav-tabs-pane{display:none}" +
-            "#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs-content > .nav-tabs-pane.selected{display:block}" +
-            ".tabbable > .tabnav > .tabnav-tabs > .tabnav-tab[data-target='#GetDLCInfoFromSteamDBOptions'] > .counter{background-color:darkmagenta;color:white}").appendTo("head");
 
         // ADD TEXTAREA
         $("<textarea>").attr({
@@ -130,6 +202,7 @@ var GetDLCInfoFromSteamDB = {
 
         // WRAPPER SELECT
         var wrapper_select = $("<select>").attr("id", "GetDLCInfoFromSteamDB_select");
+        var option_sep = "---------------------------------";
         $("<option>").attr({
             value: "lumaemu",
             "data-file": "LumaEmu.ini"
@@ -138,10 +211,12 @@ var GetDLCInfoFromSteamDB = {
             value: "lumaemu_o",
             "data-file": "lumaemu_dlc_list.ini"
         }).text("LumaEmu (Only DLC Section)").appendTo(wrapper_select);
+        $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
         $("<option>").attr({
             value: "reloaded",
             "data-file": "reloaded_dlc_list.ini"
         }).text("RELOADED").appendTo(wrapper_select);
+        $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
         $("<option>").attr({
             value: "creamAPI",
             "data-file": "cream_api.ini"
@@ -150,34 +225,44 @@ var GetDLCInfoFromSteamDB = {
             value: "creamAPI_o",
             "data-file": "creamapi_dlc_list.ini"
         }).text("CreamAPI (Only DLC Section)").appendTo(wrapper_select);
+        $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
         $("<option>").attr({
             value: "skidrow",
             "data-file": "skidrow_dlc_list.ini"
         }).text("SKIDROW").appendTo(wrapper_select);
+        $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
         $("<option>").attr({
             value: "3dmgame",
             "data-file": "3dmgame_dlc_list.ini"
         }).text("3DMGAME").appendTo(wrapper_select);
+        $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
         $("<option>").attr({
             value: "codex",
             "data-file": "codex_dlc_list.ini"
-        }).text("CODEX").appendTo(wrapper_select);
+        }).text("CODEX (ID = NAME)").appendTo(wrapper_select);
+        $("<option>").attr({
+            value: "codex_t",
+            "data-file": "codex_dlc_list.ini"
+        }).text("CODEX (DLC00000, DLCName)").appendTo(wrapper_select);
+        $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
         $("<option>").attr({
             value: "smartsteamemu",
             "data-file": "SmartSteamEmu.ini"
-        }).text("SmartSteamEmu (INI v1.4.0)").appendTo(wrapper_select);
+        }).text("SmartSteamEmu (INI v1.4.1)").appendTo(wrapper_select);
         $("<option>").attr({
             value: "smartsteamemu_m",
             "data-file": "SmartSteamEmu.ini"
-        }).text("SmartSteamEmu (Mini-INI v1.4.0)").appendTo(wrapper_select);
+        }).text("SmartSteamEmu (Mini-INI v1.4.1)").appendTo(wrapper_select);
         $("<option>").attr({
             value: "smartsteamemu_o",
             "data-file": "smartsteamemu_dlc_list.ini"
         }).text("SmartSteamEmu (Only DLC Section)").appendTo(wrapper_select);
+        $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
         $("<option>").attr({
             value: "ali213",
             "data-file": "ali213_dlc_list.ini"
         }).text("ALI213").appendTo(wrapper_select);
+        $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
         $("<option>").attr({
             value: "revolt",
             "data-file": "revolt_dlc_list.ini"
@@ -277,131 +362,262 @@ var GetDLCInfoFromSteamDB = {
             "text-align": "center"
         }).html(GetDLCInfoFromSteamDB.script.name + " <small>by " + GetDLCInfoFromSteamDB.script.author + " v" + GetDLCInfoFromSteamDB.script.version + "</small>").appendTo(GetDLCInfoFromSteamDBOptions);
 
-        $("<h2>Global Options<div class='pull-right'><button class='btn btn-sm' type='button' id='GetDLCInfoFromSteamDB_resetOptions'>Reset All Options</button></div></h2>" +
-            "<form id='GetDLCInfoFromSteamDB_submit_options'>" +
+        $( //
+            "<h2>Userscript</h2>" +
             "<table class='table table-bordered table-fixed'>" +
-            "<thead><tr>" +
-            "<th>Description</th>" +
-            "<th>Input</th>" +
-            "</tr></thead>" +
-            "<tbody>" +
-            "<tr><td>Username</td>" +
-            "<td><input type='text' class='input-block' name='username' placeholder='....'></td></tr>" +
-            "<tr><td>Auto downloading file .INI when you click " +
-            "Get DLC List" +
-            "</td>" +
-            "<td><input type='checkbox' name='auto_download'></td></tr>" +
-            "<tr><td>Save the last selection of the format</td>" +
-            "<td><input type='checkbox' name='save_selection'></td></tr>" +
-            "</tbody>" +
+            "	<tbody>" +
+            "		<tr>" +
+            "			<td>Homepage</td>" +
+            "			<td><a href='" + GetDLCInfoFromSteamDB.script.homepage + "' target='_blank'>GITHUB</a></td>" +
+            "		</tr>" +
+            "		<tr>" +
+            "			<td>Support</td>" +
+            "			<td><a href='" + GetDLCInfoFromSteamDB.script.support + "' target='_blank'>CS.RIN.RU</a></td>" +
+            "		</tr>" +
+            "		<tr>" +
+            "			<td>Contributor</td>" +
+            "			<td>" + GetDLCInfoFromSteamDB.script.contributor + "</td>" +
+            "		</tr>" +
+            "	</tbody>" +
             "</table>" +
-            "<button class='btn btn-primary btn-sm input-block' type='submit'>Save Options</button>" +
+            "<h2>Global Options<button class='btn btn-sm pull-right' type='button' id='GetDLCInfoFromSteamDB_resetOptions'>Reset All Options</button></h2>" +
+            "<form id='GetDLCInfoFromSteamDB_submit_options'>" +
+            "	<table class='table table-bordered table-fixed'>" +
+            "		<thead>" +
+            "			<tr>" +
+            "				<th>Description</th>" +
+            "				<th>Input</th>" +
+            "			</tr>" +
+            "		</thead>" +
+            "		<tbody>" +
+            "			<tr>" +
+            "				<td>Username</td>" +
+            "				<td><input type='text' class='input-block' name='username' placeholder='....'></td>" +
+            "			</tr>" +
+            "			<tr>" +
+            "				<td>Auto downloading file .INI when you click Get DLC List</td>" +
+            "				<td><input type='checkbox' name='auto_download'></td>" +
+            "			</tr>" +
+            "			<tr>" +
+            "				<td>Save the last selection of the format</td>" +
+            "				<td><input type='checkbox' name='save_selection'></td>" +
+            "			</tr>" +
+            "		</tbody>" +
+            "	</table>" +
+            "	<button class='btn btn-primary btn-sm input-block' type='submit'>Save Options</button>" +
             "</form>" +
             "<h2>Specific Options</h2>" +
             "<div id='GetDLCInfoFromSteamDB_nav_tabs'>" +
-            "<div class='nav-tabs'>" +
-            "<a class='nav-tabs-link selected' href='#' data-target='#tab_creamapi_options'>CreamAPI Options</a>" +
-            "<a class='nav-tabs-link' href='#' data-target='#tab_lumaemu_options'>LumaEmu Options</a>" +
-            "<a class='nav-tabs-link' href='#' data-target='#tab_smartsteamemu_options'>SmartSteamEmu Options</a>" +
+            "	<div class='nav-tabs'>" +
+            "		<div class='nav-tabs-link selected' data-target='#tab_creamapi_options'>CreamAPI Options</div>" +
+            "		<div class='nav-tabs-link' data-target='#tab_lumaemu_options'>LumaEmu Options</div>" +
+            "	</div>" +
+            "	<div class='nav-tabs-content'>" +
+            "	<div class='nav-tabs-pane selected' id='tab_creamapi_options'>" +
+            "		<form id='GetDLCInfoFromSteamDB_submit_options'>" +
+            "			<table class='table table-bordered table-fixed'>" +
+            "				<thead>" +
+            "					<tr>" +
+            "						<th>Description</th>" +
+            "						<th>Input</th>" +
+            "					</tr>" +
+            "				</thead>" +
+            "				<tbody>" +
+            "					<tr>" +
+            "						<td>Enable/disable automatic DLC unlock</td>" +
+            "						<td><input type='checkbox' name='creamapi_unlock_all'></td>" +
+            "					</tr>" +
+            "					<tr>" +
+            "						<td>Original Valve's steam_api.dll</td>" +
+            "						<td><input type='text' class='input-block' name='creamapi_orgapi' placeholder='steam_api_o.dll'></td>" +
+            "					</tr>" +
+            "					<tr>" +
+            "						<td>Original Valve's steam_api64.dll</td>" +
+            "						<td><input type='text' class='input-block' name='creamapi_orgapi64' placeholder='steam_api64_o.dll'></td>" +
+            "					</tr>" +
+            "					<tr>" +
+            "						<td>Enable/disable extra protection bypasser</td>" +
+            "						<td><input type='checkbox' name='creamapi_extraprotection'></td>" +
+            "					</tr>" +
+            "					<tr>" +
+            "						<td>Enable/disable logging of the DLC functions</td>" +
+            "						<td><input type='checkbox' name='creamapi_log'></td>" +
+            "					</tr>" +
+            "				</tbody>" +
+            "			</table>" +
+            "			<button class='btn btn-primary btn-sm input-block' type='submit'>Save Options CreamAPI</button>" +
+            "		</form>" +
+            "	</div>" +
+            "	<div class='nav-tabs-pane' id='tab_lumaemu_options'>" +
+            "		<form id='GetDLCInfoFromSteamDB_submit_options'>" +
+            "			<table class='table table-bordered table-fixed'>" +
+            "				<thead>" +
+            "					<tr>" +
+            "						<th>Description</th>" +
+            "						<th>Input</th>" +
+            "					</tr>" +
+            "				</thead>" +
+            "				<tbody>" +
+            "					<tr>" +
+            "						<td>Offline/Online mode Steam</td>" +
+            "						<td>" +
+            "							<select class='form-control input-block' name='lumaemu_offline'>" +
+            "								<option value='0' selected>Online (Default)</option>" +
+            "								<option value='1'>Offline</option>" +
+            "							</select>" +
+            "						</td>" +
+            "					</tr>" +
+            "					<tr>" +
+            "						<td>OpenNameChanger</td>" +
+            "						<td>" +
+            "							<select class='form-control input-block' name='lumaemu_opennamechanger'>" +
+            "								<option value='0' selected>Disabled (Default)</option>" +
+            "								<option value='1'>Activated</option>" +
+            "							</select>" +
+            "						</td>" +
+            "					</tr>" +
+            "					<tr>" +
+            "						<td>GameLanguage</td>" +
+            "						<td><input type='text' class='input-block' name='lumaemu_gamelanguage' placeholder='english'></td>" +
+            "					</tr>" +
+            "					<tr>" +
+            "						<td>LogFile</td>" +
+            "						<td>" +
+            "							<select class='form-control input-block' name='lumaemu_logfile'>" +
+            "								<option value='0'>Disabled</option>" +
+            "								<option value='1' selected>Activated (Default)</option>" +
+            "							</select>" +
+            "						</td>" +
+            "					</tr>" +
+            "					<tr>" +
+            "						<td>EnableOverlay</td>" +
+            "						<td>" +
+            "							<select class='form-control input-block' name='lumaemu_enableoverlay'>" +
+            "								<option value='0'>Disabled</option>" +
+            "								<option value='1' selected>Activated (Default)</option>" +
+            "							</select>" +
+            "						</td>" +
+            "					</tr>" +
+            "					<tr>" +
+            "						<td>Save</td>" +
+            "						<td>" +
+            "							<select class='form-control input-block' name='lumaemu_save'>" +
+            "								<option value='1' selected>Will save both (Default)</option>" +
+            "								<option value='2'>Will save both, achievements</option>" +
+            "								<option value='3'>Will save both, achievements, stats</option>" +
+            "							</select>" +
+            "						</td>" +
+            "					</tr>" +
+            "					<tr>" +
+            "						<td>BlockLumaEmu</td>" +
+            "						<td>" +
+            "							<select class='form-control input-block' name='lumaemu_blocklumaemu'>" +
+            "								<option value='0' selected>Disabled (Default)</option>" +
+            "								<option value='1'>Activated</option>" +
+            "							</select>" +
+            "						</td>" +
+            "					</tr>" +
+            "					<tr>" +
+            "						<td>BlockLegitSteam</td>" +
+            "						<td>" +
+            "							<select class='form-control input-block' name='lumaemu_blocklegitsteam'>" +
+            "								<option value='0' selected>Disabled (Default)</option>" +
+            "								<option value='1'>Activated</option>" +
+            "							</select>" +
+            "						</td>" +
+            "					</tr>" +
+            "					<tr>" +
+            "						<td>BlockSmartSteamEmu</td>" +
+            "						<td>" +
+            "							<select class='form-control input-block' name='lumaemu_blocksmartsteamemu'>" +
+            "								<option value='0' selected>Disabled (Default)</option>" +
+            "								<option value='1'>Activated</option>" +
+            "							</select>" +
+            "						</td>" +
+            "					</tr>" +
+            "					<tr>" +
+            "						<td>BlockVACBannedAccounts</td>" +
+            "						<td>" +
+            "							<select class='form-control input-block' name='lumaemu_blockVACbannedaccounts'>" +
+            "								<option value='0'>Disabled</option>" +
+            "								<option value='1' selected>Activated (Default)</option>" +
+            "							</select>" +
+            "						</td>" +
+            "					</tr>" +
+            "					<tr>" +
+            "						<td>BlockUnknownClient</td>" +
+            "						<td>" +
+            "							<select class='form-control input-block' name='lumaemu_blockunknownclient'>" +
+            "								<option value='0'>Disabled</option>" +
+            "								<option value='1' selected>Activated (Default)</option>" +
+            "							</select>" +
+            "						</td>" +
+            "					</tr>" +
+            "					<tr>" +
+            "						<td>SaveInCustomPath</td>" +
+            "						<td>" +
+            "							<select class='form-control input-block' name='lumaemu_saveincustompath'>" +
+            "								<option value='0' selected>Disabled (Default)</option>" +
+            "								<option value='1'>Activated</option>" +
+            "							</select>" +
+            "						</td>" +
+            "					</tr>" +
+            "					<tr>" +
+            "						<td>Path</td>" +
+            "						<td><input type='text' class='input-block' name='lumaemu_path' placeholder='....'></td>" +
+            "					</tr>" +
+            "					<tr>" +
+            "						<td>LumaEmuClientDll</td>" +
+            "						<td><input type='text' class='input-block' name='lumaemu_lumaemuclientDll' placeholder='steamclient.dll'></td>" +
+            "					</tr>" +
+            "					<tr>" +
+            "						<td>LumaEmuClientDll64</td>" +
+            "						<td><input type='text' class='input-block' name='lumaemu_lumaemuclientDll64' placeholder='steamclient64.dll'></td>" +
+            "					</tr>" +
+            "				</tbody>" +
+            "			</table>" +
+            "			<button class='btn btn-primary btn-sm input-block' type='submit'>Save Options LumaEmu</button>" +
+            "		</form>" +
+            "	</div>" +
             "</div>" +
-            "<div class='nav-tabs-content'>" +
-            "<div class='nav-tabs-pane selected' id='tab_creamapi_options'>" +
-            "<form id='GetDLCInfoFromSteamDB_submit_options'>" +
-            "<table class='table table-bordered table-fixed'>" +
-            "<thead><tr><th>Description</th><th>Input</th></tr></thead>" +
-            "<tbody>" +
-            "<tr><td>Enable/disable automatic DLC unlock</td>" +
-            "<td><input type='checkbox' name='creamapi_unlock_all'></td></tr>" +
-            "<tr><td>Original Valve's steam_api.dll</td>" +
-            "<td><input type='text' class='input-block' name='creamapi_orgapi' placeholder='steam_api_o.dll'></td></tr>" +
-            "<tr><td>Original Valve's steam_api64.dll</td>" +
-            "<td><input type='text' class='input-block' name='creamapi_orgapi64' placeholder='steam_api64_o.dll'></td></tr>" +
-            "<tr><td>Enable/disable extra protection bypasser</td>" +
-            "<td><input type='checkbox' name='creamapi_extraprotection'></td></tr>" +
-            "<tr><td>Enable/disable logging of the DLC functions</td>" +
-            "<td><input type='checkbox' name='creamapi_log'></td></tr>" +
-            "</tbody>" +
-            "</table>" +
-            "<button class='btn btn-primary btn-sm input-block' type='submit'>Save Options CreamAPI</button>" +
-            "</form>" +
             "</div>" +
-            "<div class='nav-tabs-pane' id='tab_lumaemu_options'>" +
-            "<form id='GetDLCInfoFromSteamDB_submit_options'>" +
-            "<table class='table table-bordered table-fixed'>" +
-            "<thead><tr><th>Description</th><th>Input</th></tr></thead>" +
-            "<tbody>" +
-            "<tr><td>Offline/Online mode Steam</td>" +
-            "<td><select class='form-control input-block' name='lumaemu_offline'><option value='0' selected>Online (Default)</option><option value='1'>Offline</option></select></td></tr>" +
-            "<tr><td>OpenNameChanger</td>" +
-            "<td><select class='form-control input-block' name='lumaemu_opennamechanger'><option value='0' selected>Disabled (Default)</option><option value='1'>Activated</option></select></td></tr>" +
-            "<tr><td>GameLanguage</td>" +
-            "<td><input type='text' class='input-block' name='lumaemu_gamelanguage' placeholder='english'></td></tr>" +
-            "<tr><td>LogFile</td>" +
-            "<td><select class='form-control input-block' name='lumaemu_logfile'><option value='0'>Disabled</option><option value='1' selected>Activated (Default)</option></select></td></tr>" +
-            "<tr><td>EnableOverlay</td>" +
-            "<td><select class='form-control input-block' name='lumaemu_enableoverlay'><option value='0'>Disabled</option><option value='1' selected>Activated (Default)</option></select></td></tr>" +
-            "<tr><td>Save</td>" +
-            "<td><select class='form-control input-block' name='lumaemu_save'><option value='1' selected>Will save both (Default)</option><option value='2'>Will save both, achievements</option><option value='3'>Will save both, achievements, stats</option></select></td></tr>" +
-            "<tr><td>BlockLumaEmu</td>" +
-            "<td><select class='form-control input-block' name='lumaemu_blocklumaemu'><option value='0' selected>Disabled (Default)</option><option value='1'>Activated</option></select></select></td></tr>" +
-            "<tr><td>BlockLegitSteam</td>" +
-            "<td><select class='form-control input-block' name='lumaemu_blocklegitsteam'><option value='0' selected>Disabled (Default)</option><option value='1'>Activated</option></select></select></td></tr>" +
-            "<tr><td>BlockSmartSteamEmu</td>" +
-            "<td><select class='form-control input-block' name='lumaemu_blocksmartsteamemu'><option value='0' selected>Disabled (Default)</option><option value='1'>Activated</option></select></select></td></tr>" +
-            "<tr><td>BlockVACBannedAccounts</td>" +
-            "<td><select class='form-control input-block' name='lumaemu_blockVACbannedaccounts'><option value='0'>Disabled</option><option value='1' selected>Activated (Default)</option></select></select></td></tr>" +
-            "<tr><td>BlockUnknownClient</td>" +
-            "<td><select class='form-control input-block' name='lumaemu_blockunknownclient'><option value='0'>Disabled</option><option value='1' selected>Activated (Default)</option></select></select></td></tr>" +
-            "<tr><td>SaveInCustomPath</td>" +
-            "<td><select class='form-control input-block' name='lumaemu_saveincustompath'><option value='0' selected>Disabled (Default)</option><option value='1'>Activated</option></select></select></td></tr>" +
-            "<tr><td>Path</td>" +
-            "<td><input type='text' class='input-block' name='lumaemu_path' placeholder='....'></td></tr>" +
-            "<tr><td>LumaEmuClientDll</td>" +
-            "<td><input type='text' class='input-block' name='lumaemu_lumaemuclientDll' placeholder='steamclient.dll'></td></tr>" +
-            "<tr><td>LumaEmuClientDll64</td>" +
-            "<td><input type='text' class='input-block' name='lumaemu_lumaemuclientDll64' placeholder='steamclient64.dll'></td></tr>" +
-            "</tbody>" +
-            "</table>" +
-            "<button class='btn btn-primary btn-sm input-block' type='submit'>Save Options LumaEmu</button>" +
-            "</form>" +
-            "</div>" +
-            "<div class='nav-tabs-pane' id='tab_smartsteamemu_options'>In work...</div>" +
-            "</div>" +
-            "</div>" +
-            "<h2>Userscript</h2>" +
-            "<table class='table table-bordered table-fixed'>" +
-            "<tbody>" +
-            "<tr><td>Homepage</td>" +
-            "<td><a href='" + GetDLCInfoFromSteamDB.script.homepage + "' target='_blank'>GITHUB</a></td></tr>" +
-            "<tr><td>Support</td>" +
-            "<td><a href='" + GetDLCInfoFromSteamDB.script.support + "' target='_blank'>CS.RIN.RU</a></td></tr>" +
-            "<tr><td>Contributor</td>" +
-            "<td>" + GetDLCInfoFromSteamDB.script.contributor + "</td></tr>" +
-            "</tbody>" +
-            "</table>" +
             "<h2>Infos Extracted</h2>" +
             "<table class='table table-bordered table-fixed'>" +
-            "<thead><tr><th>Key</th><th>Value</th></tr></thead>" +
-            "<tbody>" +
-            "<tr><td>AppID</td>" +
-            "<td>" + GetDLCInfoFromSteamDB.steamdb.appid + "</td></tr>" +
-            "<tr><td>AppID Name</td>" +
-            "<td>" + GetDLCInfoFromSteamDB.steamdb.appid_name + "</td></tr>" +
-            "<tr><td>URL (if it's incorrect it's not a problem)</td>" +
-            "<td>" + GetDLCInfoFromSteamDB.steamdb.url + "</td></tr>" +
-            "<tr><td>DLCs</td>" +
-            "<td>" + GetDLCInfoFromSteamDB.dlcEach("{0}, ") + "</td></tr>" +
-            "</tbody>" +
-            "</table>" +
-            "<h2>Arguments Extracted</h2>" +
-            "<table class='table table-bordered table-fixed'>" +
-            "<thead><tr><th>ExE</th><th>Arguments</th></tr>" +
-            "</thead>" +
-            "<tbody>" +
-            "<tr><td>" + GetDLCInfoFromSteamDB.steamdb.config_exe + "</td>" +
-            "<td>" + GetDLCInfoFromSteamDB.steamdb.config_arg + "</td></tr>" +
-            "</tbody>" +
-            "</table>").appendTo(GetDLCInfoFromSteamDBOptions);
+            "	<thead>" +
+            "		<tr>" +
+            "			<th>Key</th>" +
+            "			<th>Value</th>" +
+            "		</tr>" +
+            "	</thead>" +
+            "	<tbody>" +
+            "		<tr>" +
+            "			<td>AppID</td>" +
+            "			<td>" + GetDLCInfoFromSteamDB.steamdb.appid + "</td>" +
+            "		</tr>" +
+            "		<tr>" +
+            "			<td>AppID Name</td>" +
+            "			<td>" + GetDLCInfoFromSteamDB.steamdb.appid_name + "</td>" +
+            "		</tr>" +
+            "		<tr>" +
+            "			<td>DLCs</td>" +
+            "			<td>" + GetDLCInfoFromSteamDB.dlcEach("{0}, ") + "</td>" +
+            "		</tr>" +
+            "	</tbody>" +
+            "	<thead>" +
+            "		<tr>" +
+            "			<th>ExE</th>" +
+            "			<th>Arguments</th>" +
+            "		</tr>" +
+            "	</thead>" +
+            "	<tbody>" +
+            "		<tr>" +
+            "			<td>" + GetDLCInfoFromSteamDB.steamdb.config_exe + "</td>" +
+            "			<td>" + GetDLCInfoFromSteamDB.steamdb.config_arg + "</td>" +
+            "		</tr>" +
+            "	</tbody>" +
+            "</table>"
+            //
+        ).appendTo(GetDLCInfoFromSteamDBOptions);
 
         GetDLCInfoFromSteamDBOptions.appendTo(".tabbable > .tab-content");
 
@@ -411,7 +627,7 @@ var GetDLCInfoFromSteamDB = {
     loadOptionsWrapper: function () {
 
         // LOAD OPTIONS VALUE
-        $.each($("form#GetDLCInfoFromSteamDB_submit_options input, form#GetDLCInfoFromSteamDB_submit_options select"), function (i, k) {
+        $("form#GetDLCInfoFromSteamDB_submit_options input, form#GetDLCInfoFromSteamDB_submit_options select").each(function () {
 
             var $this = $(this);
             var type = $this.attr("type");
@@ -526,8 +742,11 @@ var GetDLCInfoFromSteamDB = {
     // CREATE DLC FORMAT
     createDLCFormat: function () {
 
-        // CODEX & SMARTSTEAMEMU (ONLY DLC LIST) & ALI213
+        // CODEX (ID = NAME) & SMARTSTEAMEMU (ONLY DLC LIST) & ALI213
         GetDLCInfoFromSteamDB.steamdb.format.codex = GetDLCInfoFromSteamDB.steamdb.format.smartsteamemu_o = GetDLCInfoFromSteamDB.steamdb.format.ali213 = GetDLCInfoFromSteamDB.dlcEach("{0} = \"{1}\"\n");
+
+        // CODEX (DLC00000, DLCName)
+        GetDLCInfoFromSteamDB.steamdb.format.codex_t = GetDLCInfoFromSteamDB.dlcEach("DLC{2} = {0}\nDLCName{2} = \"{1}\"\n", false, true, false, 5);
 
         // SMARTSTEAMEMU (FULL INI)
         GetDLCInfoFromSteamDB.steamdb.format.smartsteamemu = sprintf(
@@ -622,10 +841,10 @@ var GetDLCInfoFromSteamDB = {
     },
 
     // DLC EACH
-    dlcEach: function (string, cindex, dindex, rindex) {
+    dlcEach: function (string, from_zero, format_index, return_index, format_index_zeros) {
 
         var result = "";
-        var index = cindex ? 0 : -1;
+        var index = from_zero ? 0 : -1;
 
         for (var dlc_id in GetDLCInfoFromSteamDB.steamdb.dlcs) {
 
@@ -634,7 +853,7 @@ var GetDLCInfoFromSteamDB = {
                 index++;
 
                 var dlc_name = GetDLCInfoFromSteamDB.steamdb.dlcs[dlc_id];
-                var dlc_index = GetDLCInfoFromSteamDB.dlcIndexFormat(index, dindex);
+                var dlc_index = GetDLCInfoFromSteamDB.dlcIndexFormat(index, format_index, format_index_zeros);
 
                 result += sprintf(string, dlc_id, dlc_name, dlc_index);
 
@@ -642,22 +861,26 @@ var GetDLCInfoFromSteamDB = {
 
         }
 
-        return rindex ? [result, index] : result;
+        return return_index ? [result, index] : result;
 
     },
 
     // DLC INDEX FORMAT
-    dlcIndexFormat: function (str, fmt) {
+    dlcIndexFormat: function (val, format, zero) {
 
-        if (fmt) {
+        if (format) {
 
-            var len = str.toString().length;
+            zero = zero || 3;
 
-            return (len == 1 ? "00" : (len == 2 ? "0" : "")) + str;
+            var string = val.toString();
+            var zeros = "0".repeat(zero);
+            var sub = zeros.length - string.length;
+
+            return sub > 0 ? zeros.substring(0, sub) + val : val;
 
         }
 
-        return str;
+        return val;
 
     },
 
@@ -786,59 +1009,93 @@ var GetDLCInfoFromSteamDB = {
 
         smartsteamemu: "[Launcher]\n" +
             "Target = {0}\n" +
-            ";StartIn =\n" +
-            "CommandLine = {1}\n" +
+            "; StartIn =\n" +
+            "CommandLine = {1}\n\n" +
             "SteamClientPath = SmartSteamEmu.dll\n" +
             "SteamClientPath64 = SmartSteamEmu64.dll\n" +
             "Persist = 0\n" +
-            "ParanoidMode = 0\n" +
-            "InjectDll = 0\n\n" +
+            "InjectDll = 0\n" +
+            "ParanoidMode = 0\n\n" +
             "[SmartSteamEmu]\n" +
+            "AppId = {2}\n" +
+            "Language = english\n" +
+            "SteamIdGeneration = GenerateRandom\n" +
+            "; ManualSteamId = 0\n" +
+            "LowViolence = 0\n" +
+            "Offline = 0\n\n" +
             "AvatarFilename = avatar.png\n" +
             "PersonaName = {4}\n" +
-            "AppId = {2}\n" +
-            "SteamIdGeneration = GenerateRandom\n" +
-            "ManualSteamId = 0\n" +
-            "Language = English\n" +
-            "LowViolence = False\n" +
-            "StorageOnAppdata = False\n" +
-            "SeparateStorageByName = False\n" +
-            "AutomaticallyJoinInvite = True\n" +
-            "EnableHTTP = False\n" +
-            "EnableInGameVoice = False\n" +
-            "EnableLobbyFilter = True\n" +
-            "DisableFriendList = False\n" +
-            "DisableLeaderboard = False\n" +
-            "DisableGC = False\n" +
-            "SecuredServer = True\n" +
-            "VR = False\n" +
-            "Offline = False\n" +
-            "QuickJoinHotkey = SHIFT + TAB\n" +
+            "AutomaticallyJoinInvite = 1\n\n" +
+            "StorageOnAppdata = 1\n" +
+            "SeparateStorageByName = 0\n" +
+            "; RemoteStoragePath = %USERPROFILE%\\Documents\\My Games\\%SteamAppId%\n\n" +
+            "EnableHTTP = 0\n" +
+            "EnableInGameVoice = 0\n" +
+            "EnableLobbyFilter = 1\n" +
+            "EnableOverlay = 0\n" +
+            "DisableFriendList = 0\n" +
+            "DisableLeaderboard = 0\n" +
+            "SecuredServer = 1\n" +
+            "VR = 0\n" +
+            "RandomItemAwards = 1\n" +
+            "DisableGC = 0\n\n" +
             "MasterServer = 188.40.40.201:27010\n" +
             "MasterServerGoldSrc = 188.40.40.201:27010\n\n" +
-            "[Achievements]\n" +
-            "FailOnNonExistenceStats = False\n\n" +
+            "QuickJoinHotkey = SHIFT + TAB\n\n" +
             "[SSEOverlay]\n" +
-            "DisableOverlay = False\n" +
-            "OnlineMode = True\n" +
+            "DisableOverlay = 0\n" +
+            "OnlineMode = 1\n" +
+            "Language = english\n" +
             "ScreenshotHotkey = F12\n\n" +
+            "HookRefCount = 1\n" +
+            "; OnlineKey =\n\n" +
+            "[DLC]\n" +
+            "Default = 0\n\n" +
+            "src103582791433980119 = Payday 2 Community\n" +
+            "src103582791435633447 = Payday 2 Mod - HoxHud\n\n" +
+            "{3}\n" +
+            "[Achievements]\n" +
+            "UnlockAll = 0\n" +
+            "FailOnNonExistenceStats = 0\n\n" +
+            "[PlayerManagement]\n" +
+            "AllowAnyoneConnect = 1\n\n" +
             "[DirectPatch]\n\n" +
             "[Debug]\n" +
-            "EnableLog = False\n" +
+            "EnableLog = 0\n" +
             "MarkLogHotkey = CTRL + ALT + M\n" +
-            "LogFilter = User Logged On\n" +
-            "Minidump = True\n\n" +
-            "[DLC]\n" +
-            "Default = False\n\n" +
-            "src103582791433980119 = 1\n" +
-            "src103582791435633447 = 1\n\n" +
-            "{3}\n" +
+            "LogFilter = User logged on\n\n" +
+            "Minidump = 1\n\n" +
             "[Networking]\n" +
             "BroadcastAddress = 255.255.255.255\n" +
             "ListenPort = 31313\n" +
             "MaximumPort = 10\n" +
             "DiscoveryInterval = 3\n" +
-            "MaximumConnection = 255\n",
+            "MaximumConnection = 200\n\n" +
+            "[SteamApi]\n" +
+            "OriginalSteamApi = ValveApi.dll\n" +
+            "OriginalSteamApi64 = ValveApi64.dll\n\n" +
+            "SteamClient = 15\n" +
+            "SteamUser = 16\n" +
+            "SteamGameServer = 1\n" +
+            "SteamFriends = 13\n" +
+            "SteamUtils = 5\n" +
+            "SteamMatchMaking = 9\n" +
+            "SteamMatchMakingServers = 2\n" +
+            "SteamUserStats = 11\n" +
+            "SteamGameServerStats = 1\n" +
+            "SteamApps = 5\n" +
+            "SteamMasterServerUpdater = 1\n" +
+            "SteamNetworking = 5\n" +
+            "SteamRemoteStorage = 10\n" +
+            "SteamScreenshots = 1\n" +
+            "SteamHTTP = 2\n" +
+            "SteamUnifiedMessages = 1\n" +
+            "SteamController = 1\n" +
+            "SteamUGC = 1\n" +
+            "SteamAppList = 1\n" +
+            "SteamMusic = 1\n" +
+            "SteamMusicRemote = 1\n" +
+            "SteamHTMLSurface = 2\n",
 
         smartsteamemu_m: "[Launcher]\n" +
             "Target = {0}\n" +
@@ -848,7 +1105,7 @@ var GetDLCInfoFromSteamDB = {
             "[SmartSteamEmu]\n" +
             "AppId = {2}\n\n" +
             "[DLC]\n" +
-            "Default = False\n\n" +
+            "Default = 0\n\n" +
             "{3}",
 
         reloaded: "AppName = \"{0}\"\n" +
@@ -869,6 +1126,18 @@ var GetDLCInfoFromSteamDB = {
 };
 
 // FUNCTIONS
+if (!String.prototype.repeat) {
+
+    String.prototype.repeat = function (n) {
+
+        n = (n || 1) + 1;
+
+        return Array(n).join(this);
+
+    }
+
+}
+
 function sprintf(str) {
 
     var args = Array.prototype.slice.call(arguments, 1);
