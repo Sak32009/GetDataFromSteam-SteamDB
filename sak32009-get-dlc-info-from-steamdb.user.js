@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          1.8.4
+// @version          1.9.0
 // @license          MIT
 // @homepage         https://github.com/Sak32009/GetDLCInfoFromSteamDB
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -23,7 +23,8 @@ var GetDLCInfoFromSteamDB = {
     // STEAMDB
     steamdb: {
         dlcs: [],
-        format: [],
+        dlcsTot: 0,
+        format: {},
         config_exe: "",
         config_arg: "",
         appid: "",
@@ -63,6 +64,8 @@ var GetDLCInfoFromSteamDB = {
             GetDLCInfoFromSteamDB.createOptionsWrapper();
             // LOAD OPTIONS WRAPPER
             GetDLCInfoFromSteamDB.loadOptionsWrapper();
+            // LOAD CUSTOM FORMAT
+            GetDLCInfoFromSteamDB.loadCustomFormat();
             // CREATE OPTIONS EVENTS
             GetDLCInfoFromSteamDB.createOptionsEvents();
             // LOAD URL OPTIONS
@@ -90,6 +93,8 @@ var GetDLCInfoFromSteamDB = {
             GetDLCInfoFromSteamDB.steamdb.dlcs[dlc_appid] = dlc_appid_name;
 
         }
+
+        GetDLCInfoFromSteamDB.steamdb.dlcsTot = i;
 
         var $config = $("#config > table:nth-of-type(1) tr:nth-of-type(1)");
         GetDLCInfoFromSteamDB.steamdb.config_exe = $.trim($config.find("td:nth-of-type(2)").text());
@@ -136,6 +141,10 @@ var GetDLCInfoFromSteamDB = {
                 "border-bottom": "0"
             },
             // NAV TABS
+            "#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs.border": {
+                "border-bottom": "1px solid #ddd",
+                "margin-bottom": "15px"
+            },
             "#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs-link": {
                 "display": "inline-block",
                 "padding": "8px 15px",
@@ -267,6 +276,7 @@ var GetDLCInfoFromSteamDB = {
             value: "revolt",
             "data-file": "revolt_dlc_list.ini"
         }).text("REVOLT").appendTo(wrapper_select);
+        $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
         wrapper_select.appendTo(wrapper_buttons);
 
         // ..... SAVE SELECTION
@@ -300,12 +310,12 @@ var GetDLCInfoFromSteamDB = {
         $( //
             "<li>" +
             "<form method='post' action='http://cs.rin.ru/forum/search.php'>\n" +
-            "	<input name='keywords' value='" + GetDLCInfoFromSteamDB.steamdb.appid_name + "' hidden type='text'>" +
-            "	<button class='btn btn-sm' type='submit'><img src=' data:image/png;base64,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' style='margin-top:-2px'> CS.RIN.RU " + GetDLCInfoFromSteamDB.steamdb.appid_name + "</button>" +
-            "	<input value='10' name='fid[]' type='hidden'>" +
-            "	<input name='sr' value='topics' type='hidden'>" +
-            "	<input name='terms' value='any' type='hidden'>" +
-            "	<input value='titleonly' name='sf' type='hidden'>" +
+            "    <input name='keywords' value='" + GetDLCInfoFromSteamDB.steamdb.appid_name + "' hidden type='text'>" +
+            "    <button class='btn btn-sm' type='submit'><img src=' data:image/png;base64,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' style='margin-top:-2px'> CS.RIN.RU " + GetDLCInfoFromSteamDB.steamdb.appid_name + "</button>" +
+            "    <input value='10' name='fid[]' type='hidden'>" +
+            "    <input name='sr' value='topics' type='hidden'>" +
+            "    <input name='terms' value='any' type='hidden'>" +
+            "    <input value='titleonly' name='sf' type='hidden'>" +
             "</form>" +
             "</li>"
             //
@@ -377,8 +387,10 @@ var GetDLCInfoFromSteamDB = {
             "text-align": "center"
         }).html(GetDLCInfoFromSteamDB.script.name + " <small>by " + GetDLCInfoFromSteamDB.script.author + " v" + GetDLCInfoFromSteamDB.script.version + "</small>").appendTo(GetDLCInfoFromSteamDBOptions);
 
+        var td_dlcs = GetDLCInfoFromSteamDB.dlcEach("{0}, ");
+        td_dlcs = td_dlcs.substring(0, td_dlcs.length - 2);
+
         $( //
-            "<h2>Userscript</h2>" +
             "<table class='table table-bordered table-fixed'>" +
             "    <tbody>" +
             "        <tr>" +
@@ -390,213 +402,12 @@ var GetDLCInfoFromSteamDB = {
             "            <td><a href='" + GetDLCInfoFromSteamDB.script.support + "' target='_blank'>CS.RIN.RU</a></td>" +
             "        </tr>" +
             "        <tr>" +
-            "            <td>Contributor</td>" +
+            "            <td>Contributor(s)</td>" +
             "            <td>" + GetDLCInfoFromSteamDB.script.contributor + "</td>" +
             "        </tr>" +
             "    </tbody>" +
             "</table>" +
-            "<h2>Global Options<button class='btn btn-sm pull-right' type='button' id='GetDLCInfoFromSteamDB_resetOptions'>Reset All Options</button></h2>" +
-            "<form id='GetDLCInfoFromSteamDB_submit_options'>" +
-            "    <table class='table table-bordered table-fixed'>" +
-            "        <thead>" +
-            "            <tr>" +
-            "                <th>Description</th>" +
-            "                <th>Input</th>" +
-            "            </tr>" +
-            "        </thead>" +
-            "        <tbody>" +
-            "            <tr>" +
-            "                <td>Username</td>" +
-            "                <td><input type='text' class='input-block' name='username' placeholder='....'></td>" +
-            "            </tr>" +
-            "            <tr>" +
-            "                <td>Auto downloading file .INI when you click Get DLC List</td>" +
-            "                <td><input type='checkbox' name='auto_download'></td>" +
-            "            </tr>" +
-            "            <tr>" +
-            "                <td>Save the last selection of the format</td>" +
-            "                <td><input type='checkbox' name='save_selection'></td>" +
-            "            </tr>" +
-            "        </tbody>" +
-            "    </table>" +
-            "    <button class='btn btn-primary btn-sm input-block' type='submit'>Save Options</button>" +
-            "</form>" +
-            "<h2>Specific Options</h2>" +
-            "<div id='GetDLCInfoFromSteamDB_nav_tabs'>" +
-            "    <div class='nav-tabs'>" +
-            "        <div class='nav-tabs-link selected' data-target='#tab_creamapi_options'>CreamAPI Options</div>" +
-            "        <div class='nav-tabs-link' data-target='#tab_lumaemu_options'>LumaEmu Options</div>" +
-            "    </div>" +
-            "    <div class='nav-tabs-content'>" +
-            "    <div class='nav-tabs-pane selected' id='tab_creamapi_options'>" +
-            "        <form id='GetDLCInfoFromSteamDB_submit_options'>" +
-            "            <table class='table table-bordered table-fixed'>" +
-            "                <thead>" +
-            "                    <tr>" +
-            "                        <th>Description</th>" +
-            "                        <th>Input</th>" +
-            "                    </tr>" +
-            "                </thead>" +
-            "                <tbody>" +
-            "                    <tr>" +
-            "                        <td>Enable/disable automatic DLC unlock</td>" +
-            "                        <td><input type='checkbox' name='creamapi_unlock_all'></td>" +
-            "                    </tr>" +
-            "                    <tr>" +
-            "                        <td>Original Valve's steam_api.dll</td>" +
-            "                        <td><input type='text' class='input-block' name='creamapi_orgapi' placeholder='steam_api_o.dll'></td>" +
-            "                    </tr>" +
-            "                    <tr>" +
-            "                        <td>Original Valve's steam_api64.dll</td>" +
-            "                        <td><input type='text' class='input-block' name='creamapi_orgapi64' placeholder='steam_api64_o.dll'></td>" +
-            "                    </tr>" +
-            "                    <tr>" +
-            "                        <td>Enable/disable extra protection bypasser</td>" +
-            "                        <td><input type='checkbox' name='creamapi_extraprotection'></td>" +
-            "                    </tr>" +
-            "                    <tr>" +
-            "                        <td>Enable/disable logging of the DLC functions</td>" +
-            "                        <td><input type='checkbox' name='creamapi_log'></td>" +
-            "                    </tr>" +
-            "                </tbody>" +
-            "            </table>" +
-            "            <button class='btn btn-primary btn-sm input-block' type='submit'>Save Options CreamAPI</button>" +
-            "        </form>" +
-            "    </div>" +
-            "    <div class='nav-tabs-pane' id='tab_lumaemu_options'>" +
-            "        <form id='GetDLCInfoFromSteamDB_submit_options'>" +
-            "            <table class='table table-bordered table-fixed'>" +
-            "                <thead>" +
-            "                    <tr>" +
-            "                        <th>Description</th>" +
-            "                        <th>Input</th>" +
-            "                    </tr>" +
-            "                </thead>" +
-            "                <tbody>" +
-            "                    <tr>" +
-            "                        <td>Offline/Online mode Steam</td>" +
-            "                        <td>" +
-            "                            <select class='form-control input-block' name='lumaemu_offline'>" +
-            "                                <option value='0' selected>Online (Default)</option>" +
-            "                                <option value='1'>Offline</option>" +
-            "                            </select>" +
-            "                        </td>" +
-            "                    </tr>" +
-            "                    <tr>" +
-            "                        <td>OpenNameChanger</td>" +
-            "                        <td>" +
-            "                            <select class='form-control input-block' name='lumaemu_opennamechanger'>" +
-            "                                <option value='0' selected>Disabled (Default)</option>" +
-            "                                <option value='1'>Activated</option>" +
-            "                            </select>" +
-            "                        </td>" +
-            "                    </tr>" +
-            "                    <tr>" +
-            "                        <td>GameLanguage</td>" +
-            "                        <td><input type='text' class='input-block' name='lumaemu_gamelanguage' placeholder='english'></td>" +
-            "                    </tr>" +
-            "                    <tr>" +
-            "                        <td>LogFile</td>" +
-            "                        <td>" +
-            "                            <select class='form-control input-block' name='lumaemu_logfile'>" +
-            "                                <option value='0'>Disabled</option>" +
-            "                                <option value='1' selected>Activated (Default)</option>" +
-            "                            </select>" +
-            "                        </td>" +
-            "                    </tr>" +
-            "                    <tr>" +
-            "                        <td>EnableOverlay</td>" +
-            "                        <td>" +
-            "                            <select class='form-control input-block' name='lumaemu_enableoverlay'>" +
-            "                                <option value='0'>Disabled</option>" +
-            "                                <option value='1' selected>Activated (Default)</option>" +
-            "                            </select>" +
-            "                        </td>" +
-            "                    </tr>" +
-            "                    <tr>" +
-            "                        <td>Save</td>" +
-            "                        <td>" +
-            "                            <select class='form-control input-block' name='lumaemu_save'>" +
-            "                                <option value='1' selected>Will save both (Default)</option>" +
-            "                                <option value='2'>Will save both, achievements</option>" +
-            "                                <option value='3'>Will save both, achievements, stats</option>" +
-            "                            </select>" +
-            "                        </td>" +
-            "                    </tr>" +
-            "                    <tr>" +
-            "                        <td>BlockLumaEmu</td>" +
-            "                        <td>" +
-            "                            <select class='form-control input-block' name='lumaemu_blocklumaemu'>" +
-            "                                <option value='0' selected>Disabled (Default)</option>" +
-            "                                <option value='1'>Activated</option>" +
-            "                            </select>" +
-            "                        </td>" +
-            "                    </tr>" +
-            "                    <tr>" +
-            "                        <td>BlockLegitSteam</td>" +
-            "                        <td>" +
-            "                            <select class='form-control input-block' name='lumaemu_blocklegitsteam'>" +
-            "                                <option value='0' selected>Disabled (Default)</option>" +
-            "                                <option value='1'>Activated</option>" +
-            "                            </select>" +
-            "                        </td>" +
-            "                    </tr>" +
-            "                    <tr>" +
-            "                        <td>BlockSmartSteamEmu</td>" +
-            "                        <td>" +
-            "                            <select class='form-control input-block' name='lumaemu_blocksmartsteamemu'>" +
-            "                                <option value='0' selected>Disabled (Default)</option>" +
-            "                                <option value='1'>Activated</option>" +
-            "                            </select>" +
-            "                        </td>" +
-            "                    </tr>" +
-            "                    <tr>" +
-            "                        <td>BlockVACBannedAccounts</td>" +
-            "                        <td>" +
-            "                            <select class='form-control input-block' name='lumaemu_blockVACbannedaccounts'>" +
-            "                                <option value='0'>Disabled</option>" +
-            "                                <option value='1' selected>Activated (Default)</option>" +
-            "                            </select>" +
-            "                        </td>" +
-            "                    </tr>" +
-            "                    <tr>" +
-            "                        <td>BlockUnknownClient</td>" +
-            "                        <td>" +
-            "                            <select class='form-control input-block' name='lumaemu_blockunknownclient'>" +
-            "                                <option value='0'>Disabled</option>" +
-            "                                <option value='1' selected>Activated (Default)</option>" +
-            "                            </select>" +
-            "                        </td>" +
-            "                    </tr>" +
-            "                    <tr>" +
-            "                        <td>SaveInCustomPath</td>" +
-            "                        <td>" +
-            "                            <select class='form-control input-block' name='lumaemu_saveincustompath'>" +
-            "                                <option value='0' selected>Disabled (Default)</option>" +
-            "                                <option value='1'>Activated</option>" +
-            "                            </select>" +
-            "                        </td>" +
-            "                    </tr>" +
-            "                    <tr>" +
-            "                        <td>Path</td>" +
-            "                        <td><input type='text' class='input-block' name='lumaemu_path' placeholder='....'></td>" +
-            "                    </tr>" +
-            "                    <tr>" +
-            "                        <td>LumaEmuClientDll</td>" +
-            "                        <td><input type='text' class='input-block' name='lumaemu_lumaemuclientDll' placeholder='steamclient.dll'></td>" +
-            "                    </tr>" +
-            "                    <tr>" +
-            "                        <td>LumaEmuClientDll64</td>" +
-            "                        <td><input type='text' class='input-block' name='lumaemu_lumaemuclientDll64' placeholder='steamclient64.dll'></td>" +
-            "                    </tr>" +
-            "                </tbody>" +
-            "            </table>" +
-            "            <button class='btn btn-primary btn-sm input-block' type='submit'>Save Options LumaEmu</button>" +
-            "        </form>" +
-            "    </div>" +
-            "</div>" +
-            "</div>" +
-            "<h2>Infos Extracted</h2>" +
+            "<h2><span class='mega-octicon octicon-info'></span> Infos Extracted</h2>" +
             "<table class='table table-bordered table-fixed'>" +
             "    <thead>" +
             "        <tr>" +
@@ -615,7 +426,11 @@ var GetDLCInfoFromSteamDB = {
             "        </tr>" +
             "        <tr>" +
             "            <td>DLCs</td>" +
-            "            <td>" + GetDLCInfoFromSteamDB.dlcEach("{0}, ") + "</td>" +
+            "            <td>" + td_dlcs + "</td>" +
+            "        </tr>" +
+            "        <tr>" +
+            "            <td>Total DLCs</td>" +
+            "            <td>" + GetDLCInfoFromSteamDB.steamdb.dlcsTot + "</td>" +
             "        </tr>" +
             "    </tbody>" +
             "    <thead>" +
@@ -630,7 +445,263 @@ var GetDLCInfoFromSteamDB = {
             "            <td>" + GetDLCInfoFromSteamDB.steamdb.config_arg + "</td>" +
             "        </tr>" +
             "    </tbody>" +
-            "</table>"
+            "</table>" +
+            "<div id='GetDLCInfoFromSteamDB_nav_tabs'>" +
+            "    <div class='nav-tabs border'>" +
+            "        <div class='nav-tabs-link selected' data-target='#tab_options'><span class='octicon octicon-settings'></span> Options</div>" +
+            "        <div class='nav-tabs-link' data-target='#tab_custom_format'><span class='octicon octicon-list-ordered'></span> Custom Format</div>" +
+            "    </div>" +
+            "    <div class='nav-tabs-content'>" +
+            "        <div class='nav-tabs-pane selected' id='tab_options'>" +
+            "            <h2>Global Options<button class='btn btn-sm pull-right' type='button' id='GetDLCInfoFromSteamDB_resetOptions'>Reset All Options</button></h2>" +
+            "            <form id='GetDLCInfoFromSteamDB_submit_options'>" +
+            "                <table class='table table-bordered table-fixed'>" +
+            "                    <thead>" +
+            "                        <tr>" +
+            "                            <th>Description</th>" +
+            "                            <th>Input</th>" +
+            "                        </tr>" +
+            "                    </thead>" +
+            "                    <tbody>" +
+            "                        <tr>" +
+            "                            <td>Username</td>" +
+            "                            <td><input type='text' class='input-block' name='username' placeholder='....'></td>" +
+            "                        </tr>" +
+            "                        <tr>" +
+            "                            <td>Auto downloading file .INI when you click Get DLC List</td>" +
+            "                            <td><input type='checkbox' name='auto_download'></td>" +
+            "                        </tr>" +
+            "                        <tr>" +
+            "                            <td>Save the last selection of the format</td>" +
+            "                            <td><input type='checkbox' name='save_selection'></td>" +
+            "                        </tr>" +
+            "                    </tbody>" +
+            "                </table>" +
+            "                <button class='btn btn-primary btn-sm input-block' type='submit'>Save Options</button>" +
+            "            </form>" +
+            "            <h2>Specific Options</h2>" +
+            "            <div id='GetDLCInfoFromSteamDB_nav_tabs'>" +
+            "                <div class='nav-tabs'>" +
+            "                    <div class='nav-tabs-link selected' data-target='#tab_creamapi_options'>CreamAPI Options</div>" +
+            "                    <div class='nav-tabs-link' data-target='#tab_lumaemu_options'>LumaEmu Options</div>" +
+            "                </div>" +
+            "                <div class='nav-tabs-content'>" +
+            "                    <div class='nav-tabs-pane selected' id='tab_creamapi_options'>" +
+            "                        <form id='GetDLCInfoFromSteamDB_submit_options'>" +
+            "                            <table class='table table-bordered table-fixed'>" +
+            "                                <thead>" +
+            "                                    <tr>" +
+            "                                        <th>Description</th>" +
+            "                                        <th>Input</th>" +
+            "                                    </tr>" +
+            "                                </thead>" +
+            "                                <tbody>" +
+            "                                    <tr>" +
+            "                                        <td>Enable/disable automatic DLC unlock</td>" +
+            "                                        <td><input type='checkbox' name='creamapi_unlock_all'></td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>Original Valve's steam_api.dll</td>" +
+            "                                        <td><input type='text' class='input-block' name='creamapi_orgapi' placeholder='steam_api_o.dll'></td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>Original Valve's steam_api64.dll</td>" +
+            "                                        <td><input type='text' class='input-block' name='creamapi_orgapi64' placeholder='steam_api64_o.dll'></td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>Enable/disable extra protection bypasser</td>" +
+            "                                        <td><input type='checkbox' name='creamapi_extraprotection'></td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>Enable/disable logging of the DLC functions</td>" +
+            "                                        <td><input type='checkbox' name='creamapi_log'></td>" +
+            "                                    </tr>" +
+            "                                </tbody>" +
+            "                            </table>" +
+            "                            <button class='btn btn-primary btn-sm input-block' type='submit'>Save Options CreamAPI</button>" +
+            "                        </form>" +
+            "                    </div>" +
+            "                    <div class='nav-tabs-pane' id='tab_lumaemu_options'>" +
+            "                        <form id='GetDLCInfoFromSteamDB_submit_options'>" +
+            "                            <table class='table table-bordered table-fixed'>" +
+            "                                <thead>" +
+            "                                    <tr>" +
+            "                                        <th>Description</th>" +
+            "                                        <th>Input</th>" +
+            "                                    </tr>" +
+            "                                </thead>" +
+            "                                <tbody>" +
+            "                                    <tr>" +
+            "                                        <td>Offline/Online mode Steam</td>" +
+            "                                        <td>" +
+            "                                            <select class='form-control input-block' name='lumaemu_offline'>" +
+            "                                                <option value='0' selected>Online (Default)</option>" +
+            "                                                <option value='1'>Offline</option>" +
+            "                                            </select>" +
+            "                                        </td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>OpenNameChanger</td>" +
+            "                                        <td>" +
+            "                                            <select class='form-control input-block' name='lumaemu_opennamechanger'>" +
+            "                                                <option value='0' selected>Disabled (Default)</option>" +
+            "                                                <option value='1'>Activated</option>" +
+            "                                            </select>" +
+            "                                        </td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>GameLanguage</td>" +
+            "                                        <td><input type='text' class='input-block' name='lumaemu_gamelanguage' placeholder='english'></td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>LogFile</td>" +
+            "                                        <td>" +
+            "                                            <select class='form-control input-block' name='lumaemu_logfile'>" +
+            "                                                <option value='0'>Disabled</option>" +
+            "                                                <option value='1' selected>Activated (Default)</option>" +
+            "                                            </select>" +
+            "                                        </td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>EnableOverlay</td>" +
+            "                                        <td>" +
+            "                                            <select class='form-control input-block' name='lumaemu_enableoverlay'>" +
+            "                                                <option value='0'>Disabled</option>" +
+            "                                                <option value='1' selected>Activated (Default)</option>" +
+            "                                            </select>" +
+            "                                        </td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>Save</td>" +
+            "                                        <td>" +
+            "                                            <select class='form-control input-block' name='lumaemu_save'>" +
+            "                                                <option value='1' selected>Will save both (Default)</option>" +
+            "                                                <option value='2'>Will save both, achievements</option>" +
+            "                                                <option value='3'>Will save both, achievements, stats</option>" +
+            "                                            </select>" +
+            "                                        </td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>BlockLumaEmu</td>" +
+            "                                        <td>" +
+            "                                            <select class='form-control input-block' name='lumaemu_blocklumaemu'>" +
+            "                                                <option value='0' selected>Disabled (Default)</option>" +
+            "                                                <option value='1'>Activated</option>" +
+            "                                            </select>" +
+            "                                        </td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>BlockLegitSteam</td>" +
+            "                                        <td>" +
+            "                                            <select class='form-control input-block' name='lumaemu_blocklegitsteam'>" +
+            "                                                <option value='0' selected>Disabled (Default)</option>" +
+            "                                                <option value='1'>Activated</option>" +
+            "                                            </select>" +
+            "                                        </td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>BlockSmartSteamEmu</td>" +
+            "                                        <td>" +
+            "                                            <select class='form-control input-block' name='lumaemu_blocksmartsteamemu'>" +
+            "                                                <option value='0' selected>Disabled (Default)</option>" +
+            "                                                <option value='1'>Activated</option>" +
+            "                                            </select>" +
+            "                                        </td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>BlockVACBannedAccounts</td>" +
+            "                                        <td>" +
+            "                                            <select class='form-control input-block' name='lumaemu_blockVACbannedaccounts'>" +
+            "                                                <option value='0'>Disabled</option>" +
+            "                                                <option value='1' selected>Activated (Default)</option>" +
+            "                                            </select>" +
+            "                                        </td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>BlockUnknownClient</td>" +
+            "                                        <td>" +
+            "                                            <select class='form-control input-block' name='lumaemu_blockunknownclient'>" +
+            "                                                <option value='0'>Disabled</option>" +
+            "                                                <option value='1' selected>Activated (Default)</option>" +
+            "                                            </select>" +
+            "                                        </td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>SaveInCustomPath</td>" +
+            "                                        <td>" +
+            "                                            <select class='form-control input-block' name='lumaemu_saveincustompath'>" +
+            "                                                <option value='0' selected>Disabled (Default)</option>" +
+            "                                                <option value='1'>Activated</option>" +
+            "                                            </select>" +
+            "                                        </td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>Path</td>" +
+            "                                        <td><input type='text' class='input-block' name='lumaemu_path' placeholder='....'></td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>LumaEmuClientDll</td>" +
+            "                                        <td><input type='text' class='input-block' name='lumaemu_lumaemuclientDll' placeholder='steamclient.dll'></td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>LumaEmuClientDll64</td>" +
+            "                                        <td><input type='text' class='input-block' name='lumaemu_lumaemuclientDll64' placeholder='steamclient64.dll'></td>" +
+            "                                    </tr>" +
+            "                                </tbody>" +
+            "                            </table>" +
+            "                            <button class='btn btn-primary btn-sm input-block' type='submit'>Save Options LumaEmu</button>" +
+            "                        </form>" +
+            "                    </div>" +
+            "                </div>" +
+            "            </div>" +
+            "        </div>" +
+            "        <div class='nav-tabs-pane' id='tab_custom_format'>" +
+            "            <div class='text-center'>" +
+            "                <p>Create your own custom format!</p>" +
+            "                <ul>" +
+            "                    <li><b>{0}</b> = DLC APPID</li>" +
+            "                    <li><b>{1}</b> = DLC NAME</li>" +
+            "                    <li><b>{2}</b> = DLC INDEX</li>" +
+            "                </ul>" +
+            "                <p>With this format \"<b>{2} = {0} // {1}</b>\" for example, the output is this \"<b>DLC_INDEX = DLC_APPID // DLC_NAME</b>\"</p>" +
+            "            </div>" +
+            "            <h2>Add Custom Format</h2>" +
+            "            <form id='GetDLCInfoFromSteamDB_submit_add_custom_format'>" +
+            "                <table class='table table-bordered table-fixed'>" +
+            "                    <thead>" +
+            "                        <tr>" +
+            "                            <th>Description</th>" +
+            "                            <th>Input</th>" +
+            "                        </tr>" +
+            "                    </thead>" +
+            "                    <tbody>" +
+            "                        <tr>" +
+            "                            <td>Name Format</td>" +
+            "                            <td><input type='text' class='input-block' name='custom_format_name' placeholder='Custom Format 1'></td>" +
+            "                        </tr>" +
+            "                        <tr>" +
+            "                            <td>Format</td>" +
+            "                            <td><input type='text' class='input-block' name='custom_format_val' placeholder='{2} = {0} // {1}'></td>" +
+            "                        </tr>" +
+            "                    </tbody>" +
+            "                </table>" +
+            "                <button class='btn btn-primary btn-sm input-block' type='submit'>Save Format</button>" +
+            "            </form>" +
+            "            <h2>List of Custom Format</h2>" +
+            "            <table id='GetDLCInfoFromSteamDB_list_custom_format' class='table table-bordered table-fixed'>" +
+            "                <thead>" +
+            "                    <tr>" +
+            "                        <th>Name Format</th>" +
+            "                        <th>Format</th>" +
+            "                        <th>Settings</th>" +
+            "                    </tr>" +
+            "                </thead>" +
+            "                <tbody>" +
+            "                </tbody>" +
+            "            </table>" +
+            "        </div>" +
+            "    </div>" +
+            "</div>"
             //
         ).appendTo(GetDLCInfoFromSteamDBOptions);
 
@@ -669,6 +740,62 @@ var GetDLCInfoFromSteamDB = {
             }
 
         });
+
+    },
+
+    // LOAD CUSTOM FORMAT
+    loadCustomFormat: function () {
+
+        var result = "";
+        var format_all = Format.all();
+        var wrapper_select = $("#GetDLCInfoFromSteamDB_select");
+
+        wrapper_select.find("option[data-custom-format-id]").remove();
+
+        for (var format_key in GetDLCInfoFromSteamDB.steamdb.format) {
+
+            if (format_key.substring(0, 14) == "custom_format_") {
+
+                delete GetDLCInfoFromSteamDB.steamdb.format[format_key];
+
+            }
+
+        }
+
+        if (format_all !== false) {
+
+            for (var uniqueid in format_all) {
+
+                if (format_all.hasOwnProperty(uniqueid)) {
+
+                    var value = format_all[uniqueid];
+                    var name = value.name;
+                    var val = value.value;
+
+                    result += "<tr>" +
+                        "    <td class='text-center'>" + name + "</td>" +
+                        "    <td class='text-center'>" + val + "</td>" +
+                        "    <td class='text-center'><button type='button' class='btn btn-sm btn-danger' id='GetDLCInfoFromSteamDB_list_custom_format_remove' data-id='" + uniqueid + "'>Remove</button></td>" +
+                        "</tr>";
+
+                    // ADD OPTION
+                    $("<option>").attr({
+                        value: uniqueid,
+                        "data-file": uniqueid + ".ini",
+                        "data-custom-format-id": uniqueid
+                    }).text(name).appendTo(wrapper_select);
+
+                    // ADD FORMAT
+                    GetDLCInfoFromSteamDB.steamdb.format[uniqueid] = GetDLCInfoFromSteamDB.dlcEach(val + "\n");
+
+                }
+
+            }
+
+            // ADD TO TABLE
+            $("#GetDLCInfoFromSteamDB_list_custom_format tbody").html(result);
+
+        }
 
     },
 
@@ -739,6 +866,57 @@ var GetDLCInfoFromSteamDB = {
 
         });
 
+        // ADD CUSTOM FORMAT
+        $("form#GetDLCInfoFromSteamDB_submit_add_custom_format").submit(function (e) {
+
+            e.preventDefault();
+
+            var $this = $(this);
+
+            var custom_format_name = $this.find("input[name='custom_format_name']");
+            var custom_format_val = $this.find("input[name='custom_format_val']");
+            var custom_format_namev = custom_format_name.val();
+            var custom_format_valv = custom_format_val.val();
+
+            if (custom_format_namev.length > 0 && custom_format_valv.length > 0) {
+
+                // RESET INPUT
+                custom_format_name.val("");
+                custom_format_val.val("");
+
+                // ADD FORMAT
+                Format.add(custom_format_namev, custom_format_valv);
+
+                // LOAD CUSTOM FORMAT
+                GetDLCInfoFromSteamDB.loadCustomFormat();
+
+                alert("Added!");
+
+            } else {
+
+                alert("Input(s) empty");
+
+            }
+
+        });
+
+        // REMOVE CUSTOM FORMAT
+        $(document).on("click", "button#GetDLCInfoFromSteamDB_list_custom_format_remove", function (e) {
+
+            e.preventDefault();
+
+            var data_id = $(this).attr("data-id");
+
+            // REMOVE FORMAT
+            Format.remove(data_id);
+
+            // LOAD CUSTOM FORMAT
+            GetDLCInfoFromSteamDB.loadCustomFormat();
+
+            alert("Removed!");
+
+        });
+
     },
 
     // LOAD URL OPTIONS
@@ -761,7 +939,7 @@ var GetDLCInfoFromSteamDB = {
         GetDLCInfoFromSteamDB.steamdb.format.codex = GetDLCInfoFromSteamDB.steamdb.format.smartsteamemu_o = GetDLCInfoFromSteamDB.steamdb.format.ali213 = GetDLCInfoFromSteamDB.dlcEach("{0} = \"{1}\"\n");
 
         // CODEX (DLC00000, DLCName)
-        GetDLCInfoFromSteamDB.steamdb.format.codex_t = GetDLCInfoFromSteamDB.dlcEach("DLC{2} = {0}\nDLCName{2} = \"{1}\"\n", false, true, false, 5);
+        GetDLCInfoFromSteamDB.steamdb.format.codex_t = GetDLCInfoFromSteamDB.dlcEach("DLC{2} = {0}\nDLCName{2} = \"{1}\"\n", false, true, 5);
 
         // SMARTSTEAMEMU (FULL INI)
         GetDLCInfoFromSteamDB.steamdb.format.smartsteamemu = sprintf(
@@ -828,35 +1006,30 @@ var GetDLCInfoFromSteamDB = {
             GetDLCInfoFromSteamDB.dlcEach("{2} = \"{1}\"\n"));
 
         // RELOADED
-        var reloaded_dedlcs = GetDLCInfoFromSteamDB.dlcEach("DLC{2} = {0}\nDLCName{2} = \"{1}\"\n", true, true, true);
-
         GetDLCInfoFromSteamDB.steamdb.format.reloaded = sprintf(
             GetDLCInfoFromSteamDB.formats.reloaded,
             GetDLCInfoFromSteamDB.steamdb.appid_name,
-            reloaded_dedlcs[0],
-            reloaded_dedlcs[1]);
+            GetDLCInfoFromSteamDB.dlcEach("DLC{2} = {0}\nDLCName{2} = \"{1}\"\n", true, true),
+            GetDLCInfoFromSteamDB.steamdb.dlcsTot);
 
         // SKIDROW
-        GetDLCInfoFromSteamDB.steamdb.format.skidrow = GetDLCInfoFromSteamDB.dlcEach("{0}\n");
+        GetDLCInfoFromSteamDB.steamdb.format.skidrow = GetDLCInfoFromSteamDB.dlcEach("; {1}\n{0}\n");
 
         // 3DMGAME
-        GetDLCInfoFromSteamDB.steamdb.format['3dmgame'] = GetDLCInfoFromSteamDB.dlcEach("DLC{2} = {0}\n", true, true);
+        GetDLCInfoFromSteamDB.steamdb.format['3dmgame'] = GetDLCInfoFromSteamDB.dlcEach("; {1}\nDLC{2} = {0}\n", true, true);
 
         // REVOLT
-        var revolt_dedlcs = GetDLCInfoFromSteamDB.dlcEach("; {1}\n{2} = {0}\n", false, false, true);
-        var revolt_dedlcs_1 = GetDLCInfoFromSteamDB.dlcEach("; {1}\n{0} = true\n");
-
         GetDLCInfoFromSteamDB.steamdb.format.revolt = sprintf(
             GetDLCInfoFromSteamDB.formats.revolt,
             GetDLCInfoFromSteamDB.steamdb.appid,
-            revolt_dedlcs[1],
-            revolt_dedlcs[0],
-            revolt_dedlcs_1);
+            GetDLCInfoFromSteamDB.steamdb.dlcsTot,
+            GetDLCInfoFromSteamDB.dlcEach("; {1}\n{2} = {0}\n"),
+            GetDLCInfoFromSteamDB.dlcEach("; {1}\n{0} = true\n"));
 
     },
 
     // DLC EACH
-    dlcEach: function (string, from_zero, format_index, return_index, format_index_zeros) {
+    dlcEach: function (string, from_zero, format_index, format_index_zeros) {
 
         var result = "";
         var index = from_zero ? 0 : -1;
@@ -876,7 +1049,7 @@ var GetDLCInfoFromSteamDB = {
 
         }
 
-        return return_index ? [result, index] : result;
+        return result;
 
     },
 
@@ -1127,13 +1300,23 @@ var GetDLCInfoFromSteamDB = {
             "{1}" +
             "DLCCount = {2}\n",
 
-        revolt: "[DLC]\n" +
-            "; Active only this list of DLCs.\nDefault = false\n" +
-            "; Base DLC AppID.\nDLCEnumBase = {0}\n" +
-            "; Total DLCs.\nDLCEnumCount = {1}\n\n" +
+        revolt: "[DLC]\n\n" +
+            "; Base DLC AppID for enumeration, if not set and AppID is set it uses AppID\n" +
+            "DLCEnumBase = {0}\n\n" +
+            "; number of DLCs enumerated\n" +
+            "DLCEnumCount = {1}\n\n" +
+            "; By default DLC active or not\n" +
+            "; Default value will override all other values, so setting this to true will enable all DLCs!\n" +
+            "Default = false\n\n" +
+            "; List of all DLCs the app should own. Index starts from 0\n" +
+            "; <index> = <appid>\n\n" +
             "{2}" +
-            "\n[Subscriptions]\n" +
-            "; Activate or deactivate DLC manually.\nDefault = false\n\n" +
+            "\n[Subscriptions]\n\n" +
+            "; By default subscribed or not\n" +
+            "; Default value will override all other values, so setting this to true will enable all Subscriptions!\n" +
+            "Default = false\n\n" +
+            "; Manual List\n" +
+            "; <appid> = <true/false>\n\n" +
             "{3}"
 
     }
@@ -1149,7 +1332,7 @@ if (!String.prototype.repeat) {
 
         return Array(n).join(this);
 
-    }
+    };
 
 }
 
@@ -1172,6 +1355,53 @@ var Download = {
     data: function (str) {
 
         return "data:text/plain;charset=utf-8," + encodeURIComponent(str);
+
+    }
+
+};
+
+// FORMAT
+var Format = {
+
+    // GET ALL
+    all: function () {
+
+        var custom_format = Storage.get("custom_format");
+
+        return Storage.check(custom_format) ? JSON.parse(custom_format) : false;
+
+    },
+
+    // ADD FORMAT
+    add: function (name, val) {
+
+        var custom_format = Storage.get("custom_format");
+        var data = Storage.check(custom_format) ? JSON.parse(custom_format) : {};
+        var uniqueid = "custom_format_" + new Date().getTime();
+
+        data[uniqueid] = {
+            "name": name,
+            "value": val
+        };
+
+        Storage.set("custom_format", JSON.stringify(data));
+
+    },
+
+    // REMOVE FORMAT
+    remove: function (uniqueid) {
+
+        var custom_format = Storage.get("custom_format");
+
+        if (Storage.check(custom_format)) {
+
+            var data = JSON.parse(custom_format);
+
+            delete data[uniqueid];
+
+            Storage.set("custom_format", JSON.stringify(data));
+
+        }
 
     }
 
