@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          1.9.0
+// @version          1.9.1
 // @license          MIT
 // @homepage         https://github.com/Sak32009/GetDLCInfoFromSteamDB
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -46,14 +46,14 @@ var GetDLCInfoFromSteamDB = {
     run: function () {
 
         // CHECK
-        var $check = $(".tabbable > .tabnav > .tabnav-tabs > .tabnav-tab[data-target='#dlc']");
+        var $check = $(".tabnav-tab[data-target='#dlc']");
 
         if ($check.length > 0) {
 
             // GET INFO
             GetDLCInfoFromSteamDB.getInfo();
-            // CREATE DLC FORMAT
-            GetDLCInfoFromSteamDB.createDLCFormat();
+            // CREATE DLC FORMATS
+            GetDLCInfoFromSteamDB.createDLCFormats();
             // CREATE STYLE
             GetDLCInfoFromSteamDB.createStyle();
             // CREATE WRAPPER
@@ -66,12 +66,15 @@ var GetDLCInfoFromSteamDB = {
             GetDLCInfoFromSteamDB.loadOptionsWrapper();
             // LOAD CUSTOM FORMAT
             GetDLCInfoFromSteamDB.loadCustomFormat();
-            // CREATE OPTIONS EVENTS
-            GetDLCInfoFromSteamDB.createOptionsEvents();
+            // CREATE EVENTS OPTIONS
+            GetDLCInfoFromSteamDB.createEventsOptions();
             // LOAD URL OPTIONS
             GetDLCInfoFromSteamDB.loadUrlOptions();
 
         }
+
+        // CREATE CS.RIN.RU SEARCH
+        GetDLCInfoFromSteamDB.createCSRINRUSearch();
 
     },
 
@@ -79,10 +82,10 @@ var GetDLCInfoFromSteamDB = {
     getInfo: function () {
 
         GetDLCInfoFromSteamDB.steamdb.appid = $(".scope-app[data-appid]").attr("data-appid");
-        GetDLCInfoFromSteamDB.steamdb.appid_name = $.trim($(".scope-app .pagehead > h1").text());
+        GetDLCInfoFromSteamDB.steamdb.appid_name = $.trim($("td[itemprop='name']").text());
         GetDLCInfoFromSteamDB.steamdb.url = window.location;
 
-        var dlcs = $("#dlc .app[data-appid]");
+        var dlcs = $(".tab-pane#dlc .app[data-appid]");
 
         for (var i = 0; i < dlcs.length; i++) {
 
@@ -96,7 +99,7 @@ var GetDLCInfoFromSteamDB = {
 
         GetDLCInfoFromSteamDB.steamdb.dlcsTot = i;
 
-        var $config = $("#config > table:nth-of-type(1) tr:nth-of-type(1)");
+        var $config = $(".tab-pane#config > table:nth-of-type(1) tbody tr:nth-of-type(1)");
         GetDLCInfoFromSteamDB.steamdb.config_exe = $.trim($config.find("td:nth-of-type(2)").text());
         GetDLCInfoFromSteamDB.steamdb.config_arg = $.trim($config.find("td:nth-of-type(3)").text());
 
@@ -204,46 +207,74 @@ var GetDLCInfoFromSteamDB = {
         $("<textarea>").attr({
             id: "GetDLCInfoFromSteamDB_textarea",
             rows: "20"
-        }).insertAfter("#dlc > h2");
+        }).insertAfter(".tab-pane#dlc > h2");
 
         // WRAPPER BUTTONS
         var wrapper_buttons = $("<div>").attr("id", "GetDLCInfoFromSteamDB_buttons").addClass("pull-right");
 
         // WRAPPER SELECT
         var wrapper_select = $("<select>").attr("id", "GetDLCInfoFromSteamDB_select");
-        var option_sep = "---------------------------------";
+        var option_sep = "---------------------------";
+
+        // LUMAEMU
+        $("<option>").prop("disabled", true).text(option_sep + " v1.9.7").appendTo(wrapper_select);
         $("<option>").attr({
             value: "lumaemu",
             "data-file": "LumaEmu.ini"
-        }).text("LumaEmu (INI v1.9.7)").appendTo(wrapper_select);
+        }).text("LumaEmu (Full INI)").appendTo(wrapper_select);
         $("<option>").attr({
             value: "lumaemu_o",
             "data-file": "lumaemu_dlc_list.ini"
         }).text("LumaEmu (Only DLC Section)").appendTo(wrapper_select);
+
+        // CREAMAPI
+        $("<option>").prop("disabled", true).text(option_sep + " v2.0.0.5").appendTo(wrapper_select);
+        $("<option>").attr({
+            value: "creamAPI",
+            "data-file": "cream_api.ini"
+        }).text("CreamAPI (Full INI)").appendTo(wrapper_select);
+        $("<option>").attr({
+            value: "creamAPI_o",
+            "data-file": "creamapi_dlc_list.ini"
+        }).text("CreamAPI (Only DLC Section)").appendTo(wrapper_select);
+
+        // SMARTSTEAEMU
+        $("<option>").prop("disabled", true).text(option_sep + " v1.4.1").appendTo(wrapper_select);
+        $("<option>").attr({
+            value: "smartsteamemu",
+            "data-file": "SmartSteamEmu.ini"
+        }).text("SmartSteamEmu (Full INI)").appendTo(wrapper_select);
+        $("<option>").attr({
+            value: "smartsteamemu_m",
+            "data-file": "SmartSteamEmu.ini"
+        }).text("SmartSteamEmu (Mini INI)").appendTo(wrapper_select);
+        $("<option>").attr({
+            value: "smartsteamemu_o",
+            "data-file": "smartsteamemu_dlc_list.ini"
+        }).text("SmartSteamEmu (Only DLC Section)").appendTo(wrapper_select);
+
+        // RELOADED
         $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
         $("<option>").attr({
             value: "reloaded",
             "data-file": "reloaded_dlc_list.ini"
         }).text("RELOADED").appendTo(wrapper_select);
-        $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
-        $("<option>").attr({
-            value: "creamAPI",
-            "data-file": "cream_api.ini"
-        }).text("CreamAPI (INI v2.0.0.5)").appendTo(wrapper_select);
-        $("<option>").attr({
-            value: "creamAPI_o",
-            "data-file": "creamapi_dlc_list.ini"
-        }).text("CreamAPI (Only DLC Section)").appendTo(wrapper_select);
+
+        // SKIDROW
         $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
         $("<option>").attr({
             value: "skidrow",
             "data-file": "skidrow_dlc_list.ini"
         }).text("SKIDROW").appendTo(wrapper_select);
+
+        // 3DMGAME
         $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
         $("<option>").attr({
             value: "3dmgame",
             "data-file": "3dmgame_dlc_list.ini"
         }).text("3DMGAME").appendTo(wrapper_select);
+
+        // CODEX
         $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
         $("<option>").attr({
             value: "codex",
@@ -253,29 +284,22 @@ var GetDLCInfoFromSteamDB = {
             value: "codex_t",
             "data-file": "codex_dlc_list.ini"
         }).text("CODEX (DLC00000, DLCName)").appendTo(wrapper_select);
-        $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
-        $("<option>").attr({
-            value: "smartsteamemu",
-            "data-file": "SmartSteamEmu.ini"
-        }).text("SmartSteamEmu (INI v1.4.1)").appendTo(wrapper_select);
-        $("<option>").attr({
-            value: "smartsteamemu_m",
-            "data-file": "SmartSteamEmu.ini"
-        }).text("SmartSteamEmu (Mini-INI v1.4.1)").appendTo(wrapper_select);
-        $("<option>").attr({
-            value: "smartsteamemu_o",
-            "data-file": "smartsteamemu_dlc_list.ini"
-        }).text("SmartSteamEmu (Only DLC Section)").appendTo(wrapper_select);
+
+        // ALI213
         $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
         $("<option>").attr({
             value: "ali213",
             "data-file": "ali213_dlc_list.ini"
         }).text("ALI213").appendTo(wrapper_select);
+
+        // REVOLT
         $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
         $("<option>").attr({
             value: "revolt",
             "data-file": "revolt_dlc_list.ini"
         }).text("REVOLT").appendTo(wrapper_select);
+
+        // CUSTOM FORMAT
         $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
         wrapper_select.appendTo(wrapper_buttons);
 
@@ -304,22 +328,7 @@ var GetDLCInfoFromSteamDB = {
         wrapper_dropdown.appendTo(wrapper_buttons);
 
         // APPEND WRAPPER BUTTONS
-        wrapper_buttons.appendTo("#dlc > h2");
-
-        // CS.RIN.RU SEARCH
-        $( //
-            "<li>" +
-            "<form method='post' action='http://cs.rin.ru/forum/search.php'>\n" +
-            "    <input name='keywords' value='" + GetDLCInfoFromSteamDB.steamdb.appid_name + "' hidden type='text'>" +
-            "    <button class='btn btn-sm' type='submit'><img src=' data:image/png;base64,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' style='margin-top:-2px'> CS.RIN.RU " + GetDLCInfoFromSteamDB.steamdb.appid_name + "</button>" +
-            "    <input value='10' name='fid[]' type='hidden'>" +
-            "    <input name='sr' value='topics' type='hidden'>" +
-            "    <input name='terms' value='any' type='hidden'>" +
-            "    <input value='titleonly' name='sf' type='hidden'>" +
-            "</form>" +
-            "</li>"
-            //
-        ).appendTo(".scope-app .pagehead .pagehead-actions");
+        wrapper_buttons.appendTo(".tab-pane#dlc > h2");
 
     },
 
@@ -327,7 +336,7 @@ var GetDLCInfoFromSteamDB = {
     createEventsWrapper: function () {
 
         // GET DLC LIST SUBMIT
-        $("#GetDLCInfoFromSteamDB_submit").click(function (e) {
+        $("button#GetDLCInfoFromSteamDB_submit").click(function (e) {
 
             e.preventDefault();
 
@@ -343,11 +352,12 @@ var GetDLCInfoFromSteamDB = {
                 "; Format: " + format_title + "\n" +
                 "; AppID: " + GetDLCInfoFromSteamDB.steamdb.appid + "\n" +
                 "; AppID Name: " + GetDLCInfoFromSteamDB.steamdb.appid_name + "\n" +
+                "; Total DLCs: " + GetDLCInfoFromSteamDB.steamdb.dlcsTot + "\n" +
                 "; SteamDB: " + GetDLCInfoFromSteamDB.steamdb.url + "\n" +
                 "; Userscript: " + GetDLCInfoFromSteamDB.script.homepage + "\n" +
                 "; Support: " + GetDLCInfoFromSteamDB.script.support + "\n\n";
 
-            // FORMAT
+            // FORMAT DATA
             result += GetDLCInfoFromSteamDB.steamdb.format[format_name];
 
             // RESULT
@@ -355,17 +365,17 @@ var GetDLCInfoFromSteamDB = {
                 href: Download.data(result),
                 download: format_ini
             });
-            $("#GetDLCInfoFromSteamDB_textarea").css("display", "block").text(result);
-
-            // ..... SAVE SELECTION
-            if (Storage.get("save_selection") == "true") {
-                Storage.set("save_selection_value", format_name);
-            }
-            // .....
+            $("#GetDLCInfoFromSteamDB_textarea").text(result).show();
 
             // ..... AUTO DOWNLOAD
             if (Storage.get("auto_download") == "true") {
                 document.getElementById("GetDLCInfoFromSteamDB_download").click();
+            }
+            // .....
+
+            // ..... SAVE SELECTION
+            if (Storage.get("save_selection") == "true") {
+                Storage.set("save_selection_value", format_name);
             }
             // .....
 
@@ -376,21 +386,20 @@ var GetDLCInfoFromSteamDB = {
     // CREATE OPTIONS WRAPPER
     createOptionsWrapper: function () {
 
-        // NAV
-        $("<a href='#' data-target='#GetDLCInfoFromSteamDBOptions' class='tabnav-tab'><span class='octicon octicon-gear'></span> Settings DLCs <span class='counter'>!</span></a>").insertAfter(".tabbable > .tabnav > .tabnav-tabs > .tabnav-tab[data-target='#dlc']");
+        // TABNAV-TAB
+        $("<a>").attr({
+            href: "#",
+            "data-target": "#GetDLCInfoFromSteamDBOptions"
+        }).addClass("tabnav-tab").html("<span class='octicon octicon-gear'></span> Settings DLCs <span class='counter'>!</span>").insertAfter(".tabnav-tab[data-target='#dlc']");
+
+        // FAKE TABLE DLC EACH
+        var FakeTableDLCEach = GetDLCInfoFromSteamDB.dlcEach("{0}, ");
+        FakeTableDLCEach = FakeTableDLCEach.substring(0, FakeTableDLCEach.length - 2);
 
         // CONTENT
-        var GetDLCInfoFromSteamDBOptions = $("<div>").attr("id", "GetDLCInfoFromSteamDBOptions").addClass("tab-pane");
-
-        $("<h2>").css({
-            "padding-bottom": "5px",
-            "text-align": "center"
-        }).html(GetDLCInfoFromSteamDB.script.name + " <small>by " + GetDLCInfoFromSteamDB.script.author + " v" + GetDLCInfoFromSteamDB.script.version + "</small>").appendTo(GetDLCInfoFromSteamDBOptions);
-
-        var td_dlcs = GetDLCInfoFromSteamDB.dlcEach("{0}, ");
-        td_dlcs = td_dlcs.substring(0, td_dlcs.length - 2);
-
-        $( //
+        $("<div>").attr("id", "GetDLCInfoFromSteamDBOptions").addClass("tab-pane").html(
+            //
+            "<h2 class='text-center'>" + GetDLCInfoFromSteamDB.script.name + " <small>by " + GetDLCInfoFromSteamDB.script.author + " v" + GetDLCInfoFromSteamDB.script.version + "</small></h2>" +
             "<table class='table table-bordered table-fixed'>" +
             "    <tbody>" +
             "        <tr>" +
@@ -426,7 +435,7 @@ var GetDLCInfoFromSteamDB = {
             "        </tr>" +
             "        <tr>" +
             "            <td>DLCs</td>" +
-            "            <td>" + td_dlcs + "</td>" +
+            "            <td>" + FakeTableDLCEach + "</td>" +
             "        </tr>" +
             "        <tr>" +
             "            <td>Total DLCs</td>" +
@@ -703,9 +712,7 @@ var GetDLCInfoFromSteamDB = {
             "    </div>" +
             "</div>"
             //
-        ).appendTo(GetDLCInfoFromSteamDBOptions);
-
-        GetDLCInfoFromSteamDBOptions.appendTo(".tabbable > .tab-content");
+        ).appendTo(".tabbable > .tab-content");
 
     },
 
@@ -722,11 +729,8 @@ var GetDLCInfoFromSteamDB = {
             var item = Storage.get(name);
 
             if (tagName == "SELECT") {
-                if (Storage.check(item)) {
-                    $this.find("option[value='" + item + "']").prop("selected", true);
-                } else {
-                    $this.find("option[selected]").prop("selected", true);
-                }
+                var optionSel = Storage.check(item) ? "value='" + item + "'" : "selected";
+                $this.find("option[" + optionSel + "]").prop("selected", true);
             } else {
                 if (type == "checkbox") {
                     if (item == "true") {
@@ -746,61 +750,56 @@ var GetDLCInfoFromSteamDB = {
     // LOAD CUSTOM FORMAT
     loadCustomFormat: function () {
 
-        var result = "";
-        var format_all = Format.all();
-        var wrapper_select = $("#GetDLCInfoFromSteamDB_select");
+        // REMOVE OPTION FROM GetDLCInfoFromSteamDB_select
+        var GetDLCInfoFromSteamDB_select = $("#GetDLCInfoFromSteamDB_select");
+        GetDLCInfoFromSteamDB_select.find("option[data-custom-format]").remove();
 
-        wrapper_select.find("option[data-custom-format-id]").remove();
-
+        // REMOVE FORMATS FROM steamdb.format
         for (var format_key in GetDLCInfoFromSteamDB.steamdb.format) {
-
             if (format_key.substring(0, 14) == "custom_format_") {
-
                 delete GetDLCInfoFromSteamDB.steamdb.format[format_key];
-
             }
-
         }
 
-        if (format_all !== false) {
+        // FORMAT ALL
+        var result = "";
+        var FormatALL = Format.all();
 
-            for (var uniqueid in format_all) {
+        if (Object.keys(FormatALL).length > 0) {
+            for (var uniqueid in FormatALL) {
+                if (FormatALL.hasOwnProperty(uniqueid)) {
 
-                if (format_all.hasOwnProperty(uniqueid)) {
-
-                    var value = format_all[uniqueid];
-                    var name = value.name;
-                    var val = value.value;
+                    var data = FormatALL[uniqueid];
+                    var name = data.name;
+                    var val = data.value;
 
                     result += "<tr>" +
                         "    <td class='text-center'>" + name + "</td>" +
                         "    <td class='text-center'>" + val + "</td>" +
-                        "    <td class='text-center'><button type='button' class='btn btn-sm btn-danger' id='GetDLCInfoFromSteamDB_list_custom_format_remove' data-id='" + uniqueid + "'>Remove</button></td>" +
+                        "    <td class='text-center'><button type='button' class='btn btn-sm btn-danger' id='GetDLCInfoFromSteamDB_list_custom_format_remove' data-custom-format-id='" + uniqueid + "'>Remove</button></td>" +
                         "</tr>";
 
                     // ADD OPTION
                     $("<option>").attr({
                         value: uniqueid,
                         "data-file": uniqueid + ".ini",
-                        "data-custom-format-id": uniqueid
-                    }).text(name).appendTo(wrapper_select);
+                        "data-custom-format": "true"
+                    }).text(name).appendTo(GetDLCInfoFromSteamDB_select);
 
                     // ADD FORMAT
                     GetDLCInfoFromSteamDB.steamdb.format[uniqueid] = GetDLCInfoFromSteamDB.dlcEach(val + "\n");
 
                 }
-
             }
-
-            // ADD TO TABLE
-            $("#GetDLCInfoFromSteamDB_list_custom_format tbody").html(result);
-
         }
+
+        // ADD TO TABLE
+        $("#GetDLCInfoFromSteamDB_list_custom_format tbody").html(result);
 
     },
 
-    // CREATE OPTIONS EVENTS
-    createOptionsEvents: function () {
+    // CREATE EVENTS OPTIONS
+    createEventsOptions: function () {
 
         // NAV-TABS
         $("#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs-link").click(function (e) {
@@ -811,7 +810,8 @@ var GetDLCInfoFromSteamDB = {
 
         });
 
-        $(".tabbable > .tabnav > .tabnav-tabs > .tabnav-tab[data-target='#GetDLCInfoFromSteamDBOptions']").click(function (e) {
+        // TABNAV-TAB
+        $(".tabnav-tab[data-target='#GetDLCInfoFromSteamDBOptions']").click(function (e) {
 
             e.preventDefault();
 
@@ -844,7 +844,7 @@ var GetDLCInfoFromSteamDB = {
 
             var $this = $(this);
 
-            $.each($this.find("input, select"), function (i, k) {
+            $this.find("input, select").each(function () {
 
                 var $each = $(this);
                 var val = $each.val();
@@ -859,7 +859,7 @@ var GetDLCInfoFromSteamDB = {
             });
 
             // RELOAD DLCs FORMAT
-            GetDLCInfoFromSteamDB.createDLCFormat();
+            GetDLCInfoFromSteamDB.createDLCFormats();
 
             // ALERT
             alert("Saved!");
@@ -905,7 +905,7 @@ var GetDLCInfoFromSteamDB = {
 
             e.preventDefault();
 
-            var data_id = $(this).attr("data-id");
+            var data_id = $(this).attr("data-custom-format-id");
 
             // REMOVE FORMAT
             Format.remove(data_id);
@@ -926,105 +926,29 @@ var GetDLCInfoFromSteamDB = {
 
         if (hash == "GetDLCInfoFromSteamDBOptions") {
 
-            $(".tabbable > .tabnav > .tabnav-tabs > .tabnav-tab[data-target='#GetDLCInfoFromSteamDBOptions']").tab("show");
+            $(".tabnav-tab[data-target='#GetDLCInfoFromSteamDBOptions']").trigger("click");
 
         }
 
     },
 
-    // CREATE DLC FORMAT
-    createDLCFormat: function () {
+    // CREATE CS.RIN.RU SEARCH
+    createCSRINRUSearch: function () {
 
-        // CODEX (ID = NAME) & SMARTSTEAMEMU (ONLY DLC LIST) & ALI213
-        GetDLCInfoFromSteamDB.steamdb.format.codex = GetDLCInfoFromSteamDB.steamdb.format.smartsteamemu_o = GetDLCInfoFromSteamDB.steamdb.format.ali213 = GetDLCInfoFromSteamDB.dlcEach("{0} = \"{1}\"\n");
-
-        // CODEX (DLC00000, DLCName)
-        GetDLCInfoFromSteamDB.steamdb.format.codex_t = GetDLCInfoFromSteamDB.dlcEach("DLC{2} = {0}\nDLCName{2} = \"{1}\"\n", false, true, 5);
-
-        // SMARTSTEAMEMU (FULL INI)
-        GetDLCInfoFromSteamDB.steamdb.format.smartsteamemu = sprintf(
-            GetDLCInfoFromSteamDB.formats.smartsteamemu,
-            GetDLCInfoFromSteamDB.steamdb.config_exe,
-            GetDLCInfoFromSteamDB.steamdb.config_arg,
-            GetDLCInfoFromSteamDB.steamdb.appid,
-            GetDLCInfoFromSteamDB.dlcEach("{0} = \"{1}\"\n"),
-            Storage.getDef("username", "AccountName"));
-
-        // SMARTSTEAMEMU (MINI INI)
-        GetDLCInfoFromSteamDB.steamdb.format.smartsteamemu_m = sprintf(
-            GetDLCInfoFromSteamDB.formats.smartsteamemu_m,
-            GetDLCInfoFromSteamDB.steamdb.config_exe,
-            GetDLCInfoFromSteamDB.steamdb.config_arg,
-            GetDLCInfoFromSteamDB.steamdb.appid,
-            GetDLCInfoFromSteamDB.dlcEach("{0} = \"{1}\"\n"));
-
-        // LUMAEMU (FULL INI)
-        GetDLCInfoFromSteamDB.steamdb.format.lumaemu = sprintf(
-            GetDLCInfoFromSteamDB.formats.lumaemu,
-            Storage.getDef("lumaemu_offline", "0"),
-            Storage.getDef("username", "LumaEmu"),
-            Storage.getDef("lumaemu_opennamechanger", "0"),
-            Storage.getDef("lumaemu_gamelanguage", "english"),
-            Storage.getDef("lumaemu_logfile", "1"),
-            GetDLCInfoFromSteamDB.dlcEach("; {1}\nDLC_{0} = 1\n"),
-            Storage.getDef("lumaemu_enableoverlay", "1"),
-            Storage.getDef("lumaemu_save", "1"),
-            Storage.getDef("lumaemu_blocklumaemu", "0"),
-            Storage.getDef("lumaemu_blocklegitsteam", "0"),
-            Storage.getDef("lumaemu_blocksmartsteamemu", "0"),
-            Storage.getDef("lumaemu_blockVACbannedaccounts", "1"),
-            Storage.getDef("lumaemu_blockunknownclient", "1"),
-            Storage.getDef("lumaemu_saveincustompath", "0"),
-            Storage.getDef("lumaemu_path", ""),
-            GetDLCInfoFromSteamDB.steamdb.config_exe,
-            GetDLCInfoFromSteamDB.steamdb.appid,
-            GetDLCInfoFromSteamDB.steamdb.config_arg,
-            Storage.getDef("lumaemu_lumaemuclientDll", "steamclient.dll"),
-            Storage.getDef("lumaemu_lumaemuclientDll64", "steamclient64.dll"));
-
-        // LUMAEMU (ONLY DLC LIST)
-        GetDLCInfoFromSteamDB.steamdb.format.lumaemu_o = GetDLCInfoFromSteamDB.dlcEach("; {1}\nDLC_{0} = 1\n");
-
-        // CREAMAPI (FULL INI)
-        GetDLCInfoFromSteamDB.steamdb.format.creamAPI = sprintf(
-            GetDLCInfoFromSteamDB.formats.creamAPI,
-            GetDLCInfoFromSteamDB.steamdb.appid,
-            Storage.getDef("creamapi_unlock_all", "false"),
-            Storage.getDef("creamapi_orgapi", "steam_api_o.dll"),
-            Storage.getDef("creamapi_orgapi64", "steam_api64_o.dll"),
-            Storage.getDef("creamapi_extraprotection", "false"),
-            Storage.getDef("creamapi_log", "false"),
-            GetDLCInfoFromSteamDB.dlcEach("; {1}\n{0} = true\n"),
-            GetDLCInfoFromSteamDB.dlcEach("{2} = {0}\n"),
-            GetDLCInfoFromSteamDB.dlcEach("{2} = \"{1}\"\n"));
-
-        // CREAMAPI (ONLY DLC LIST)
-        GetDLCInfoFromSteamDB.steamdb.format.creamAPI_o = sprintf(
-            GetDLCInfoFromSteamDB.formats.creamAPI_o,
-            GetDLCInfoFromSteamDB.dlcEach("; {1}\n{0} = true\n"),
-            GetDLCInfoFromSteamDB.dlcEach("{2} = {0}\n"),
-            GetDLCInfoFromSteamDB.dlcEach("{2} = \"{1}\"\n"));
-
-        // RELOADED
-        GetDLCInfoFromSteamDB.steamdb.format.reloaded = sprintf(
-            GetDLCInfoFromSteamDB.formats.reloaded,
-            GetDLCInfoFromSteamDB.steamdb.appid_name,
-            GetDLCInfoFromSteamDB.dlcEach("DLC{2} = {0}\nDLCName{2} = \"{1}\"\n", true, true),
-            GetDLCInfoFromSteamDB.steamdb.dlcsTot);
-
-        // SKIDROW
-        GetDLCInfoFromSteamDB.steamdb.format.skidrow = GetDLCInfoFromSteamDB.dlcEach("; {1}\n{0}\n");
-
-        // 3DMGAME
-        GetDLCInfoFromSteamDB.steamdb.format['3dmgame'] = GetDLCInfoFromSteamDB.dlcEach("; {1}\nDLC{2} = {0}\n", true, true);
-
-        // REVOLT
-        GetDLCInfoFromSteamDB.steamdb.format.revolt = sprintf(
-            GetDLCInfoFromSteamDB.formats.revolt,
-            GetDLCInfoFromSteamDB.steamdb.appid,
-            GetDLCInfoFromSteamDB.steamdb.dlcsTot,
-            GetDLCInfoFromSteamDB.dlcEach("; {1}\n{2} = {0}\n"),
-            GetDLCInfoFromSteamDB.dlcEach("; {1}\n{0} = true\n"));
+        // CS.RIN.RU SEARCH
+        $( //
+            "<li>" +
+            "    <form method='post' action='http://cs.rin.ru/forum/search.php'>\n" +
+            "        <input name='keywords' value='" + GetDLCInfoFromSteamDB.steamdb.appid_name + "' hidden type='text'>" +
+            "        <button class='btn btn-sm' type='submit'><img src=' data:image/png;base64,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'> CS.RIN.RU " + GetDLCInfoFromSteamDB.steamdb.appid_name + "</button>" +
+            "        <input value='10' name='fid[]' type='hidden'>" +
+            "        <input name='sr' value='topics' type='hidden'>" +
+            "        <input name='terms' value='any' type='hidden'>" +
+            "        <input value='titleonly' name='sf' type='hidden'>" +
+            "    </form>" +
+            "</li>"
+            //
+        ).appendTo(".scope-app .pagehead .pagehead-actions");
 
     },
 
@@ -1043,7 +967,7 @@ var GetDLCInfoFromSteamDB = {
                 var dlc_name = GetDLCInfoFromSteamDB.steamdb.dlcs[dlc_id];
                 var dlc_index = GetDLCInfoFromSteamDB.dlcIndexFormat(index, format_index, format_index_zeros);
 
-                result += sprintf(string, dlc_id, dlc_name, dlc_index);
+                result += string.format(dlc_id, dlc_name, dlc_index);
 
             }
 
@@ -1072,8 +996,97 @@ var GetDLCInfoFromSteamDB = {
 
     },
 
-    // FORMATS
-    formats: {
+    // CREATE DLC FORMATS
+    createDLCFormats: function () {
+
+        // CODEX (ID = NAME) & SMARTSTEAMEMU (ONLY DLC LIST) & ALI213
+        GetDLCInfoFromSteamDB.steamdb.format.codex = GetDLCInfoFromSteamDB.steamdb.format.smartsteamemu_o = GetDLCInfoFromSteamDB.steamdb.format.ali213 = GetDLCInfoFromSteamDB.dlcEach("{0} = \"{1}\"\n");
+
+        // CODEX (DLC00000, DLCName)
+        GetDLCInfoFromSteamDB.steamdb.format.codex_t = GetDLCInfoFromSteamDB.dlcEach("DLC{2} = {0}\nDLCName{2} = \"{1}\"\n", false, true, 5);
+
+        // SMARTSTEAMEMU (FULL INI)
+        GetDLCInfoFromSteamDB.steamdb.format.smartsteamemu = GetDLCInfoFromSteamDB.dlcFormats.smartsteamemu.format(
+            GetDLCInfoFromSteamDB.steamdb.config_exe,
+            GetDLCInfoFromSteamDB.steamdb.config_arg,
+            GetDLCInfoFromSteamDB.steamdb.appid,
+            GetDLCInfoFromSteamDB.dlcEach("{0} = \"{1}\"\n"),
+            Storage.getDef("username", "AccountName"));
+
+        // SMARTSTEAMEMU (MINI INI)
+        GetDLCInfoFromSteamDB.steamdb.format.smartsteamemu_m = GetDLCInfoFromSteamDB.dlcFormats.smartsteamemu_m.format(
+            GetDLCInfoFromSteamDB.steamdb.config_exe,
+            GetDLCInfoFromSteamDB.steamdb.config_arg,
+            GetDLCInfoFromSteamDB.steamdb.appid,
+            GetDLCInfoFromSteamDB.dlcEach("{0} = \"{1}\"\n"));
+
+        // LUMAEMU (FULL INI)
+        GetDLCInfoFromSteamDB.steamdb.format.lumaemu = GetDLCInfoFromSteamDB.dlcFormats.lumaemu.format(
+            Storage.getDef("lumaemu_offline", "0"),
+            Storage.getDef("username", "LumaEmu"),
+            Storage.getDef("lumaemu_opennamechanger", "0"),
+            Storage.getDef("lumaemu_gamelanguage", "english"),
+            Storage.getDef("lumaemu_logfile", "1"),
+            GetDLCInfoFromSteamDB.dlcEach("; {1}\nDLC_{0} = 1\n"),
+            Storage.getDef("lumaemu_enableoverlay", "1"),
+            Storage.getDef("lumaemu_save", "1"),
+            Storage.getDef("lumaemu_blocklumaemu", "0"),
+            Storage.getDef("lumaemu_blocklegitsteam", "0"),
+            Storage.getDef("lumaemu_blocksmartsteamemu", "0"),
+            Storage.getDef("lumaemu_blockVACbannedaccounts", "1"),
+            Storage.getDef("lumaemu_blockunknownclient", "1"),
+            Storage.getDef("lumaemu_saveincustompath", "0"),
+            Storage.getDef("lumaemu_path", ""),
+            GetDLCInfoFromSteamDB.steamdb.config_exe,
+            GetDLCInfoFromSteamDB.steamdb.appid,
+            GetDLCInfoFromSteamDB.steamdb.config_arg,
+            Storage.getDef("lumaemu_lumaemuclientDll", "steamclient.dll"),
+            Storage.getDef("lumaemu_lumaemuclientDll64", "steamclient64.dll"));
+
+        // LUMAEMU (ONLY DLC LIST)
+        GetDLCInfoFromSteamDB.steamdb.format.lumaemu_o = GetDLCInfoFromSteamDB.dlcEach("; {1}\nDLC_{0} = 1\n");
+
+        // CREAMAPI (FULL INI)
+        GetDLCInfoFromSteamDB.steamdb.format.creamAPI = GetDLCInfoFromSteamDB.dlcFormats.creamAPI.format(
+            GetDLCInfoFromSteamDB.steamdb.appid,
+            Storage.getDef("creamapi_unlock_all", "false"),
+            Storage.getDef("creamapi_orgapi", "steam_api_o.dll"),
+            Storage.getDef("creamapi_orgapi64", "steam_api64_o.dll"),
+            Storage.getDef("creamapi_extraprotection", "false"),
+            Storage.getDef("creamapi_log", "false"),
+            GetDLCInfoFromSteamDB.dlcEach("; {1}\n{0} = true\n"),
+            GetDLCInfoFromSteamDB.dlcEach("{2} = {0}\n"),
+            GetDLCInfoFromSteamDB.dlcEach("{2} = \"{1}\"\n"));
+
+        // CREAMAPI (ONLY DLC LIST)
+        GetDLCInfoFromSteamDB.steamdb.format.creamAPI_o = GetDLCInfoFromSteamDB.dlcFormats.creamAPI_o.format(
+            GetDLCInfoFromSteamDB.dlcEach("; {1}\n{0} = true\n"),
+            GetDLCInfoFromSteamDB.dlcEach("{2} = {0}\n"),
+            GetDLCInfoFromSteamDB.dlcEach("{2} = \"{1}\"\n"));
+
+        // RELOADED
+        GetDLCInfoFromSteamDB.steamdb.format.reloaded = GetDLCInfoFromSteamDB.dlcFormats.reloaded.format(
+            GetDLCInfoFromSteamDB.steamdb.appid_name,
+            GetDLCInfoFromSteamDB.dlcEach("DLC{2} = {0}\nDLCName{2} = \"{1}\"\n", true, true),
+            GetDLCInfoFromSteamDB.steamdb.dlcsTot);
+
+        // SKIDROW
+        GetDLCInfoFromSteamDB.steamdb.format.skidrow = GetDLCInfoFromSteamDB.dlcEach("; {1}\n{0}\n");
+
+        // 3DMGAME
+        GetDLCInfoFromSteamDB.steamdb.format['3dmgame'] = GetDLCInfoFromSteamDB.dlcEach("; {1}\nDLC{2} = {0}\n", true, true);
+
+        // REVOLT
+        GetDLCInfoFromSteamDB.steamdb.format.revolt = GetDLCInfoFromSteamDB.dlcFormats.revolt.format(
+            GetDLCInfoFromSteamDB.steamdb.appid,
+            GetDLCInfoFromSteamDB.steamdb.dlcsTot,
+            GetDLCInfoFromSteamDB.dlcEach("; {1}\n{2} = {0}\n"),
+            GetDLCInfoFromSteamDB.dlcEach("; {1}\n{0} = true\n"));
+
+    },
+
+    // DLC FORMATS
+    dlcFormats: {
 
         creamAPI: "[steam]\n" +
             "; Application ID (http://store.steampowered.com/app/%appid%/)\n" +
@@ -1336,15 +1349,19 @@ if (!String.prototype.repeat) {
 
 }
 
-function sprintf(str) {
+if (!String.prototype.format) {
 
-    var args = Array.prototype.slice.call(arguments, 1);
+    String.prototype.format = function () {
 
-    return str.replace(/{(\d+)}/g, function (match, i) {
+        var args = arguments;
 
-        return typeof args[i] !== "undefined" ? args[i] : match;
+        return this.replace(/{(\d+)}/g, function (match, number) {
 
-    });
+            return typeof args[number] !== "undefined" ? args[number] : match;
+
+        });
+
+    };
 
 }
 
@@ -1366,18 +1383,18 @@ var Format = {
     // GET ALL
     all: function () {
 
-        var custom_format = Storage.get("custom_format");
+        var data = Storage.get("custom_format");
 
-        return Storage.check(custom_format) ? JSON.parse(custom_format) : false;
+        return Storage.check(data) ? JSON.parse(data) : {};
 
     },
 
     // ADD FORMAT
     add: function (name, val) {
 
-        var custom_format = Storage.get("custom_format");
-        var data = Storage.check(custom_format) ? JSON.parse(custom_format) : {};
-        var uniqueid = "custom_format_" + new Date().getTime();
+        var data = this.all();
+        var prefix = "custom_format_";
+        var uniqueid = prefix + new Date().getTime();
 
         data[uniqueid] = {
             "name": name,
@@ -1391,11 +1408,9 @@ var Format = {
     // REMOVE FORMAT
     remove: function (uniqueid) {
 
-        var custom_format = Storage.get("custom_format");
+        var data = this.all();
 
-        if (Storage.check(custom_format)) {
-
-            var data = JSON.parse(custom_format);
+        if (Object.keys(data).length > 0) {
 
             delete data[uniqueid];
 
