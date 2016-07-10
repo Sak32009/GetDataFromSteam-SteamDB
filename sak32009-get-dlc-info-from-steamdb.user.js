@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          1.9.1
+// @version          1.9.2
 // @license          MIT
 // @homepage         https://github.com/Sak32009/GetDLCInfoFromSteamDB
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -45,13 +45,14 @@ var GetDLCInfoFromSteamDB = {
     // RUN
     run: function () {
 
+        // GET INFO
+        GetDLCInfoFromSteamDB.getInfo();
+
         // CHECK
         var $check = $(".tabnav-tab[data-target='#dlc']");
 
         if ($check.length > 0) {
 
-            // GET INFO
-            GetDLCInfoFromSteamDB.getInfo();
             // CREATE DLC FORMATS
             GetDLCInfoFromSteamDB.createDLCFormats();
             // CREATE STYLE
