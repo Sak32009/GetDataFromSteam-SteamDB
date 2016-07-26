@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          1.9.3
+// @version          1.9.4
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -24,7 +24,7 @@ var GetDLCInfoFromSteamDB = {
     steamdb: {
         dlcs: [],
         dlcsTot: 0,
-        format: {},
+        formats: {},
         config_exe: "",
         config_arg: "",
         appid: "",
@@ -51,7 +51,7 @@ var GetDLCInfoFromSteamDB = {
         // CHECK
         var $check = $(".tabnav-tab[data-target='#dlc']");
 
-        if ($check.length > 0) {
+        if ($check.length) {
 
             // CREATE DLC FORMATS
             GetDLCInfoFromSteamDB.createDLCFormats();
@@ -82,27 +82,35 @@ var GetDLCInfoFromSteamDB = {
     // GET INFO
     getInfo: function () {
 
+        // APPID
         GetDLCInfoFromSteamDB.steamdb.appid = $(".scope-app[data-appid]").attr("data-appid");
-        GetDLCInfoFromSteamDB.steamdb.appid_name = $.trim($("td[itemprop='name']").text());
+        // APPID NAME
+        GetDLCInfoFromSteamDB.steamdb.appid_name = $("td[itemprop='name']").text().trim();
+        // URL
         GetDLCInfoFromSteamDB.steamdb.url = window.location;
 
+        // DLCs
         var dlcs = $(".tab-pane#dlc .app[data-appid]");
 
-        for (var i = 0; i < dlcs.length; i++) {
+        for (var dlcs_count = 0; dlcs_count < dlcs.length; dlcs_count++) {
 
-            var $dlc = $(dlcs[i]);
+            var $dlc = $(dlcs[dlcs_count]);
             var dlc_appid = $dlc.attr("data-appid");
-            var dlc_appid_name = $.trim($dlc.find("td:nth-of-type(2)").text());
+            var dlc_appid_name = $dlc.find("td:nth-of-type(2)").text().trim();
 
             GetDLCInfoFromSteamDB.steamdb.dlcs[dlc_appid] = dlc_appid_name;
 
         }
 
-        GetDLCInfoFromSteamDB.steamdb.dlcsTot = i;
+        // DLCs Count
+        GetDLCInfoFromSteamDB.steamdb.dlcsTot = dlcs_count;
 
+        // CONFIG
         var $config = $(".tab-pane#config > table:nth-of-type(1) tbody tr:nth-of-type(1)");
-        GetDLCInfoFromSteamDB.steamdb.config_exe = $.trim($config.find("td:nth-of-type(2)").text());
-        GetDLCInfoFromSteamDB.steamdb.config_arg = $.trim($config.find("td:nth-of-type(3)").text());
+        // CONFIG EXE
+        GetDLCInfoFromSteamDB.steamdb.config_exe = $config.find("td:nth-of-type(2)").text().trim();
+        // CONFIG ARG
+        GetDLCInfoFromSteamDB.steamdb.config_arg = $config.find("td:nth-of-type(3)").text().trim();
 
     },
 
@@ -240,15 +248,7 @@ var GetDLCInfoFromSteamDB = {
         }).text("CreamAPI (Only DLC Section)").appendTo(wrapper_select);
 
         // SMARTSTEAEMU
-        $("<option>").prop("disabled", true).text(option_sep + " v1.4.1").appendTo(wrapper_select);
-        $("<option>").attr({
-            value: "smartsteamemu",
-            "data-file": "SmartSteamEmu.ini"
-        }).text("SmartSteamEmu (Full INI)").appendTo(wrapper_select);
-        $("<option>").attr({
-            value: "smartsteamemu_m",
-            "data-file": "SmartSteamEmu.ini"
-        }).text("SmartSteamEmu (Mini INI)").appendTo(wrapper_select);
+        $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
         $("<option>").attr({
             value: "smartsteamemu_o",
             "data-file": "smartsteamemu_dlc_list.ini"
@@ -359,7 +359,7 @@ var GetDLCInfoFromSteamDB = {
                 "; Support: " + GetDLCInfoFromSteamDB.script.support + "\n\n";
 
             // FORMAT DATA
-            result += GetDLCInfoFromSteamDB.steamdb.format[format_name];
+            result += GetDLCInfoFromSteamDB.steamdb.formats[format_name];
 
             // RESULT
             $("#GetDLCInfoFromSteamDB_download").attr({
@@ -389,12 +389,13 @@ var GetDLCInfoFromSteamDB = {
 
         // TABNAV-TAB
         $("<a>").attr({
-            href: "#",
-            "data-target": "#GetDLCInfoFromSteamDBOptions"
-        }).addClass("tabnav-tab").html("<span class='octicon octicon-gear'></span> Settings DLCs <span class='counter'>!</span>").insertAfter(".tabnav-tab[data-target='#dlc']");
+            href: "#GetDLCInfoFromSteamDBOptions",
+            "data-target": "#GetDLCInfoFromSteamDBOptions",
+            title: "Get DLC Info From SteamDB Options"
+        }).addClass("tabnav-tab").html("<span class='octicon octicon-gear'></span> GDIFSDB <span class='counter'>!</span>").insertAfter(".tabnav-tab[data-target='#dlc']");
 
         // FAKE TABLE DLC EACH
-        var FakeTableDLCEach = GetDLCInfoFromSteamDB.dlcEach("{0}, ");
+        var FakeTableDLCEach = GetDLCInfoFromSteamDB.dlcEach("{dlc_id}, ");
         FakeTableDLCEach = FakeTableDLCEach.substring(0, FakeTableDLCEach.length - 2);
 
         // CONTENT
@@ -485,6 +486,10 @@ var GetDLCInfoFromSteamDB = {
             "                            <td>Save the last selection of the format</td>" +
             "                            <td><input type='checkbox' name='save_selection'></td>" +
             "                        </tr>" +
+            "                        <tr>" +
+            "                            <td>Game Language</td>" +
+            "                            <td><input type='text' class='input-block' name='gamelanguage' placeholder='english'></td>" +
+            "                        </tr>" +
             "                    </tbody>" +
             "                </table>" +
             "                <button class='btn btn-primary btn-sm input-block' type='submit'>Save Options</button>" +
@@ -558,10 +563,6 @@ var GetDLCInfoFromSteamDB = {
             "                                                <option value='1'>Activated</option>" +
             "                                            </select>" +
             "                                        </td>" +
-            "                                    </tr>" +
-            "                                    <tr>" +
-            "                                        <td>GameLanguage</td>" +
-            "                                        <td><input type='text' class='input-block' name='lumaemu_gamelanguage' placeholder='english'></td>" +
             "                                    </tr>" +
             "                                    <tr>" +
             "                                        <td>LogFile</td>" +
@@ -669,11 +670,11 @@ var GetDLCInfoFromSteamDB = {
             "            <div class='text-center'>" +
             "                <p>Create your own custom format!</p>" +
             "                <ul>" +
-            "                    <li><b>{0}</b> = DLC APPID</li>" +
-            "                    <li><b>{1}</b> = DLC NAME</li>" +
-            "                    <li><b>{2}</b> = DLC INDEX</li>" +
+            "                    <li><b>{dlc_id}</b> = DLC APPID</li>" +
+            "                    <li><b>{dlc_name}</b> = DLC NAME</li>" +
+            "                    <li><b>{dlc_index}</b> = DLC INDEX</li>" +
             "                </ul>" +
-            "                <p>With this format \"<b>{2} = {0} // {1}</b>\" for example, the output is this \"<b>DLC_INDEX = DLC_APPID // DLC_NAME</b>\"</p>" +
+            "                <p>With this format \"<b>{dlc_index} = {dlc_id} // {dlc_name}</b>\" for example, the output is this \"<b>DLC_INDEX = DLC_APPID // DLC_NAME</b>\"</p>" +
             "            </div>" +
             "            <h2>Add Custom Format</h2>" +
             "            <form id='GetDLCInfoFromSteamDB_submit_add_custom_format'>" +
@@ -691,7 +692,7 @@ var GetDLCInfoFromSteamDB = {
             "                        </tr>" +
             "                        <tr>" +
             "                            <td>Format</td>" +
-            "                            <td><input type='text' class='input-block' name='custom_format_val' placeholder='{2} = {0} // {1}'></td>" +
+            "                            <td><input type='text' class='input-block' name='custom_format_val' placeholder='{dlc_index} = {dlc_id} // {dlc_name}'></td>" +
             "                        </tr>" +
             "                    </tbody>" +
             "                </table>" +
@@ -721,7 +722,7 @@ var GetDLCInfoFromSteamDB = {
     loadOptionsWrapper: function () {
 
         // LOAD OPTIONS VALUE
-        $("form#GetDLCInfoFromSteamDB_submit_options input, form#GetDLCInfoFromSteamDB_submit_options select").each(function () {
+        $("form#GetDLCInfoFromSteamDB_submit_options").find("input, select").each(function () {
 
             var $this = $(this);
             var type = $this.attr("type");
@@ -732,16 +733,10 @@ var GetDLCInfoFromSteamDB = {
             if (tagName == "SELECT") {
                 var optionSel = Storage.check(item) ? "value='" + item + "'" : "selected";
                 $this.find("option[" + optionSel + "]").prop("selected", true);
+            } else if (type == "checkbox") {
+                $this.prop("checked", item == "true");
             } else {
-                if (type == "checkbox") {
-                    if (item == "true") {
-                        $this.prop("checked", true);
-                    } else {
-                        $this.prop("checked", false);
-                    }
-                } else {
-                    $this.val(item);
-                }
+                $this.val(item);
             }
 
         });
@@ -751,14 +746,17 @@ var GetDLCInfoFromSteamDB = {
     // LOAD CUSTOM FORMAT
     loadCustomFormat: function () {
 
-        // REMOVE OPTION FROM GetDLCInfoFromSteamDB_select
         var GetDLCInfoFromSteamDB_select = $("#GetDLCInfoFromSteamDB_select");
+
+        // REMOVE OPTION FROM GetDLCInfoFromSteamDB_select
         GetDLCInfoFromSteamDB_select.find("option[data-custom-format]").remove();
 
-        // REMOVE FORMATS FROM steamdb.format
-        for (var format_key in GetDLCInfoFromSteamDB.steamdb.format) {
-            if (format_key.substring(0, 14) == "custom_format_") {
-                delete GetDLCInfoFromSteamDB.steamdb.format[format_key];
+        // REMOVE FORMATS FROM steamdb.formats
+        for (var format_key in GetDLCInfoFromSteamDB.steamdb.formats) {
+            if (GetDLCInfoFromSteamDB.steamdb.formats.hasOwnProperty(format_key)) {
+                if (format_key.substring(0, 14) == "custom_format_") {
+                    delete GetDLCInfoFromSteamDB.steamdb.formats[format_key];
+                }
             }
         }
 
@@ -766,7 +764,7 @@ var GetDLCInfoFromSteamDB = {
         var result = "";
         var FormatALL = Format.all();
 
-        if (Object.keys(FormatALL).length > 0) {
+        if (Object.keys(FormatALL).length) {
             for (var uniqueid in FormatALL) {
                 if (FormatALL.hasOwnProperty(uniqueid)) {
 
@@ -788,7 +786,7 @@ var GetDLCInfoFromSteamDB = {
                     }).text(name).appendTo(GetDLCInfoFromSteamDB_select);
 
                     // ADD FORMAT
-                    GetDLCInfoFromSteamDB.steamdb.format[uniqueid] = GetDLCInfoFromSteamDB.dlcEach(val + "\n");
+                    GetDLCInfoFromSteamDB.steamdb.formats[uniqueid] = GetDLCInfoFromSteamDB.dlcEach(val);
 
                 }
             }
@@ -802,23 +800,8 @@ var GetDLCInfoFromSteamDB = {
     // CREATE EVENTS OPTIONS
     createEventsOptions: function () {
 
-        // NAV-TABS
-        $("#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs-link").click(function (e) {
-
-            e.preventDefault();
-
-            $(this).tab("show");
-
-        });
-
-        // TABNAV-TAB
-        $(".tabnav-tab[data-target='#GetDLCInfoFromSteamDBOptions']").click(function (e) {
-
-            e.preventDefault();
-
-            window.history.replaceState({
-                section: $(this).attr("data-target")
-            }, null, $(this).attr("data-target"));
+        // NAV-TABS, TABNAV-TAB
+        $("#GetDLCInfoFromSteamDB_nav_tabs .nav-tabs-link, .tabnav-tab[data-target='#GetDLCInfoFromSteamDBOptions']").click(function () {
 
             $(this).tab("show");
 
@@ -826,6 +809,8 @@ var GetDLCInfoFromSteamDB = {
 
         // RESET ALL OPTIONS
         $("#GetDLCInfoFromSteamDB_resetOptions").click(function (e) {
+
+            e.preventDefault();
 
             // CLEAR STORAGE
             Storage.clear();
@@ -843,16 +828,14 @@ var GetDLCInfoFromSteamDB = {
 
             e.preventDefault();
 
-            var $this = $(this);
+            $(this).find("input, select").each(function () {
 
-            $this.find("input, select").each(function () {
-
-                var $each = $(this);
-                var val = $each.val();
-                var type = $each.attr("type");
-                var name = $each.attr("name");
+                var $this = $(this);
+                var val = $this.val();
+                var type = $this.attr("type");
+                var name = $this.attr("name");
                 if (type == "checkbox") {
-                    val = $each.prop("checked");
+                    val = $this.prop("checked");
                 }
 
                 Storage.set(name, val);
@@ -879,7 +862,7 @@ var GetDLCInfoFromSteamDB = {
             var custom_format_namev = custom_format_name.val();
             var custom_format_valv = custom_format_val.val();
 
-            if (custom_format_namev.length > 0 && custom_format_valv.length > 0) {
+            if (custom_format_namev.length && custom_format_valv.length) {
 
                 // RESET INPUT
                 custom_format_name.val("");
@@ -891,6 +874,7 @@ var GetDLCInfoFromSteamDB = {
                 // LOAD CUSTOM FORMAT
                 GetDLCInfoFromSteamDB.loadCustomFormat();
 
+                // ALERT
                 alert("Added!");
 
             } else {
@@ -914,6 +898,7 @@ var GetDLCInfoFromSteamDB = {
             // LOAD CUSTOM FORMAT
             GetDLCInfoFromSteamDB.loadCustomFormat();
 
+            // ALERT
             alert("Removed!");
 
         });
@@ -968,7 +953,11 @@ var GetDLCInfoFromSteamDB = {
                 var dlc_name = GetDLCInfoFromSteamDB.steamdb.dlcs[dlc_id];
                 var dlc_index = GetDLCInfoFromSteamDB.dlcIndexFormat(index, format_index, format_index_zeros);
 
-                result += string.format(dlc_id, dlc_name, dlc_index);
+                result += str_format(string, {
+                    "dlc_id": dlc_id,
+                    "dlc_name": dlc_name,
+                    "dlc_index": dlc_index
+                });
 
             }
 
@@ -1001,368 +990,199 @@ var GetDLCInfoFromSteamDB = {
     createDLCFormats: function () {
 
         // CODEX (ID = NAME) & SMARTSTEAMEMU (ONLY DLC LIST) & ALI213
-        GetDLCInfoFromSteamDB.steamdb.format.codex = GetDLCInfoFromSteamDB.steamdb.format.smartsteamemu_o = GetDLCInfoFromSteamDB.steamdb.format.ali213 = GetDLCInfoFromSteamDB.dlcEach("{0} = \"{1}\"\n");
+        GetDLCInfoFromSteamDB.steamdb.formats.codex =
+            GetDLCInfoFromSteamDB.steamdb.formats.smartsteamemu_o =
+                GetDLCInfoFromSteamDB.steamdb.formats.ali213 = GetDLCInfoFromSteamDB.dlcEach("{dlc_id} = \"{dlc_name}\"\n");
 
         // CODEX (DLC00000, DLCName)
-        GetDLCInfoFromSteamDB.steamdb.format.codex_t = GetDLCInfoFromSteamDB.dlcEach("DLC{2} = {0}\nDLCName{2} = \"{1}\"\n", false, true, 5);
-
-        // SMARTSTEAMEMU (FULL INI)
-        GetDLCInfoFromSteamDB.steamdb.format.smartsteamemu = GetDLCInfoFromSteamDB.dlcFormats.smartsteamemu.format(
-            GetDLCInfoFromSteamDB.steamdb.config_exe,
-            GetDLCInfoFromSteamDB.steamdb.config_arg,
-            GetDLCInfoFromSteamDB.steamdb.appid,
-            GetDLCInfoFromSteamDB.dlcEach("{0} = \"{1}\"\n"),
-            Storage.getDef("username", "AccountName"));
-
-        // SMARTSTEAMEMU (MINI INI)
-        GetDLCInfoFromSteamDB.steamdb.format.smartsteamemu_m = GetDLCInfoFromSteamDB.dlcFormats.smartsteamemu_m.format(
-            GetDLCInfoFromSteamDB.steamdb.config_exe,
-            GetDLCInfoFromSteamDB.steamdb.config_arg,
-            GetDLCInfoFromSteamDB.steamdb.appid,
-            GetDLCInfoFromSteamDB.dlcEach("{0} = \"{1}\"\n"));
+        GetDLCInfoFromSteamDB.steamdb.formats.codex_t = GetDLCInfoFromSteamDB.dlcEach("DLC{dlc_index} = {dlc_id}\nDLCName{dlc_index} = \"{dlc_name}\"\n", false, true, 5);
 
         // LUMAEMU (FULL INI)
-        GetDLCInfoFromSteamDB.steamdb.format.lumaemu = GetDLCInfoFromSteamDB.dlcFormats.lumaemu.format(
-            Storage.getDef("lumaemu_offline", "0"),
-            Storage.getDef("username", "LumaEmu"),
-            Storage.getDef("lumaemu_opennamechanger", "0"),
-            Storage.getDef("lumaemu_gamelanguage", "english"),
-            Storage.getDef("lumaemu_logfile", "1"),
-            GetDLCInfoFromSteamDB.dlcEach("; {1}\nDLC_{0} = 1\n"),
-            Storage.getDef("lumaemu_enableoverlay", "1"),
-            Storage.getDef("lumaemu_save", "1"),
-            Storage.getDef("lumaemu_blocklumaemu", "0"),
-            Storage.getDef("lumaemu_blocklegitsteam", "0"),
-            Storage.getDef("lumaemu_blocksmartsteamemu", "0"),
-            Storage.getDef("lumaemu_blockVACbannedaccounts", "1"),
-            Storage.getDef("lumaemu_blockunknownclient", "1"),
-            Storage.getDef("lumaemu_saveincustompath", "0"),
-            Storage.getDef("lumaemu_path", ""),
-            GetDLCInfoFromSteamDB.steamdb.config_exe,
-            GetDLCInfoFromSteamDB.steamdb.appid,
-            GetDLCInfoFromSteamDB.steamdb.config_arg,
-            Storage.getDef("lumaemu_lumaemuclientDll", "steamclient.dll"),
-            Storage.getDef("lumaemu_lumaemuclientDll64", "steamclient64.dll"));
+        GetDLCInfoFromSteamDB.steamdb.formats.lumaemu = str_format(GetDLCInfoFromSteamDB.dlcFormats.lumaemu, {
+            appid: GetDLCInfoFromSteamDB.steamdb.appid,
+            config_exe: GetDLCInfoFromSteamDB.steamdb.config_exe,
+            config_arg: GetDLCInfoFromSteamDB.steamdb.config_arg,
+
+            dlcEach_1: GetDLCInfoFromSteamDB.dlcEach("; {dlc_name}\nDLC_{dlc_id} = 1\n"),
+
+            offline: Storage.getDef("lumaemu_offline", "0"),
+            username: Storage.getDef("username", "LumaEmu"),
+            opennamechanger: Storage.getDef("lumaemu_opennamechanger", "0"),
+            gamelanguage: Storage.getDef("gamelanguage", "english"),
+            logfile: Storage.getDef("lumaemu_logfile", "1"),
+            enableoverlay: Storage.getDef("lumaemu_enableoverlay", "1"),
+            save: Storage.getDef("lumaemu_save", "1"),
+            blocklumaemu: Storage.getDef("lumaemu_blocklumaemu", "0"),
+            blocklegitsteam: Storage.getDef("lumaemu_blocklegitsteam", "0"),
+            blocksmartsteamemu: Storage.getDef("lumaemu_blocksmartsteamemu", "0"),
+            blockVACbannedaccounts: Storage.getDef("lumaemu_blockVACbannedaccounts", "1"),
+            blockunknownclient: Storage.getDef("lumaemu_blockunknownclient", "1"),
+            saveincustompath: Storage.getDef("lumaemu_saveincustompath", "0"),
+            path: Storage.getDef("lumaemu_path", ""),
+            lumaemuclientDll: Storage.getDef("lumaemu_lumaemuclientDll", "steamclient.dll"),
+            lumaemuclientDll64: Storage.getDef("lumaemu_lumaemuclientDll64", "steamclient64.dll")
+        });
 
         // LUMAEMU (ONLY DLC LIST)
-        GetDLCInfoFromSteamDB.steamdb.format.lumaemu_o = GetDLCInfoFromSteamDB.dlcEach("; {1}\nDLC_{0} = 1\n");
+        GetDLCInfoFromSteamDB.steamdb.formats.lumaemu_o = GetDLCInfoFromSteamDB.dlcEach("; {dlc_name}\nDLC_{dlc_id} = 1\n");
 
         // CREAMAPI (FULL INI)
-        GetDLCInfoFromSteamDB.steamdb.format.creamAPI = GetDLCInfoFromSteamDB.dlcFormats.creamAPI.format(
-            GetDLCInfoFromSteamDB.steamdb.appid,
-            Storage.getDef("creamapi_unlock_all", "false"),
-            Storage.getDef("creamapi_orgapi", "steam_api_o.dll"),
-            Storage.getDef("creamapi_orgapi64", "steam_api64_o.dll"),
-            Storage.getDef("creamapi_extraprotection", "false"),
-            Storage.getDef("creamapi_log", "false"),
-            GetDLCInfoFromSteamDB.dlcEach("; {1}\n{0} = true\n"),
-            GetDLCInfoFromSteamDB.dlcEach("{2} = {0}\n"),
-            GetDLCInfoFromSteamDB.dlcEach("{2} = \"{1}\"\n"));
+        GetDLCInfoFromSteamDB.steamdb.formats.creamAPI = str_format(GetDLCInfoFromSteamDB.dlcFormats.creamAPI, {
+            appid: GetDLCInfoFromSteamDB.steamdb.appid,
+
+            unlock_all: Storage.getDef("creamapi_unlock_all", "false"),
+            orgapi: Storage.getDef("creamapi_orgapi", "steam_api_o.dll"),
+            orgapi64: Storage.getDef("creamapi_orgapi64", "steam_api64_o.dll"),
+            extraprotection: Storage.getDef("creamapi_extraprotection", "false"),
+            log: Storage.getDef("creamapi_log", "false"),
+
+            dlcEach_1: GetDLCInfoFromSteamDB.dlcEach("; {dlc_name}\n{dlc_id} = true\n"),
+            dlcEach_2: GetDLCInfoFromSteamDB.dlcEach("{dlc_index} = {dlc_id}\n"),
+            dlcEach_3: GetDLCInfoFromSteamDB.dlcEach("{dlc_index} = \"{dlc_name}\"\n")
+        });
 
         // CREAMAPI (ONLY DLC LIST)
-        GetDLCInfoFromSteamDB.steamdb.format.creamAPI_o = GetDLCInfoFromSteamDB.dlcFormats.creamAPI_o.format(
-            GetDLCInfoFromSteamDB.dlcEach("; {1}\n{0} = true\n"),
-            GetDLCInfoFromSteamDB.dlcEach("{2} = {0}\n"),
-            GetDLCInfoFromSteamDB.dlcEach("{2} = \"{1}\"\n"));
+        GetDLCInfoFromSteamDB.steamdb.formats.creamAPI_o = str_format(GetDLCInfoFromSteamDB.dlcFormats.creamAPI_o, {
+            dlcEach_1: GetDLCInfoFromSteamDB.dlcEach("; {dlc_name}\n{dlc_id} = true\n"),
+            dlcEach_2: GetDLCInfoFromSteamDB.dlcEach("{dlc_index} = {dlc_id}\n"),
+            dlcEach_3: GetDLCInfoFromSteamDB.dlcEach("{dlc_index} = \"{dlc_name}\"\n")
+        });
 
         // RELOADED
-        GetDLCInfoFromSteamDB.steamdb.format.reloaded = GetDLCInfoFromSteamDB.dlcFormats.reloaded.format(
-            GetDLCInfoFromSteamDB.steamdb.appid_name,
-            GetDLCInfoFromSteamDB.dlcEach("DLC{2} = {0}\nDLCName{2} = \"{1}\"\n", true, true),
-            GetDLCInfoFromSteamDB.steamdb.dlcsTot);
+        GetDLCInfoFromSteamDB.steamdb.formats.reloaded = str_format(GetDLCInfoFromSteamDB.dlcFormats.reloaded, {
+            appid_name: GetDLCInfoFromSteamDB.steamdb.appid_name,
+            dlcsTot: GetDLCInfoFromSteamDB.steamdb.dlcsTot,
+
+            dlcEach_1: GetDLCInfoFromSteamDB.dlcEach("DLC{dlc_index} = {dlc_id}\nDLCName{dlc_index} = \"{dlc_name}\"\n", true, true)
+        });
 
         // SKIDROW
-        GetDLCInfoFromSteamDB.steamdb.format.skidrow = GetDLCInfoFromSteamDB.dlcEach("; {1}\n{0}\n");
+        GetDLCInfoFromSteamDB.steamdb.formats.skidrow = GetDLCInfoFromSteamDB.dlcEach("; {dlc_name}\n{dlc_id}\n");
 
         // 3DMGAME
-        GetDLCInfoFromSteamDB.steamdb.format['3dmgame'] = GetDLCInfoFromSteamDB.dlcEach("; {1}\nDLC{2} = {0}\n", true, true);
+        GetDLCInfoFromSteamDB.steamdb.formats['3dmgame'] = GetDLCInfoFromSteamDB.dlcEach("; {dlc_name}\nDLC{dlc_index} = {dlc_id}\n", true, true);
 
         // REVOLT
-        GetDLCInfoFromSteamDB.steamdb.format.revolt = GetDLCInfoFromSteamDB.dlcFormats.revolt.format(
-            GetDLCInfoFromSteamDB.steamdb.appid,
-            GetDLCInfoFromSteamDB.steamdb.dlcsTot,
-            GetDLCInfoFromSteamDB.dlcEach("; {1}\n{2} = {0}\n"),
-            GetDLCInfoFromSteamDB.dlcEach("; {1}\n{0} = true\n"));
+        GetDLCInfoFromSteamDB.steamdb.formats.revolt = str_format(GetDLCInfoFromSteamDB.dlcFormats.revolt, {
+            appid: GetDLCInfoFromSteamDB.steamdb.appid,
+            dlcsTot: GetDLCInfoFromSteamDB.steamdb.dlcsTot,
+
+            dlcEach_1: GetDLCInfoFromSteamDB.dlcEach("; {dlc_name}\n{dlc_index} = {dlc_id}\n"),
+            dlcEach_2: GetDLCInfoFromSteamDB.dlcEach("; {dlc_name}\n{dlc_id} = true\n")
+        });
 
     },
 
     // DLC FORMATS
     dlcFormats: {
 
+        // CREAMAPI (FULL INI)
         creamAPI: "[steam]\n" +
-            "; Application ID (http://store.steampowered.com/app/%appid%/)\n" +
-            "appid = {0}\n" +
-            "; Enable/disable automatic DLC unlock. Default option is set to \"false\".\n" +
-            "; Keep in mind that this option is highly experimental and won't\n" +
-            "; work if game wants to call each DLC by index.\n" +
-            "unlockall = {1}\n" +
-            "; Original Valve's steam_api.dll.\n" +
-            "; Default is \"steam_api_o.dll\".\n" +
-            "orgapi = {2}\n" +
-            "; Original Valve's steam_api64.dll.\n" +
-            "; Default is \"steam_api64_o.dll\".\n" +
-            "orgapi64 = {3}\n" +
-            "; Enable/disable extra protection bypasser.\n" +
-            "; Default is \"false\".\n" +
-            "extraprotection = {4}\n" +
-            "; Enable/disable logging of the DLC functions.\n" +
-            "; Default is \"false\".\n" +
-            "log = {5}\n\n" +
-            "[dlc_subscription]\n" +
-            "; This will check if the specifed\n" +
-            "; DLC is owned by the user.\n" +
-            "; Format: <dlc_id> = <true/false>\n" +
-            "; e.g. : 12345 = true\n" +
-            ";        12346 = true\n" +
-            ";        12347 = true\n" +
-            "; If the DLC is not specified in this section\n" +
-            "; then it won't be subscribed.\n" +
-            "; Also if the value is set to \"false\" the DLC\n" +
-            "; won't be subscribed either.\n\n" +
-            "{6}" +
-            "\n[dlc_index]\n" +
-            "; DLC handling.\n" +
-            "; Format: <dlc_index> = <dlc_id>\n" +
-            "; e.g. : 0 = 12345\n" +
-            ";        1 = 12346\n" +
-            ";        2 = 12347\n\n" +
-            "{7}" +
-            "\n[dlc_names]\n" +
-            "; Names for the DLCs index put above.\n" +
-            "; Use this only if needed.\n" +
-            "; Format: <dlc_index> = <dlc_name>\n" +
-            "; e.g. : 0 = DLC Name 0\n" +
-            ";        1 = DLC Name 1\n" +
-            ";        2 = DLC Name 2\n\n" +
-            "{8}",
+        "appid = {appid}\n" +
+        "unlockall = {unlock_all}\n" +
+        "orgapi = {orgapi}\n" +
+        "orgapi64 = {orgapi64}\n" +
+        "extraprotection = {extraprotection}\n" +
+        "log = {log}\n\n" +
+        "[dlc_subscription]\n" +
+        "{dlcEach_1}\n" +
+        "[dlc_index]\n" +
+        "{dlcEach_2}\n" +
+        "[dlc_names]\n" +
+        "{dlcEach_3}",
 
+        // CREAMAPI (ONLY DLC LIST)
         creamAPI_o: "[dlc_subscription]\n" +
-            "{0}" +
-            "\n[dlc_index]\n" +
-            "{1}" +
-            "\n[dlc_names]\n" +
-            "{2}",
+        "{dlcEach_1}\n" +
+        "[dlc_index]\n" +
+        "{dlcEach_2}\n" +
+        "[dlc_names]\n" +
+        "{dlcEach_3}",
 
+        // LUMAEMU (FULL INI)
         lumaemu: "[SteamStatus]\n" +
-            "# This will make games think Steam is in offline mode\n" +
-            "Offline = {0}\n\n" +
-            "[Player]\n" +
-            "PlayerName = {1}\n" +
-            "PlayerNickname = {1}\n" +
-            "ClanName = {1}\n" +
-            "ClanTag = {1}\n" +
-            "OpenNameChanger = {2}\n\n" +
-            "[Minidumps]\n" +
-            "WriteMinidumps = 1\n\n" +
-            "[Language]\n" +
-            "GameLanguage = {3}\n\n" +
-            "[Cache]\n" +
-            "#These options are only read by Steam.dll\n\n" +
-            "# This will enable loading apps from GCF files\n" +
-            "UseCacheFiles = 0\n\n" +
-            "# Full path to the Steamapps folder, there must be an backslash at the end of the path.\n" +
-            "CachePath = C:\\Program Files (x86)\\Steam\\steamapps\\\n\n" +
-            "[Log]\n" +
-            "# Create LumaEmu.log and LumaEmu_Steamclient.log\n" +
-            "LogFile = {4}\n\n" +
-            "[MasterServer]\n" +
-            "# Set this to 1 to use Valve master server or set it to 2 to use setti master server, this setting is only used by Steam.dll.\n" +
-            "Master = 1\n\n" +
-            "[DLC]\n" +
-            "# With this you can enable and disable DLCs in games\n" +
-            "# If you set this to 2, the LumaEmu_DLC folder will be used without trying to get new DLC AppIds from the internet.\n" +
-            "# If you set this to 3, you can manually specify the DLC you want to be enabled.\n" +
-            "# DLC_AppID = 1\n\n" +
-            "UnlockDLC = 3\n\n" +
-            "{5}\n" +
-            "[Overlay]\n" +
-            "# This will tell the game if the Steam Overlay is available\n" +
-            "EnableOverlay = {6}\n\n" +
-            "[StatsAndAchievements]\n" +
-            "# Save Stats and Achievements\n" +
-            "# 1 will save both, 2 will save achievements and 3 will save stats\n" +
-            "Save = {7}\n\n" +
-            "[SourceEngine]\n" +
-            "# With this enabled you will not lose FPS when the game window does not have focus, only works with Source Engine games.\n" +
-            "FocusPatch = 0\n\n" +
-            "[ServerAuthorization]\n" +
-            "BlockLumaEmu = {8}\n" +
-            "BlockLegitSteam = {9}\n" +
-            "BlockSmartSteamEmu = {10}\n" +
-            "BlockVACBannedAccounts = {11}\n" +
-            "BlockUnknownClient = {12}\n\n" +
-            "[VR]\n" +
-            "# This will tell games that Steam is running in VR mode.\n" +
-            "EnableVR = 0\n\n" +
-            "[RemoteStorage]\n" +
-            "# Specify custom path to save SteamCloud files\n" +
-            "SaveInCustomPath = {13}\n" +
-            "Path = {14}\n\n" +
-            "[LumaGameLauncher]\n" +
-            "# Used by LumaGameLauncher_x86.exe and LumaGameLauncher_x64.exe\n" +
-            "GameExe = {15} -appid {16} {17}\n" +
-            "LoadLumaCEG = 0\n\n" +
-            "# Requires the \"-appid\" parameter to be used on the game exe\n" +
-            "AppIDSetByLauncher = 1\n\n" +
-            "[SteamClient]\n" +
-            "# Set path to steamclient.dll or steamclient64.dll (not the original)\n" +
-            "LumaEmuClientDll = {18}\n" +
-            "LumaEmuClientDll64 = {19}\n",
+        "Offline = {offline}\n\n" +
+        "[Player]\n" +
+        "PlayerName = {username}\n" +
+        "PlayerNickname = {username}\n" +
+        "ClanName = {username}\n" +
+        "ClanTag = {username}\n" +
+        "OpenNameChanger = {opennamechanger}\n\n" +
+        "[Minidumps]\n" +
+        "WriteMinidumps = 1\n\n" +
+        "[Language]\n" +
+        "GameLanguage = {gamelanguage}\n\n" +
+        "[Cache]\n" +
+        "UseCacheFiles = 0\n" +
+        "CachePath = C:\\Program Files (x86)\\Steam\\steamapps\\\n\n" +
+        "[Log]\n" +
+        "LogFile = {logfile}\n\n" +
+        "[MasterServer]\n" +
+        "Master = 1\n\n" +
+        "[DLC]\n" +
+        "UnlockDLC = 3\n\n" +
+        "{dlcEach_1}\n" +
+        "[Overlay]\n" +
+        "EnableOverlay = {enableoverlay}\n\n" +
+        "[StatsAndAchievements]\n" +
+        "Save = {save}\n\n" +
+        "[SourceEngine]\n" +
+        "FocusPatch = 0\n\n" +
+        "[ServerAuthorization]\n" +
+        "BlockLumaEmu = {blocklumaemu}\n" +
+        "BlockLegitSteam = {blocklegitsteam}\n" +
+        "BlockSmartSteamEmu = {blocksmartsteamemu}\n" +
+        "BlockVACBannedAccounts = {blockVACbannedaccounts}\n" +
+        "BlockUnknownClient = {blockunknownclient}\n\n" +
+        "[VR]\n" +
+        "EnableVR = 0\n\n" +
+        "[RemoteStorage]\n" +
+        "SaveInCustomPath = {saveincustompath}\n" +
+        "Path = {path}\n\n" +
+        "[LumaGameLauncher]\n" +
+        "GameExe = {config_exe} -appid {appid} {config_arg}\n" +
+        "LoadLumaCEG = 0\n" +
+        "AppIDSetByLauncher = 1\n\n" +
+        "[SteamClient]\n" +
+        "LumaEmuClientDll = {lumaemuclientDll}\n" +
+        "LumaEmuClientDll64 = {lumaemuclientDll64}\n",
 
-        smartsteamemu: "[Launcher]\n" +
-            "Target = {0}\n" +
-            "; StartIn =\n" +
-            "CommandLine = {1}\n\n" +
-            "SteamClientPath = SmartSteamEmu.dll\n" +
-            "SteamClientPath64 = SmartSteamEmu64.dll\n" +
-            "Persist = 0\n" +
-            "InjectDll = 0\n" +
-            "ParanoidMode = 0\n\n" +
-            "[SmartSteamEmu]\n" +
-            "AppId = {2}\n" +
-            "Language = english\n" +
-            "SteamIdGeneration = GenerateRandom\n" +
-            "; ManualSteamId = 0\n" +
-            "LowViolence = 0\n" +
-            "Offline = 0\n\n" +
-            "AvatarFilename = avatar.png\n" +
-            "PersonaName = {4}\n" +
-            "AutomaticallyJoinInvite = 1\n\n" +
-            "StorageOnAppdata = 1\n" +
-            "SeparateStorageByName = 0\n" +
-            "; RemoteStoragePath = %USERPROFILE%\\Documents\\My Games\\%SteamAppId%\n\n" +
-            "EnableHTTP = 0\n" +
-            "EnableInGameVoice = 0\n" +
-            "EnableLobbyFilter = 1\n" +
-            "EnableOverlay = 0\n" +
-            "DisableFriendList = 0\n" +
-            "DisableLeaderboard = 0\n" +
-            "SecuredServer = 1\n" +
-            "VR = 0\n" +
-            "RandomItemAwards = 1\n" +
-            "DisableGC = 0\n\n" +
-            "MasterServer = 188.40.40.201:27010\n" +
-            "MasterServerGoldSrc = 188.40.40.201:27010\n\n" +
-            "QuickJoinHotkey = SHIFT + TAB\n\n" +
-            "[SSEOverlay]\n" +
-            "DisableOverlay = 0\n" +
-            "OnlineMode = 1\n" +
-            "Language = english\n" +
-            "ScreenshotHotkey = F12\n\n" +
-            "HookRefCount = 1\n" +
-            "; OnlineKey =\n\n" +
-            "[DLC]\n" +
-            "Default = 0\n\n" +
-            "src103582791433980119 = Payday 2 Community\n" +
-            "src103582791435633447 = Payday 2 Mod - HoxHud\n\n" +
-            "{3}\n" +
-            "[Achievements]\n" +
-            "UnlockAll = 0\n" +
-            "FailOnNonExistenceStats = 0\n\n" +
-            "[PlayerManagement]\n" +
-            "AllowAnyoneConnect = 1\n\n" +
-            "[DirectPatch]\n\n" +
-            "[Debug]\n" +
-            "EnableLog = 0\n" +
-            "MarkLogHotkey = CTRL + ALT + M\n" +
-            "LogFilter = User logged on\n\n" +
-            "Minidump = 1\n\n" +
-            "[Networking]\n" +
-            "BroadcastAddress = 255.255.255.255\n" +
-            "ListenPort = 31313\n" +
-            "MaximumPort = 10\n" +
-            "DiscoveryInterval = 3\n" +
-            "MaximumConnection = 200\n\n" +
-            "[SteamApi]\n" +
-            "OriginalSteamApi = ValveApi.dll\n" +
-            "OriginalSteamApi64 = ValveApi64.dll\n\n" +
-            "SteamClient = 15\n" +
-            "SteamUser = 16\n" +
-            "SteamGameServer = 1\n" +
-            "SteamFriends = 13\n" +
-            "SteamUtils = 5\n" +
-            "SteamMatchMaking = 9\n" +
-            "SteamMatchMakingServers = 2\n" +
-            "SteamUserStats = 11\n" +
-            "SteamGameServerStats = 1\n" +
-            "SteamApps = 5\n" +
-            "SteamMasterServerUpdater = 1\n" +
-            "SteamNetworking = 5\n" +
-            "SteamRemoteStorage = 10\n" +
-            "SteamScreenshots = 1\n" +
-            "SteamHTTP = 2\n" +
-            "SteamUnifiedMessages = 1\n" +
-            "SteamController = 1\n" +
-            "SteamUGC = 1\n" +
-            "SteamAppList = 1\n" +
-            "SteamMusic = 1\n" +
-            "SteamMusicRemote = 1\n" +
-            "SteamHTMLSurface = 2\n",
+        // RELOADED
+        reloaded: "AppName = \"{appid_name}\"\n" +
+        "{dlcEach_1}" +
+        "DLCCount = {dlcsTot}\n",
 
-        smartsteamemu_m: "[Launcher]\n" +
-            "Target = {0}\n" +
-            "CommandLine = {1}\n" +
-            "SteamClientPath = SmartSteamEmu.dll\n" +
-            "SteamClientPath64 = SmartSteamEmu64.dll\n\n" +
-            "[SmartSteamEmu]\n" +
-            "AppId = {2}\n\n" +
-            "[DLC]\n" +
-            "Default = 0\n\n" +
-            "{3}",
-
-        reloaded: "AppName = \"{0}\"\n" +
-            "{1}" +
-            "DLCCount = {2}\n",
-
-        revolt: "[DLC]\n\n" +
-            "; Base DLC AppID for enumeration, if not set and AppID is set it uses AppID\n" +
-            "DLCEnumBase = {0}\n\n" +
-            "; number of DLCs enumerated\n" +
-            "DLCEnumCount = {1}\n\n" +
-            "; By default DLC active or not\n" +
-            "; Default value will override all other values, so setting this to true will enable all DLCs!\n" +
-            "Default = false\n\n" +
-            "; List of all DLCs the app should own. Index starts from 0\n" +
-            "; <index> = <appid>\n\n" +
-            "{2}" +
-            "\n[Subscriptions]\n\n" +
-            "; By default subscribed or not\n" +
-            "; Default value will override all other values, so setting this to true will enable all Subscriptions!\n" +
-            "Default = false\n\n" +
-            "; Manual List\n" +
-            "; <appid> = <true/false>\n\n" +
-            "{3}"
+        // REVOLT
+        revolt: "[DLC]\n" +
+        "DLCEnumBase = {appid}\n" +
+        "DLCEnumCount = {dlcsTot}\n" +
+        "Default = false\n\n" +
+        "; <index> = <appid>\n" +
+        "{dlcEach_1}\n" +
+        "[Subscriptions]\n" +
+        "Default = false\n\n" +
+        "; <appid> = <true/false>\n" +
+        "{dlcEach_2}"
 
     }
 
 };
 
 // FUNCTIONS
-if (!String.prototype.repeat) {
+function str_format(str, args) {
 
-    String.prototype.repeat = function (n) {
+    for (var key in args) {
+        if (args.hasOwnProperty(key)) {
 
-        n = (n || 1) + 1;
+            var value = args[key];
+            var re = new RegExp("{" + key + "}", "g");
 
-        return Array(n).join(this);
+            str = str.replace(re, value);
 
-    };
+        }
+    }
 
-}
-
-if (!String.prototype.format) {
-
-    String.prototype.format = function () {
-
-        var args = arguments;
-
-        return this.replace(/{(\d+)}/g, function (match, number) {
-
-            return typeof args[number] !== "undefined" ? args[number] : match;
-
-        });
-
-    };
+    return str;
 
 }
 
@@ -1394,8 +1214,7 @@ var Format = {
     add: function (name, val) {
 
         var data = this.all();
-        var prefix = "custom_format_";
-        var uniqueid = prefix + new Date().getTime();
+        var uniqueid = "custom_format_" + new Date().getTime();
 
         data[uniqueid] = {
             "name": name,
@@ -1411,7 +1230,7 @@ var Format = {
 
         var data = this.all();
 
-        if (Object.keys(data).length > 0) {
+        if (uniqueid in data) {
 
             delete data[uniqueid];
 
@@ -1466,7 +1285,7 @@ var Storage = {
     // CHECK OPTION
     check: function (item) {
 
-        return item !== null && item.length > 0;
+        return item !== null && item.length;
 
     }
 
