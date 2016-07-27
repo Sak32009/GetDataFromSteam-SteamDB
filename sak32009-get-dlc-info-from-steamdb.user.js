@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          1.9.4
+// @version          1.9.5
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -237,7 +237,7 @@ var GetDLCInfoFromSteamDB = {
         }).text("LumaEmu (Only DLC Section)").appendTo(wrapper_select);
 
         // CREAMAPI
-        $("<option>").prop("disabled", true).text(option_sep + " v2.0.0.5").appendTo(wrapper_select);
+        $("<option>").prop("disabled", true).text(option_sep + " v2.0.0.6").appendTo(wrapper_select);
         $("<option>").attr({
             value: "creamAPI",
             "data-file": "cream_api.ini"
@@ -506,28 +506,60 @@ var GetDLCInfoFromSteamDB = {
             "                            <table class='table table-bordered table-fixed'>" +
             "                                <thead>" +
             "                                    <tr>" +
+            "                                        <th>Key</th>" +
             "                                        <th>Description</th>" +
             "                                        <th>Input</th>" +
             "                                    </tr>" +
             "                                </thead>" +
             "                                <tbody>" +
             "                                    <tr>" +
+            "                                        <td>newappid</td>" +
+            "                                        <td>Application ID to override (used when the wrapper mode is on)</td>" +
+            "                                        <td><input type='text' class='input-block' name='creamapi_newappid' placeholder='0'></td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>unlockall</td>" +
             "                                        <td>Enable/disable automatic DLC unlock</td>" +
             "                                        <td><input type='checkbox' name='creamapi_unlock_all'></td>" +
             "                                    </tr>" +
             "                                    <tr>" +
+            "                                        <td>orgapi</td>" +
             "                                        <td>Original Valve's steam_api.dll</td>" +
             "                                        <td><input type='text' class='input-block' name='creamapi_orgapi' placeholder='steam_api_o.dll'></td>" +
             "                                    </tr>" +
             "                                    <tr>" +
+            "                                        <td>orgapi64</td>" +
             "                                        <td>Original Valve's steam_api64.dll</td>" +
             "                                        <td><input type='text' class='input-block' name='creamapi_orgapi64' placeholder='steam_api64_o.dll'></td>" +
             "                                    </tr>" +
             "                                    <tr>" +
+            "                                        <td>extraprotection</td>" +
             "                                        <td>Enable/disable extra protection bypasser</td>" +
             "                                        <td><input type='checkbox' name='creamapi_extraprotection'></td>" +
             "                                    </tr>" +
             "                                    <tr>" +
+            "                                        <td>extraprotectionlevel</td>" +
+            "                                        <td>ExtraProtection level</td>" +
+            "                                        <td>" +
+            "                                            <select class='form-control input-block' name='creamapi_extraprotectionlevel'>" +
+            "                                                <option value='0' selected>Minimum (Default)</option>" +
+            "                                                <option value='1'>Medium</option>" +
+            "                                                <option value='2'>Maximum</option>" +
+            "                                            </select>" +
+            "                                        </td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>wrappermode</td>" +
+            "                                        <td>Turn on the \"light\" wrapper mode.</td>" +
+            "                                        <td><input type='checkbox' name='creamapi_wrappermode'></td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>emudll</td>" +
+            "                                        <td>Emulator library that is used for the stats and storage handling (only works when the wrapper mode is on).</td>" +
+            "                                        <td><input type='text' class='input-block' name='creamapi_emudll' placeholder='emu.dll'></td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>log</td>" +
             "                                        <td>Enable/disable logging of the DLC functions</td>" +
             "                                        <td><input type='checkbox' name='creamapi_log'></td>" +
             "                                    </tr>" +
@@ -1030,10 +1062,14 @@ var GetDLCInfoFromSteamDB = {
         GetDLCInfoFromSteamDB.steamdb.formats.creamAPI = str_format(GetDLCInfoFromSteamDB.dlcFormats.creamAPI, {
             appid: GetDLCInfoFromSteamDB.steamdb.appid,
 
+            newappid: Storage.getDef("creamapi_newappid", "0"),
             unlock_all: Storage.getDef("creamapi_unlock_all", "false"),
             orgapi: Storage.getDef("creamapi_orgapi", "steam_api_o.dll"),
             orgapi64: Storage.getDef("creamapi_orgapi64", "steam_api64_o.dll"),
             extraprotection: Storage.getDef("creamapi_extraprotection", "false"),
+            extraprotectionlevel: Storage.getDef("creamapi_extraprotectionlevel", "0"),
+            wrappermode: Storage.getDef("creamapi_wrappermode", "false"),
+            emudll: Storage.getDef("creamapi_emudll", "emu.dll"),
             log: Storage.getDef("creamapi_log", "false"),
 
             dlcEach_1: GetDLCInfoFromSteamDB.dlcEach("; {dlc_name}\n{dlc_id} = true\n"),
@@ -1079,10 +1115,14 @@ var GetDLCInfoFromSteamDB = {
         // CREAMAPI (FULL INI)
         creamAPI: "[steam]\n" +
         "appid = {appid}\n" +
+        "newappid = {newappid}\n" +
         "unlockall = {unlock_all}\n" +
         "orgapi = {orgapi}\n" +
         "orgapi64 = {orgapi64}\n" +
         "extraprotection = {extraprotection}\n" +
+        "extraprotectionlevel = {extraprotectionlevel}\n" +
+        "wrappermode = {wrappermode}\n" +
+        "emudll = {emudll}\n" +
         "log = {log}\n\n" +
         "[dlc_subscription]\n" +
         "{dlcEach_1}\n" +
