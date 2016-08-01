@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          1.9.5
+// @version          2.0.0
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -24,7 +24,6 @@ var GetDLCInfoFromSteamDB = {
     steamdb: {
         dlcs: [],
         dlcsTot: 0,
-        formats: {},
         config_exe: "",
         config_arg: "",
         appid: "",
@@ -124,10 +123,12 @@ var GetDLCInfoFromSteamDB = {
             },
             // TEXTAREA
             "#GetDLCInfoFromSteamDB_textarea": {
-                "resize": "none",
-                "width": "100%",
                 "margin-bottom": "10px",
                 "display": "none"
+            },
+            ".GetDLCInfoFromSteamDB_textarea": {
+                "resize": "none",
+                "width": "100%"
             },
             // SELECT
             "#GetDLCInfoFromSteamDB_select": {
@@ -216,7 +217,7 @@ var GetDLCInfoFromSteamDB = {
         $("<textarea>").attr({
             id: "GetDLCInfoFromSteamDB_textarea",
             rows: "20"
-        }).insertAfter(".tab-pane#dlc > h2");
+        }).addClass("GetDLCInfoFromSteamDB_textarea").insertAfter(".tab-pane#dlc > h2");
 
         // WRAPPER BUTTONS
         var wrapper_buttons = $("<div>").attr("id", "GetDLCInfoFromSteamDB_buttons").addClass("pull-right");
@@ -237,7 +238,7 @@ var GetDLCInfoFromSteamDB = {
         }).text("LumaEmu (Only DLC Section)").appendTo(wrapper_select);
 
         // CREAMAPI
-        $("<option>").prop("disabled", true).text(option_sep + " v2.0.0.6").appendTo(wrapper_select);
+        $("<option>").prop("disabled", true).text(option_sep + " v2.0.0.6 Hotfix").appendTo(wrapper_select);
         $("<option>").attr({
             value: "creamAPI",
             "data-file": "cream_api.ini"
@@ -301,7 +302,7 @@ var GetDLCInfoFromSteamDB = {
         }).text("REVOLT").appendTo(wrapper_select);
 
         // CUSTOM FORMAT
-        $("<option>").prop("disabled", true).text(option_sep).appendTo(wrapper_select);
+        $("<option>").prop("disabled", true).text(option_sep + " Custom Format").appendTo(wrapper_select);
         wrapper_select.appendTo(wrapper_buttons);
 
         // ..... SAVE SELECTION
@@ -359,7 +360,7 @@ var GetDLCInfoFromSteamDB = {
                 "; Support: " + GetDLCInfoFromSteamDB.script.support + "\n\n";
 
             // FORMAT DATA
-            result += GetDLCInfoFromSteamDB.steamdb.formats[format_name];
+            result += GetDLCInfoFromSteamDB.dlcFormats[format_name];
 
             // RESULT
             $("#GetDLCInfoFromSteamDB_download").attr({
@@ -513,11 +514,6 @@ var GetDLCInfoFromSteamDB = {
             "                                </thead>" +
             "                                <tbody>" +
             "                                    <tr>" +
-            "                                        <td>newappid</td>" +
-            "                                        <td>Application ID to override (used when the wrapper mode is on)</td>" +
-            "                                        <td><input type='text' class='input-block' name='creamapi_newappid' placeholder='0'></td>" +
-            "                                    </tr>" +
-            "                                    <tr>" +
             "                                        <td>unlockall</td>" +
             "                                        <td>Enable/disable automatic DLC unlock</td>" +
             "                                        <td><input type='checkbox' name='creamapi_unlock_all'></td>" +
@@ -550,18 +546,48 @@ var GetDLCInfoFromSteamDB = {
             "                                    </tr>" +
             "                                    <tr>" +
             "                                        <td>wrappermode</td>" +
-            "                                        <td>Turn on the \"light\" wrapper mode.</td>" +
+            "                                        <td>Turn on the \"light\" wrapper mode</td>" +
             "                                        <td><input type='checkbox' name='creamapi_wrappermode'></td>" +
-            "                                    </tr>" +
-            "                                    <tr>" +
-            "                                        <td>emudll</td>" +
-            "                                        <td>Emulator library that is used for the stats and storage handling (only works when the wrapper mode is on).</td>" +
-            "                                        <td><input type='text' class='input-block' name='creamapi_emudll' placeholder='emu.dll'></td>" +
             "                                    </tr>" +
             "                                    <tr>" +
             "                                        <td>log</td>" +
             "                                        <td>Enable/disable logging of the DLC functions</td>" +
             "                                        <td><input type='checkbox' name='creamapi_log'></td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>newappid</td>" +
+            "                                        <td>Application ID to override (used when the wrapper mode is on)</td>" +
+            "                                        <td><input type='text' class='input-block' name='creamapi_newappid' placeholder='0'></td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>loademu</td>" +
+            "                                        <td>Load steam emulator library</td>" +
+            "                                        <td><input type='checkbox' name='creamapi_loademu'></td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>emudll</td>" +
+            "                                        <td>Emulator library that is used for the stats and storage handling.</td>" +
+            "                                        <td><input type='text' class='input-block' name='creamapi_emudll' placeholder='emu.dll'></td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>wrapperremotestorage</td>" +
+            "                                        <td>Use the emulator storage system</td>" +
+            "                                        <td><input type='checkbox' name='creamapi_wrapperremotestorage'></td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>wrapperuserstats</td>" +
+            "                                        <td>Use the emulator stats/achievements system</td>" +
+            "                                        <td><input type='checkbox' name='creamapi_wrapperuserstats'></td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>wrapperutils</td>" +
+            "                                        <td>Use the emulator utils system</td>" +
+            "                                        <td><input type='checkbox' name='creamapi_wrapperutils'></td>" +
+            "                                    </tr>" +
+            "                                    <tr>" +
+            "                                        <td>wrappercallbacks</td>" +
+            "                                        <td>User the emulator callbacks system</td>" +
+            "                                        <td><input type='checkbox' name='creamapi_wrappercallbacks'></td>" +
             "                                    </tr>" +
             "                                </tbody>" +
             "                            </table>" +
@@ -701,6 +727,79 @@ var GetDLCInfoFromSteamDB = {
             "        <div class='nav-tabs-pane' id='tab_custom_format'>" +
             "            <div class='text-center'>" +
             "                <p>Create your own custom format!</p>" +
+            "                <table class='table table-bordered table-fixed'>" +
+            "                    <thead>" +
+            "                        <tr>" +
+            "                            <th>Tag</th>" +
+            "                            <th>Value</th>" +
+            "                            <th>BBCode</th>" +
+            "                            <th>Options</th>" +
+            "                        </tr>" +
+            "                    </thead>" +
+            "                    <tbody>" +
+            "                        <tr>" +
+            "                            <td>steamdb</td>" +
+            "                            <td>dlcsTot</td>" +
+            "                            <td>[steamdb]dlcsTot[/steamdb]</td>" +
+            "                            <td></td>" +
+            "                        </tr>" +
+            "                        <tr>" +
+            "                            <td>steamdb</td>" +
+            "                            <td>config_exe</td>" +
+            "                            <td>[steamdb]config_exe[/steamdb]</td>" +
+            "                            <td></td>" +
+            "                        </tr>" +
+            "                        <tr>" +
+            "                            <td>steamdb</td>" +
+            "                            <td>config_arg</td>" +
+            "                            <td>[steamdb]config_arg[/steamdb]</td>" +
+            "                            <td></td>" +
+            "                        </tr>" +
+            "                        <tr>" +
+            "                            <td>steamdb</td>" +
+            "                            <td>appid</td>" +
+            "                            <td>[steamdb]appid[/steamdb]</td>" +
+            "                            <td></td>" +
+            "                        </tr>" +
+            "                        <tr>" +
+            "                            <td>steamdb</td>" +
+            "                            <td>appid_name</td>" +
+            "                            <td>[steamdb]appid_name[/steamdb]</td>" +
+            "                            <td></td>" +
+            "                        </tr>" +
+            "                        <tr>" +
+            "                            <td>option</td>" +
+            "                            <td>username</td>" +
+            "                            <td>[option=Sak32009]username[/option]</td>" +
+            "                            <td><b>option=Sak32009</b> Set default value</td>" +
+            "                        </tr>" +
+            "                        <tr>" +
+            "                            <td>option</td>" +
+            "                            <td>gamelanguage</td>" +
+            "                            <td>[option=english]gamelanguage[/option]</td>" +
+            "                            <td><b>option=english</b> Set default value</td>" +
+            "                        </tr>" +
+            "                        <tr>" +
+            "                            <td>dlcEach</td>" +
+            "                            <td>; {dlc_name}\n{dlc_index} = {dlc_id}</td>" +
+            "                            <td>[dlcEach]; {dlc_name}\n{dlc_index} = {dlc_id}[/option]</td>" +
+            "                            <td></td>" +
+            "                        </tr>" +
+            "                        <tr>" +
+            "                            <td>dlcEach</td>" +
+            "                            <td>; {dlc_name}\n{dlc_index} = {dlc_id}</td>" +
+            "                            <td>[dlcEach=true]; {dlc_name}\n{dlc_index} = {dlc_id}[/option]</td>" +
+            "                            <td><b>dlcEach=true</b> DLC Index start from 0</td>" +
+            "                        </tr>" +
+            "                        <tr>" +
+            "                            <td>dlcEach</td>" +
+            "                            <td>; {dlc_name}\n{dlc_index} = {dlc_id}</td>" +
+            "                            <td>[dlcEach=true:true:3]; {dlc_name}\n{dlc_index} = {dlc_id}[/option]</td>" +
+            "                            <td><b>dlcEach=true:true:3</b> DLC Index start from 0 and have prefix 000</td>" +
+            "                        </tr>" +
+            "                    </tbody>" +
+            "                </table>" +
+            "                <p>For <b>dlcEach</b> value</p>" +
             "                <ul>" +
             "                    <li><b>{dlc_id}</b> = DLC APPID</li>" +
             "                    <li><b>{dlc_name}</b> = DLC NAME</li>" +
@@ -724,7 +823,7 @@ var GetDLCInfoFromSteamDB = {
             "                        </tr>" +
             "                        <tr>" +
             "                            <td>Format</td>" +
-            "                            <td><input type='text' class='input-block' name='custom_format_val' placeholder='{dlc_index} = {dlc_id} // {dlc_name}'></td>" +
+            "                            <td><textarea class='GetDLCInfoFromSteamDB_textarea' style='margin:0' name='custom_format_val' rows='5'>[steam]\nappid = [steamdb]appid[/steamdb]\nlanguage = [option=english]gamelanguage[/option]\n\n[dlc]\n[dlcEach]; {dlc_name}\n{dlc_index} = {dlc_id}\n[/dlcEach]</textarea></td>" +
             "                        </tr>" +
             "                    </tbody>" +
             "                </table>" +
@@ -783,18 +882,19 @@ var GetDLCInfoFromSteamDB = {
         // REMOVE OPTION FROM GetDLCInfoFromSteamDB_select
         GetDLCInfoFromSteamDB_select.find("option[data-custom-format]").remove();
 
-        // REMOVE FORMATS FROM steamdb.formats
-        for (var format_key in GetDLCInfoFromSteamDB.steamdb.formats) {
-            if (GetDLCInfoFromSteamDB.steamdb.formats.hasOwnProperty(format_key)) {
+        // REMOVE FORMATS FROM steamdb.dlcFormats
+        for (var format_key in GetDLCInfoFromSteamDB.dlcFormats) {
+            if (GetDLCInfoFromSteamDB.dlcFormats.hasOwnProperty(format_key)) {
                 if (format_key.substring(0, 14) == "custom_format_") {
-                    delete GetDLCInfoFromSteamDB.steamdb.formats[format_key];
+                    delete GetDLCInfoFromSteamDB.dlcFormats[format_key];
                 }
             }
         }
 
-        // FORMAT ALL
+        // RESULT
         var result = "";
-        var FormatALL = Format.all();
+        // CUSTOM FORMAT ALL
+        var FormatALL = CustomFormat.all();
 
         if (Object.keys(FormatALL).length) {
             for (var uniqueid in FormatALL) {
@@ -806,7 +906,7 @@ var GetDLCInfoFromSteamDB = {
 
                     result += "<tr>" +
                         "    <td class='text-center'>" + name + "</td>" +
-                        "    <td class='text-center'>" + val + "</td>" +
+                        "    <td class='text-center'><textarea class='GetDLCInfoFromSteamDB_textarea' style='margin:0' rows='5' readonly>" + val + "</textarea></td>" +
                         "    <td class='text-center'><button type='button' class='btn btn-sm btn-danger' id='GetDLCInfoFromSteamDB_list_custom_format_remove' data-custom-format-id='" + uniqueid + "'>Remove</button></td>" +
                         "</tr>";
 
@@ -818,7 +918,7 @@ var GetDLCInfoFromSteamDB = {
                     }).text(name).appendTo(GetDLCInfoFromSteamDB_select);
 
                     // ADD FORMAT
-                    GetDLCInfoFromSteamDB.steamdb.formats[uniqueid] = GetDLCInfoFromSteamDB.dlcEach(val);
+                    GetDLCInfoFromSteamDB.dlcFormatsOrg[uniqueid] = val;
 
                 }
             }
@@ -826,6 +926,9 @@ var GetDLCInfoFromSteamDB = {
 
         // ADD TO TABLE
         $("#GetDLCInfoFromSteamDB_list_custom_format tbody").html(result);
+
+        // RELOAD DLCs FORMAT
+        GetDLCInfoFromSteamDB.createDLCFormats();
 
     },
 
@@ -890,7 +993,7 @@ var GetDLCInfoFromSteamDB = {
             var $this = $(this);
 
             var custom_format_name = $this.find("input[name='custom_format_name']");
-            var custom_format_val = $this.find("input[name='custom_format_val']");
+            var custom_format_val = $this.find("textarea[name='custom_format_val']");
             var custom_format_namev = custom_format_name.val();
             var custom_format_valv = custom_format_val.val();
 
@@ -900,8 +1003,8 @@ var GetDLCInfoFromSteamDB = {
                 custom_format_name.val("");
                 custom_format_val.val("");
 
-                // ADD FORMAT
-                Format.add(custom_format_namev, custom_format_valv);
+                // ADD CUSTOM FORMAT
+                CustomFormat.add(custom_format_namev, custom_format_valv);
 
                 // LOAD CUSTOM FORMAT
                 GetDLCInfoFromSteamDB.loadCustomFormat();
@@ -924,8 +1027,8 @@ var GetDLCInfoFromSteamDB = {
 
             var data_id = $(this).attr("data-custom-format-id");
 
-            // REMOVE FORMAT
-            Format.remove(data_id);
+            // REMOVE CUSTOM FORMAT
+            CustomFormat.remove(data_id);
 
             // LOAD CUSTOM FORMAT
             GetDLCInfoFromSteamDB.loadCustomFormat();
@@ -954,11 +1057,11 @@ var GetDLCInfoFromSteamDB = {
     createCSRINRUSearch: function () {
 
         // CS.RIN.RU SEARCH
-        $( //
+        $(//
             "<li>" +
             "    <form method='post' action='http://cs.rin.ru/forum/search.php'>\n" +
             "        <input name='keywords' value='" + GetDLCInfoFromSteamDB.steamdb.appid_name + "' hidden type='text'>" +
-            "        <button class='btn btn-sm' type='submit'><img src=' data:image/png;base64,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'> CS.RIN.RU " + GetDLCInfoFromSteamDB.steamdb.appid_name + "</button>" +
+            "        <button class='btn btn-sm' type='submit'><img src='data:image/png;base64,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'> CS.RIN.RU " + GetDLCInfoFromSteamDB.steamdb.appid_name + "</button>" +
             "        <input value='10' name='fid[]' type='hidden'>" +
             "        <input name='sr' value='topics' type='hidden'>" +
             "        <input name='terms' value='any' type='hidden'>" +
@@ -985,7 +1088,7 @@ var GetDLCInfoFromSteamDB = {
                 var dlc_name = GetDLCInfoFromSteamDB.steamdb.dlcs[dlc_id];
                 var dlc_index = GetDLCInfoFromSteamDB.dlcIndexFormat(index, format_index, format_index_zeros);
 
-                result += str_format(string, {
+                result += GetDLCInfoFromSteamDB.dlcEachFormat(string, {
                     "dlc_id": dlc_id,
                     "dlc_name": dlc_name,
                     "dlc_index": dlc_index
@@ -1018,213 +1121,237 @@ var GetDLCInfoFromSteamDB = {
 
     },
 
+    // DLC EACH FORMAT
+    dlcEachFormat: function (str, args) {
+
+        for (var key in args) {
+            if (args.hasOwnProperty(key)) {
+
+                var value = args[key];
+                var re = new RegExp("{" + key + "}", "g");
+
+                str = str.replace(re, value);
+
+            }
+        }
+
+        return str;
+
+    },
+
     // CREATE DLC FORMATS
     createDLCFormats: function () {
 
-        // CODEX (ID = NAME) & SMARTSTEAMEMU (ONLY DLC LIST) & ALI213
-        GetDLCInfoFromSteamDB.steamdb.formats.codex =
-            GetDLCInfoFromSteamDB.steamdb.formats.smartsteamemu_o =
-                GetDLCInfoFromSteamDB.steamdb.formats.ali213 = GetDLCInfoFromSteamDB.dlcEach("{dlc_id} = \"{dlc_name}\"\n");
-
-        // CODEX (DLC00000, DLCName)
-        GetDLCInfoFromSteamDB.steamdb.formats.codex_t = GetDLCInfoFromSteamDB.dlcEach("DLC{dlc_index} = {dlc_id}\nDLCName{dlc_index} = \"{dlc_name}\"\n", false, true, 5);
-
-        // LUMAEMU (FULL INI)
-        GetDLCInfoFromSteamDB.steamdb.formats.lumaemu = str_format(GetDLCInfoFromSteamDB.dlcFormats.lumaemu, {
-            appid: GetDLCInfoFromSteamDB.steamdb.appid,
-            config_exe: GetDLCInfoFromSteamDB.steamdb.config_exe,
-            config_arg: GetDLCInfoFromSteamDB.steamdb.config_arg,
-
-            dlcEach_1: GetDLCInfoFromSteamDB.dlcEach("; {dlc_name}\nDLC_{dlc_id} = 1\n"),
-
-            offline: Storage.getDef("lumaemu_offline", "0"),
-            username: Storage.getDef("username", "LumaEmu"),
-            opennamechanger: Storage.getDef("lumaemu_opennamechanger", "0"),
-            gamelanguage: Storage.getDef("gamelanguage", "english"),
-            logfile: Storage.getDef("lumaemu_logfile", "1"),
-            enableoverlay: Storage.getDef("lumaemu_enableoverlay", "1"),
-            save: Storage.getDef("lumaemu_save", "1"),
-            blocklumaemu: Storage.getDef("lumaemu_blocklumaemu", "0"),
-            blocklegitsteam: Storage.getDef("lumaemu_blocklegitsteam", "0"),
-            blocksmartsteamemu: Storage.getDef("lumaemu_blocksmartsteamemu", "0"),
-            blockVACbannedaccounts: Storage.getDef("lumaemu_blockVACbannedaccounts", "1"),
-            blockunknownclient: Storage.getDef("lumaemu_blockunknownclient", "1"),
-            saveincustompath: Storage.getDef("lumaemu_saveincustompath", "0"),
-            path: Storage.getDef("lumaemu_path", ""),
-            lumaemuclientDll: Storage.getDef("lumaemu_lumaemuclientDll", "steamclient.dll"),
-            lumaemuclientDll64: Storage.getDef("lumaemu_lumaemuclientDll64", "steamclient64.dll")
-        });
-
-        // LUMAEMU (ONLY DLC LIST)
-        GetDLCInfoFromSteamDB.steamdb.formats.lumaemu_o = GetDLCInfoFromSteamDB.dlcEach("; {dlc_name}\nDLC_{dlc_id} = 1\n");
-
-        // CREAMAPI (FULL INI)
-        GetDLCInfoFromSteamDB.steamdb.formats.creamAPI = str_format(GetDLCInfoFromSteamDB.dlcFormats.creamAPI, {
-            appid: GetDLCInfoFromSteamDB.steamdb.appid,
-
-            newappid: Storage.getDef("creamapi_newappid", "0"),
-            unlock_all: Storage.getDef("creamapi_unlock_all", "false"),
-            orgapi: Storage.getDef("creamapi_orgapi", "steam_api_o.dll"),
-            orgapi64: Storage.getDef("creamapi_orgapi64", "steam_api64_o.dll"),
-            extraprotection: Storage.getDef("creamapi_extraprotection", "false"),
-            extraprotectionlevel: Storage.getDef("creamapi_extraprotectionlevel", "0"),
-            wrappermode: Storage.getDef("creamapi_wrappermode", "false"),
-            emudll: Storage.getDef("creamapi_emudll", "emu.dll"),
-            log: Storage.getDef("creamapi_log", "false"),
-
-            dlcEach_1: GetDLCInfoFromSteamDB.dlcEach("; {dlc_name}\n{dlc_id} = true\n"),
-            dlcEach_2: GetDLCInfoFromSteamDB.dlcEach("{dlc_index} = {dlc_id}\n"),
-            dlcEach_3: GetDLCInfoFromSteamDB.dlcEach("{dlc_index} = \"{dlc_name}\"\n")
-        });
-
-        // CREAMAPI (ONLY DLC LIST)
-        GetDLCInfoFromSteamDB.steamdb.formats.creamAPI_o = str_format(GetDLCInfoFromSteamDB.dlcFormats.creamAPI_o, {
-            dlcEach_1: GetDLCInfoFromSteamDB.dlcEach("; {dlc_name}\n{dlc_id} = true\n"),
-            dlcEach_2: GetDLCInfoFromSteamDB.dlcEach("{dlc_index} = {dlc_id}\n"),
-            dlcEach_3: GetDLCInfoFromSteamDB.dlcEach("{dlc_index} = \"{dlc_name}\"\n")
-        });
-
-        // RELOADED
-        GetDLCInfoFromSteamDB.steamdb.formats.reloaded = str_format(GetDLCInfoFromSteamDB.dlcFormats.reloaded, {
-            appid_name: GetDLCInfoFromSteamDB.steamdb.appid_name,
-            dlcsTot: GetDLCInfoFromSteamDB.steamdb.dlcsTot,
-
-            dlcEach_1: GetDLCInfoFromSteamDB.dlcEach("DLC{dlc_index} = {dlc_id}\nDLCName{dlc_index} = \"{dlc_name}\"\n", true, true)
-        });
-
-        // SKIDROW
-        GetDLCInfoFromSteamDB.steamdb.formats.skidrow = GetDLCInfoFromSteamDB.dlcEach("; {dlc_name}\n{dlc_id}\n");
-
-        // 3DMGAME
-        GetDLCInfoFromSteamDB.steamdb.formats['3dmgame'] = GetDLCInfoFromSteamDB.dlcEach("; {dlc_name}\nDLC{dlc_index} = {dlc_id}\n", true, true);
-
-        // REVOLT
-        GetDLCInfoFromSteamDB.steamdb.formats.revolt = str_format(GetDLCInfoFromSteamDB.dlcFormats.revolt, {
-            appid: GetDLCInfoFromSteamDB.steamdb.appid,
-            dlcsTot: GetDLCInfoFromSteamDB.steamdb.dlcsTot,
-
-            dlcEach_1: GetDLCInfoFromSteamDB.dlcEach("; {dlc_name}\n{dlc_index} = {dlc_id}\n"),
-            dlcEach_2: GetDLCInfoFromSteamDB.dlcEach("; {dlc_name}\n{dlc_id} = true\n")
-        });
+        for (var format_name in GetDLCInfoFromSteamDB.dlcFormatsOrg) {
+            if (GetDLCInfoFromSteamDB.dlcFormatsOrg.hasOwnProperty(format_name)) {
+                GetDLCInfoFromSteamDB.dlcFormats[format_name] = GetDLCInfoFromSteamDB.dlcFormatsStr(GetDLCInfoFromSteamDB.dlcFormatsOrg[format_name]);
+            }
+        }
 
     },
 
     // DLC FORMATS
-    dlcFormats: {
+    dlcFormats: {},
+
+    // DLC FORMATS ORG
+    dlcFormatsOrg: {
+
+        // CODEX (ID = NAME)
+        codex: "[dlcEach]{dlc_id} = \"{dlc_name}\"\n[/dlcEach]",
+
+        // CODEX (DLC00000, DLCName)
+        codex_t: "[dlcEach=false:true:5]DLC{dlc_index} = {dlc_id}\nDLCName{dlc_index} = \"{dlc_name}\"\n[/dlcEach]",
+
+        // SMARTSTEAMEMU (ONLY DLC LIST)
+        smartsteamemu_o: "[dlcEach]{dlc_id} = \"{dlc_name}\"\n[/dlcEach]",
+
+        // ALI213
+        ali213: "[dlcEach]{dlc_id} = \"{dlc_name}\"\n[/dlcEach]",
 
         // CREAMAPI (FULL INI)
         creamAPI: "[steam]\n" +
-        "appid = {appid}\n" +
-        "newappid = {newappid}\n" +
-        "unlockall = {unlock_all}\n" +
-        "orgapi = {orgapi}\n" +
-        "orgapi64 = {orgapi64}\n" +
-        "extraprotection = {extraprotection}\n" +
-        "extraprotectionlevel = {extraprotectionlevel}\n" +
-        "wrappermode = {wrappermode}\n" +
-        "emudll = {emudll}\n" +
-        "log = {log}\n\n" +
+        "appid = [steamdb]appid[/steamdb]\n" +
+        "language = [option=english]gamelanguage[/option]\n" +
+        "unlockall = [option=false]creamapi_unlock_all[/option]\n" +
+        "orgapi = [option=steam_api_o.dll]creamapi_orgapi[/option]\n" +
+        "orgapi64 = [option=steam_api64_o.dll]creamapi_orgapi64[/option]\n" +
+        "extraprotection = [option=false]creamapi_extraprotection[/option]\n" +
+        "extraprotectionlevel = [option=0]creamapi_extraprotectionlevel[/option]\n" +
+        "wrappermode = [option=false]creamapi_wrappermode[/option]\n" +
+        "log = [option=false]creamapi_log[/option]\n\n" +
+        "[steam_wrapper]\n" +
+        "newappid = [option=0]creamapi_newappid[/option]\n" +
+        "loademu = [option=false]creamapi_loademu[/option]\n" +
+        "emudll = [option=emu.dll]creamapi_emudll[/option]\n" +
+        "wrapperremotestorage = [option=false]creamapi_wrapperremotestorage[/option]\n" +
+        "wrapperuserstats = [option=false]creamapi_wrapperuserstats[/option]\n" +
+        "wrapperutils = [option=false]creamapi_wrapperutils[/option]\n" +
+        "wrappercallbacks = [option=false]creamapi_wrappercallbacks[/option]\n\n" +
         "[dlc_subscription]\n" +
-        "{dlcEach_1}\n" +
+        "[dlcEach]; {dlc_name}\n{dlc_id} = true\n[/dlcEach]\n" +
         "[dlc_index]\n" +
-        "{dlcEach_2}\n" +
+        "[dlcEach]{dlc_index} = {dlc_id}\n[/dlcEach]\n" +
         "[dlc_names]\n" +
-        "{dlcEach_3}",
+        "[dlcEach]{dlc_index} = \"{dlc_name}\"\n[/dlcEach]",
 
         // CREAMAPI (ONLY DLC LIST)
         creamAPI_o: "[dlc_subscription]\n" +
-        "{dlcEach_1}\n" +
+        "[dlcEach]; {dlc_name}\n{dlc_id} = true\n[/dlcEach]\n" +
         "[dlc_index]\n" +
-        "{dlcEach_2}\n" +
+        "[dlcEach]{dlc_index} = {dlc_id}\n[/dlcEach]\n" +
         "[dlc_names]\n" +
-        "{dlcEach_3}",
+        "[dlcEach]{dlc_index} = \"{dlc_name}\"\n[/dlcEach]",
 
         // LUMAEMU (FULL INI)
         lumaemu: "[SteamStatus]\n" +
-        "Offline = {offline}\n\n" +
+        "Offline = [option=0]lumaemu_offline[/option]\n\n" +
         "[Player]\n" +
-        "PlayerName = {username}\n" +
-        "PlayerNickname = {username}\n" +
-        "ClanName = {username}\n" +
-        "ClanTag = {username}\n" +
-        "OpenNameChanger = {opennamechanger}\n\n" +
+        "PlayerName = [option=LumaEmu]username[/option]\n" +
+        "PlayerNickname = [option=LumaEmu]username[/option]\n" +
+        "ClanName = [option=LumaEmu]username[/option]\n" +
+        "ClanTag = [option=LumaEmu]username[/option]\n" +
+        "OpenNameChanger = [option=0]lumaemu_opennamechanger[/option]\n\n" +
         "[Minidumps]\n" +
         "WriteMinidumps = 1\n\n" +
         "[Language]\n" +
-        "GameLanguage = {gamelanguage}\n\n" +
+        "GameLanguage = [option=english]gamelanguage[/option]\n\n" +
         "[Cache]\n" +
         "UseCacheFiles = 0\n" +
         "CachePath = C:\\Program Files (x86)\\Steam\\steamapps\\\n\n" +
         "[Log]\n" +
-        "LogFile = {logfile}\n\n" +
+        "LogFile = [option=1]lumaemu_logfile[/option]\n\n" +
         "[MasterServer]\n" +
         "Master = 1\n\n" +
         "[DLC]\n" +
         "UnlockDLC = 3\n\n" +
-        "{dlcEach_1}\n" +
+        "[dlcEach]; {dlc_name}\nDLC_{dlc_id} = 1\n[/dlcEach]\n" +
         "[Overlay]\n" +
-        "EnableOverlay = {enableoverlay}\n\n" +
+        "EnableOverlay = [option=1]lumaemu_enableoverlay[/option]\n\n" +
         "[StatsAndAchievements]\n" +
-        "Save = {save}\n\n" +
+        "Save = [option=1]lumaemu_save[/option]\n\n" +
         "[SourceEngine]\n" +
         "FocusPatch = 0\n\n" +
         "[ServerAuthorization]\n" +
-        "BlockLumaEmu = {blocklumaemu}\n" +
-        "BlockLegitSteam = {blocklegitsteam}\n" +
-        "BlockSmartSteamEmu = {blocksmartsteamemu}\n" +
-        "BlockVACBannedAccounts = {blockVACbannedaccounts}\n" +
-        "BlockUnknownClient = {blockunknownclient}\n\n" +
+        "BlockLumaEmu = [option=0]lumaemu_blocklumaemu[/option]\n" +
+        "BlockLegitSteam = [option=0]lumaemu_blocklegitsteam[/option]\n" +
+        "BlockSmartSteamEmu = [option=0]lumaemu_blocksmartsteamemu[/option]\n" +
+        "BlockVACBannedAccounts = [option=1]lumaemu_blockVACbannedaccounts[/option]\n" +
+        "BlockUnknownClient = [option=1]lumaemu_blockunknownclient[/option]\n\n" +
         "[VR]\n" +
         "EnableVR = 0\n\n" +
         "[RemoteStorage]\n" +
-        "SaveInCustomPath = {saveincustompath}\n" +
-        "Path = {path}\n\n" +
+        "SaveInCustomPath = [option=0]lumaemu_saveincustompath[/option]\n" +
+        "Path = [option=\0]lumaemu_path[/option]\n\n" +
         "[LumaGameLauncher]\n" +
-        "GameExe = {config_exe} -appid {appid} {config_arg}\n" +
+        "GameExe = [steamdb]config_exe[/steamdb] -appid [steamdb]appid[/steamdb] [steamdb]config_arg[/steamdb]\n" +
         "LoadLumaCEG = 0\n" +
         "AppIDSetByLauncher = 1\n\n" +
         "[SteamClient]\n" +
-        "LumaEmuClientDll = {lumaemuclientDll}\n" +
-        "LumaEmuClientDll64 = {lumaemuclientDll64}\n",
+        "LumaEmuClientDll = [option=steamclient.dll]lumaemu_lumaemuclientDll[/option]\n" +
+        "LumaEmuClientDll64 = [option=steamclient64.dll]lumaemu_lumaemuclientDll64[/option]\n",
+
+        // LUMAEMU (ONLY DLC LIST)
+        lumaemu_o: "[dlcEach]; {dlc_name}\nDLC_{dlc_id} = 1\n[/dlcEach]",
 
         // RELOADED
-        reloaded: "AppName = \"{appid_name}\"\n" +
-        "{dlcEach_1}" +
-        "DLCCount = {dlcsTot}\n",
+        reloaded: "AppName = \"[steamdb]appid_name[/steamdb]\"\n" +
+        "[dlcEach=true:true:3]DLC{dlc_index} = {dlc_id}\nDLCName{dlc_index} = \"{dlc_name}\"\n[/dlcEach]" +
+        "DLCCount = [steamdb]dlcsTot[/steamdb]\n",
+
+        // SKIDROW
+        skidrow: "[dlcEach]; {dlc_name}\n{dlc_id}\n[/dlcEach]",
+
+        // 3DMGAME
+        "3dmgame": "[dlcEach=true:true:3]; {dlc_name}\nDLC{dlc_index} = {dlc_id}\n[/dlcEach]",
 
         // REVOLT
         revolt: "[DLC]\n" +
-        "DLCEnumBase = {appid}\n" +
-        "DLCEnumCount = {dlcsTot}\n" +
+        "DLCEnumBase = [steamdb]appid[/steamdb]\n" +
+        "DLCEnumCount = [steamdb]dlcsTot[/steamdb]\n" +
         "Default = false\n\n" +
-        "; <index> = <appid>\n" +
-        "{dlcEach_1}\n" +
+        "[dlcEach]; {dlc_name}\n{dlc_index} = {dlc_id}\n[/dlcEach]\n" +
         "[Subscriptions]\n" +
         "Default = false\n\n" +
-        "; <appid> = <true/false>\n" +
-        "{dlcEach_2}"
+        "[dlcEach]; {dlc_name}\n{dlc_index} = true\n[/dlcEach]"
+
+    },
+
+    // DLC FORMATS STR
+    dlcFormatsStr: function (str) {
+
+        var re_match = /\[(.*?)\]([^\[]+)\[\/(.*?)\]/g;
+        var match = str.match(re_match);
+
+        if (match !== null && match.length) {
+
+            for (var i = 0; i < match.length; i++) {
+
+                var find_match = match[i];
+                var re_exec = /\[(.*)\]([^\[]+)\[\/(.*)\]/g;
+                var re_exec_val = re_exec.exec(find_match);
+
+                if (re_exec_val.length) {
+
+                    re_exec_val = re_exec_val.slice(1);
+
+                    var tag_name = re_exec_val[0];
+                    var tag_value = re_exec_val[1];
+                    var tag_name_close = re_exec_val[2];
+                    var tag_options = [];
+
+                    if (tag_name.indexOf('=') !== -1) {
+
+                        var tag_name_cc = tag_name.split("=");
+                        tag_name = tag_name_cc[0];
+                        tag_options = tag_name_cc[1].split(":");
+
+                    }
+
+                    var tag_option_1 = tag_options[0];
+                    var tag_option_2 = tag_options[1];
+                    var tag_option_3 = tag_options[2];
+
+                    if (tag_name !== tag_name_close && tag_value.length) {
+                        continue;
+                    }
+
+                    switch (tag_name) {
+                        case "steamdb":
+                            if (tag_value in GetDLCInfoFromSteamDB.steamdb) {
+                                str = str.replace(find_match, GetDLCInfoFromSteamDB.steamdb[tag_value]);
+                            }
+                            break;
+                        case "option":
+                            if (typeof tag_option_1 !== "undefined") {
+                                str = str.replace(find_match, Storage.getDef(tag_value, tag_option_1));
+                            }
+                            break;
+                        case "dlcEach":
+                            if (typeof tag_option_1 !== "undefined" && typeof tag_option_2 !== "undefined" && typeof tag_option_3 !== "undefined") {
+                                tag_option_1 = tag_option_1 === "true";
+                                tag_option_2 = tag_option_2 === "true";
+                                tag_option_3 = tag_option_3 || 0;
+                                str = str.replace(find_match, GetDLCInfoFromSteamDB.dlcEach(tag_value, tag_option_1, tag_option_2, tag_option_3));
+                            } else if (typeof tag_option_1 !== "undefined") {
+                                tag_option_1 = tag_option_1 === "true";
+                                str = str.replace(find_match, GetDLCInfoFromSteamDB.dlcEach(tag_value, tag_option_1));
+                            } else {
+                                str = str.replace(find_match, GetDLCInfoFromSteamDB.dlcEach(tag_value));
+                            }
+                            break;
+                    }
+
+                }
+
+            }
+
+        }
+
+        return str;
 
     }
 
 };
-
-// FUNCTIONS
-function str_format(str, args) {
-
-    for (var key in args) {
-        if (args.hasOwnProperty(key)) {
-
-            var value = args[key];
-            var re = new RegExp("{" + key + "}", "g");
-
-            str = str.replace(re, value);
-
-        }
-    }
-
-    return str;
-
-}
 
 // DOWNLOAD
 var Download = {
@@ -1238,8 +1365,8 @@ var Download = {
 
 };
 
-// FORMAT
-var Format = {
+// CUSTOM FORMAT
+var CustomFormat = {
 
     // GET ALL
     all: function () {
@@ -1247,6 +1374,13 @@ var Format = {
         var data = Storage.get("custom_format");
 
         return Storage.check(data) ? JSON.parse(data) : {};
+
+    },
+
+    // ---
+    set: function (data) {
+
+        Storage.set("custom_format", JSON.stringify(data));
 
     },
 
@@ -1261,7 +1395,7 @@ var Format = {
             "value": val
         };
 
-        Storage.set("custom_format", JSON.stringify(data));
+        this.set(data);
 
     },
 
@@ -1274,7 +1408,7 @@ var Format = {
 
             delete data[uniqueid];
 
-            Storage.set("custom_format", JSON.stringify(data));
+            this.set(data);
 
         }
 
@@ -1285,10 +1419,13 @@ var Format = {
 // STORAGE
 var Storage = {
 
+    // PREFIX DATA
+    prefix: "GetDLCInfoFromSteamDB_",
+
     // GET OPTION
     get: function (name) {
 
-        return window.localStorage.getItem(name);
+        return window.localStorage.getItem(this.prefix + name);
 
     },
 
@@ -1304,14 +1441,14 @@ var Storage = {
     // SET OPTION
     set: function (name, val) {
 
-        return window.localStorage.setItem(name, val);
+        return window.localStorage.setItem(this.prefix + name, val);
 
     },
 
     // REMOVE OPTION
     remove: function (name) {
 
-        return window.localStorage.removeItem(name);
+        return window.localStorage.removeItem(this.prefix + name);
 
     },
 
