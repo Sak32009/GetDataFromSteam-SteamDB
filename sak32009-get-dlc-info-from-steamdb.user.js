@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          2.0.0
+// @version          2.0.1
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -52,8 +52,6 @@ var GetDLCInfoFromSteamDB = {
 
         if ($check.length) {
 
-            // CREATE DLC FORMATS
-            GetDLCInfoFromSteamDB.createDLCFormats();
             // CREATE STYLE
             GetDLCInfoFromSteamDB.createStyle();
             // CREATE WRAPPER
@@ -64,12 +62,12 @@ var GetDLCInfoFromSteamDB = {
             GetDLCInfoFromSteamDB.createOptionsWrapper();
             // LOAD OPTIONS WRAPPER
             GetDLCInfoFromSteamDB.loadOptionsWrapper();
-            // LOAD CUSTOM FORMAT
-            GetDLCInfoFromSteamDB.loadCustomFormat();
             // CREATE EVENTS OPTIONS
             GetDLCInfoFromSteamDB.createEventsOptions();
             // LOAD URL OPTIONS
             GetDLCInfoFromSteamDB.loadUrlOptions();
+            // CREATE DLC FORMATS
+            GetDLCInfoFromSteamDB.createDLCFormats();
 
         }
 
@@ -927,9 +925,6 @@ var GetDLCInfoFromSteamDB = {
         // ADD TO TABLE
         $("#GetDLCInfoFromSteamDB_list_custom_format tbody").html(result);
 
-        // RELOAD DLCs FORMAT
-        GetDLCInfoFromSteamDB.createDLCFormats();
-
     },
 
     // CREATE EVENTS OPTIONS
@@ -952,6 +947,9 @@ var GetDLCInfoFromSteamDB = {
 
             // LOAD OPTIONS WRAPPER
             GetDLCInfoFromSteamDB.loadOptionsWrapper();
+
+            // RELOAD DLCs FORMAT
+            GetDLCInfoFromSteamDB.createDLCFormats();
 
             // ALERT
             alert("Restored default options!");
@@ -1006,8 +1004,8 @@ var GetDLCInfoFromSteamDB = {
                 // ADD CUSTOM FORMAT
                 CustomFormat.add(custom_format_namev, custom_format_valv);
 
-                // LOAD CUSTOM FORMAT
-                GetDLCInfoFromSteamDB.loadCustomFormat();
+				// CREATE DLC FORMATS
+				GetDLCInfoFromSteamDB.createDLCFormats();
 
                 // ALERT
                 alert("Added!");
@@ -1030,8 +1028,8 @@ var GetDLCInfoFromSteamDB = {
             // REMOVE CUSTOM FORMAT
             CustomFormat.remove(data_id);
 
-            // LOAD CUSTOM FORMAT
-            GetDLCInfoFromSteamDB.loadCustomFormat();
+            // CREATE DLC FORMATS
+            GetDLCInfoFromSteamDB.createDLCFormats();
 
             // ALERT
             alert("Removed!");
@@ -1141,6 +1139,9 @@ var GetDLCInfoFromSteamDB = {
 
     // CREATE DLC FORMATS
     createDLCFormats: function () {
+
+        // LOAD CUSTOM FORMAT
+        GetDLCInfoFromSteamDB.loadCustomFormat();
 
         for (var format_name in GetDLCInfoFromSteamDB.dlcFormatsOrg) {
             if (GetDLCInfoFromSteamDB.dlcFormatsOrg.hasOwnProperty(format_name)) {
