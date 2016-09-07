@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.0.2
+// @version          3.0.3
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -24,7 +24,6 @@ var GetDLCInfoFromSteamDB = {
     steamDB: {
         appID: "",
         appIDName: "",
-        url: "",
         dlcs: {},
         dlcsTot: 0,
         configEXE: "",
@@ -65,11 +64,8 @@ var GetDLCInfoFromSteamDB = {
 
         // APPID
         this.steamDB.appID = $(".scope-app[data-appid]").attr("data-appid");
-
         // APPID NAME
         this.steamDB.appIDName = $("td[itemprop='name']").text().trim();
-        // URL
-        this.steamDB.url = window.location.href;
 
         // DLCs
         var dlcs = $(".tab-pane#dlc .app[data-appid]");
