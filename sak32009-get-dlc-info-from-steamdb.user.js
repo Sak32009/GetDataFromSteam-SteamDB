@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.0.4
+// @version          3.0.5
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -81,7 +81,7 @@ var GetDLCInfoFromSteamDB = {
 
         // ADD BUTTON SUBMIT
         $("<a>").html("Get DLC List @GetDLCInfoFromSteamDB").attr({
-            href: "https://sak32009.github.io/steamdb/?steamdb=" + JSON.stringify(this.steamDB),
+            href: "https://sak32009.github.io/steamdb/?" + JSON.stringify(this.steamDB),
             target: "_blank"
         }).addClass("btn btn-primary pull-right").css("display", "block").appendTo(".tab-pane#dlc > h2");
 
