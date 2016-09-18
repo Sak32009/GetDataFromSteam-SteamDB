@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.0.6
+// @version          3.0.7
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -20,72 +20,26 @@
 // GET DLC INFO FROM STEAMDB
 var GetDLCInfoFromSteamDB = {
 
-    // STEAMDB
-    steamDB: {
-        dlcs: {},
-        appID: "",
-        appIDName: "",
-        configEXE: "",
-        configARG: ""
-    },
-
     // RUN
-    run: function () {
+    run: function() {
 
         // CHECK
         var $check = $(".tabnav-tab[data-target='#dlc']");
 
         if ($check.length) {
 
-            // GET STEAMDB INFO
-            this.getSteamDBInfo();
-            // GET DLC LIST
-            this.getDLCList();
+            // GET APPID
+            var appID = $(".scope-app[data-appid]").attr("data-appid");
+
+            // ADD BUTTON SUBMIT
+            $("<a>").html("Get DLC List @GetDLCInfoFromSteamDB").attr({
+                href: "https://sak32009.github.io/steamdb/?appid=" + appID,
+                target: "_blank"
+            }).addClass("btn btn-primary pull-right").css("display", "block").appendTo(".tab-pane#dlc > h2");
 
         }
 
     },
-
-    // GET STEAMDB INFO
-    getSteamDBInfo: function () {
-
-        var self = this;
-
-        // APPID
-        this.steamDB.appID = $(".scope-app[data-appid]").attr("data-appid");
-        // APPID NAME
-        this.steamDB.appIDName = $("td[itemprop='name']").text().trim();
-
-        // DLCs
-        $(".tab-pane#dlc .app[data-appid]").each(function () {
-
-            var $this = $(this);
-            var appID = $this.data("appid");
-            var appIDName = $this.find("td:nth-of-type(2)").text().trim();
-
-            self.steamDB.dlcs[appID] = appIDName;
-
-        });
-
-        // CONFIG
-        var $config = $(".tab-pane#config > table:nth-of-type(1) tbody tr:nth-of-type(1)");
-        // CONFIG EXE
-        this.steamDB.configEXE = $config.find("td:nth-of-type(2)").text().trim();
-        // CONFIG ARG
-        this.steamDB.configARG = $config.find("td:nth-of-type(3)").text().trim();
-
-    },
-
-    // GET DLC LIST
-    getDLCList: function () {
-
-        // ADD BUTTON SUBMIT
-        $("<a>").html("Get DLC List @GetDLCInfoFromSteamDB").attr({
-            href: "https://sak32009.github.io/steamdb/?" + encodeURIComponent(JSON.stringify(this.steamDB)),
-            target: "_blank"
-        }).addClass("btn btn-primary pull-right").css("display", "block").appendTo(".tab-pane#dlc > h2");
-
-    }
 
 };
 
