@@ -738,7 +738,7 @@ GetDLCInfofromSteamDB.formats.creamAPI = {
     "[dlc_names]\r\n" +
     "[dlcEach]{dlc_index} = {dlc_name}\r\n[/dlcEach]\r\n" +
     "[dlc_timestamp]\r\n" +
-    "; The installation date is setted to:\r\n" +
+    "; The installation date is set to:\r\n" +
     "; [env]datetime[/env]\r\n" +
     "[dlcEach]{dlc_id} = {dlc_timestamp}\r\n[/dlcEach]"
 };
