@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.1.0
+// @version          3.1.1
 // @license          MIT
 // @homepageURL      https://sak32009.github.com/steamdb/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -755,7 +755,7 @@ GetDLCInfofromSteamDB.formats.creamAPI_o = {
     "[dlc_names]\r\n" +
     "[dlcEach]{dlc_index} = {dlc_name}\r\n[/dlcEach]\r\n" +
     "[dlc_timestamp]\r\n" +
-    "; The installation date is setted to:\r\n" +
+    "; The installation date is set to:\r\n" +
     "; [env]datetime[/env]\r\n" +
     "[dlcEach]{dlc_id} = {dlc_timestamp}\r\n[/dlcEach]"
 };
