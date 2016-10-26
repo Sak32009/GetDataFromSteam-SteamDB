@@ -1,10 +1,10 @@
-﻿// ==UserScript==
+// ==UserScript==
 // @name             Get DLC Info from SteamDB
 // @namespace        sak32009-get-dlc-info-from-steamdb
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.1.1
+// @version          3.1.2
 // @license          MIT
 // @homepageURL      https://sak32009.github.com/steamdb/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -89,9 +89,9 @@ var GetDLCInfofromSteamDB = {
         // AUTHOR
         author: "Sak32009",
         // NAME
-        name: "Get DLC Info from SteamDB",
+        name: GM_info.script.name,
         // VERSION
-        version: "3.1.0",
+        version: GM_info.script.version,
         // STEAMDB URL
         steamDB: "https://steamdb.info/app/",
         // HOMEPAGE URL
@@ -315,7 +315,7 @@ var GetDLCInfofromSteamDB = {
             var formatData = formatValues.data;
 
             // INFO
-            result += "; " + GetDLCInfofromSteamDB.info.name + " by " + GetDLCInfofromSteamDB.info.author + "\r\n" +
+            result += "; " + GetDLCInfofromSteamDB.info.name + " by " + GetDLCInfofromSteamDB.info.author + " v" + GetDLCInfofromSteamDB.info.version + "\r\n" +
                 "; Format: " + formatTitle + "\r\n" +
                 "; AppID: " + GetDLCInfofromSteamDB.steamDB.appID + "\r\n" +
                 "; AppID Name: " + GetDLCInfofromSteamDB.steamDB.appIDName + "\r\n" +
