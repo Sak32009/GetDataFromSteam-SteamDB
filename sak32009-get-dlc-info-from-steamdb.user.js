@@ -1,10 +1,10 @@
-// ==UserScript==
+﻿// ==UserScript==
 // @name             Get DLC Info from SteamDB
 // @namespace        sak32009-get-dlc-info-from-steamdb
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.1.2
+// @version          3.1.3
 // @license          MIT
 // @homepageURL      https://sak32009.github.com/steamdb/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -76,6 +76,13 @@ var Storage = {
     check: function (item) {
 
         return item !== null && item.length;
+
+    },
+
+    // CHECKBOX
+    checkbox: function (name) {
+
+        return this.get(name) == "true";
 
     }
 
@@ -170,7 +177,7 @@ var GetDLCInfofromSteamDB = {
             // CREATE FORMAT LIST
             GetDLCInfofromSteamDB.createFormatList();
             // ACTIVE FIRST TAB OPTIONS
-            $("#GetDLCInfofromSteamDB_optionsNav div:first").tab("show");
+            $("#GetDLCInfofromSteamDB_optionsNav > div:first").tab("show");
             // LOAD OPTIONS
             GetDLCInfofromSteamDB.loadOptions();
             // EVENTS
@@ -215,39 +222,43 @@ var GetDLCInfofromSteamDB = {
 
         // STYLE
         $("<style>").text(
-            "#GetDLCInfoFromSteamDB_textarea{margin-bottom:10px;width:100%;resize:none;display:none}" +
-            ".GetDLCInfoFromSteamDB_inline{display:inline-block}" +
-            "#GetDLCInfoFromSteamDB_dropdown .dropdown-menu{font-size:14px}" +
+            "#GetDLCInfofromSteamDB_textarea{margin-bottom:10px;width:100%;resize:none;display:none}" +
+            ".GetDLCInfofromSteamDB_inline{display:inline-block}" +
+            "#GetDLCInfofromSteamDB_dropdown .dropdown-menu{font-size:14px}" +
             "#GetDLCInfofromSteamDB_optionsNav.border{border-bottom:1px solid #ddd;margin-bottom:15px}" +
             "#GetDLCInfofromSteamDB_optionsNav .nav-tabs-link{display:inline-block;padding:8px 15px;border:1px solid transparent;cursor:pointer;margin-bottom:-1px}" +
             "#GetDLCInfofromSteamDB_optionsNav .nav-tabs-link+.nav-tabs-link{margin-left:5px}" +
             "#GetDLCInfofromSteamDB_optionsNav .nav-tabs-link:hover{border-color:#eceeef #eceeef #fff}" +
             "#GetDLCInfofromSteamDB_optionsNav .nav-tabs-link.selected{border-color:#ddd #ddd #fff}" +
             "#GetDLCInfofromSteamDB_optionsContent .nav-tabs-pane{display:none;border:1px solid #ddd}" +
-            "#GetDLCInfofromSteamDB_optionsContent .nav-tabs-pane.selected{display:block}").appendTo("head");
+            "#GetDLCInfofromSteamDB_optionsContent .nav-tabs-pane.selected{display:block}" +
+            "#GetDLCInfofromSteamDB_tab_a{color:#fff;background-color:#1b5e20;border-color:transparent}" +
+            "#GetDLCInfofromSteamDB_tab_a:hover,#GetDLCInfofromSteamDB_tab_a:focus{background-color:#2e7d32}").appendTo("head");
         // FORM & DOWNLOAD
         $("#dlc > h2").append(
             "<div class='pull-right'>" +
-            "   <form id='GetDLCInfoFromSteamDB_submit' class='GetDLCInfoFromSteamDB_inline'>" +
-            "       <select id='GetDLCInfoFromSteamDB_select'></select>" +
+            "   <form id='GetDLCInfofromSteamDB_submit' class='GetDLCInfofromSteamDB_inline'>" +
+            "       <select id='GetDLCInfofromSteamDB_select'></select>" +
             "       <button type='submit' class='btn btn-primary'>Get DLCs List</button>" +
             "   </form>" +
-            "   <div id='GetDLCInfoFromSteamDB_dropdown' class='dropdown GetDLCInfoFromSteamDB_inline'>" +
+            "   <div id='GetDLCInfofromSteamDB_dropdown' class='dropdown GetDLCInfofromSteamDB_inline'>" +
             "       <button type='button' class='btn'>Download <b class='caret'></b></button>" +
             "       <ul class='dropdown-menu'>" +
-            "           <li><a href='javascript:;' id='GetDLCInfoFromSteamDB_ini'><i class='octicon octicon-file-symlink-file'></i> <span>#.ini</span></a></li>" +
+            "           <li><a href='javascript:;' id='GetDLCInfofromSteamDB_ini'><i class='octicon octicon-file-symlink-file'></i> <span>#.ini</span></a></li>" +
             "           <li class='divider'></li>" +
-            "           <li><a href='javascript:;' id='GetDLCInfoFromSteamDB_steam_appid' download='steam_appid.txt'><i class='octicon octicon-file-text'></i> steam_appid.txt</a></li>" +
+            "           <li><a href='javascript:;' id='GetDLCInfofromSteamDB_steam_appid' download='steam_appid.txt'><i class='octicon octicon-file-text'></i> steam_appid.txt</a></li>" +
             "       </ul>" +
             "   </div>" +
             "</div>");
         // TEXTAREA
-        $("<textarea id='GetDLCInfoFromSteamDB_textarea' rows='25' readonly></textarea>").insertAfter("#dlc > h2");
-        // STEAM_APPID
-        $("#GetDLCInfoFromSteamDB_steam_appid").attr("href", Download.encode(GetDLCInfofromSteamDB.steamDB.appID));
+        $("<textarea id='GetDLCInfofromSteamDB_textarea' rows='25' readonly></textarea>").insertAfter("#dlc > h2");
         // TAB
-        $("<a href='#GetDLCInfoFromSteamDB_tab' data-target='#GetDLCInfoFromSteamDB_tab' title='Get DLC Info From SteamDB Options' class='tabnav-tab'><span class='octicon octicon-gear'></span> GDIFSDB <span class='counter' style='color:red'>!</span></a>").insertAfter(".tabnav-tab[data-target='#dlc']");
-        $("<div id='GetDLCInfoFromSteamDB_tab' class='tab-pane'></div>").html(
+        $("<a href='#GetDLCInfofromSteamDB_tab' data-target='#GetDLCInfofromSteamDB_tab' " +
+            "title='Get DLC Info from SteamDB' class='tabnav-tab' id='GetDLCInfofromSteamDB_tab_a'>" +
+            "<img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAA0UlEQVQoz6XPsS4EYRRA4Tt2JzYSYTVUREFES6JSKvVU+wAiW2hUW0gkPIReRoSW3jNsI7KFSJQbhUym+BS/IcJUTnVv7inuiQizCr+pHGtFRISRJg6TUDYKgyRsNyhP5pKQa9sycOdZ6c2jwoFVmTwJlRMbutqyiAiZSfN2FE6TcNb4w2YkLOp7UH0dxq7tma7PV/WoJZeb+NxW6sxX3Ni1ZEbHlK51PUMcJWHZy58f3OvUmZk1fbdG3o0NXdi3EFFnlg2Zl3Xm+X8zv/mZmfgAUSFIcADHPOgAAAAASUVORK5CYII=' alt='Logo'>" +
+            " GDIFSDB</a>").insertAfter(".tabnav-tab[data-target='#dlc']");
+        // TAB PANE
+        $("<div id='GetDLCInfofromSteamDB_tab' class='tab-pane'>" +
             "<h2 class='text-center'>" + GetDLCInfofromSteamDB.info.name + " <small>by " + GetDLCInfofromSteamDB.info.author + " v" + GetDLCInfofromSteamDB.info.version + "</small></h2>" +
             "<table class='table table-bordered table-fixed'><tbody>" +
             "   <tr>" +
@@ -259,10 +270,12 @@ var GetDLCInfofromSteamDB = {
             "       <td><a href='" + GetDLCInfofromSteamDB.info.support + "' target='_blank'>cs.rin.ru</a></td>" +
             "   </tr>" +
             "</tbody></table>" +
-            "<h2><span class='mega-octicon octicon-settings'></span> Options<button class='btn btn-sm pull-right' type='button' id='GetDLCInfoFromSteamDB_resetOptions'>Reset Options</button></h2>" +
+            "<h2><span class='mega-octicon octicon-settings'></span> Options<button class='btn btn-sm pull-right' type='button' id='GetDLCInfofromSteamDB_resetOptions'>Reset Options</button></h2>" +
             "<div id='GetDLCInfofromSteamDB_optionsNav'></div>" +
-            "<div id='GetDLCInfofromSteamDB_optionsContent'></div>"
-        ).appendTo(".tabbable > .tab-content");
+            "<div id='GetDLCInfofromSteamDB_optionsContent'></div>" +
+            "</div>").appendTo(".tabbable > .tab-content");
+        // STEAM_APPID.TXT
+        $("#GetDLCInfofromSteamDB_steam_appid").attr("href", Download.encode(GetDLCInfofromSteamDB.steamDB.appID));
 
     },
 
@@ -270,7 +283,7 @@ var GetDLCInfofromSteamDB = {
     createFormatList: function () {
 
         // SELECT DOM
-        var selct = $("#GetDLCInfoFromSteamDB_select");
+        var selct = $("#GetDLCInfofromSteamDB_select");
 
         // EACH
         $.each(GetDLCInfofromSteamDB.formats, function (key, values) {
@@ -287,7 +300,7 @@ var GetDLCInfofromSteamDB = {
         });
 
         // ..... SAVE LAST SELECTION
-        if (Storage.get("saveLastSelection") == "true" && Storage.check("saveLastSelectionValue")) {
+        if (Storage.checkbox("saveLastSelection") && Storage.check("saveLastSelectionValue")) {
             selct.find("option[value='" + Storage.get("saveLastSelectionValue") + "']").prop("selected", true);
         }
         // .....
@@ -298,7 +311,7 @@ var GetDLCInfofromSteamDB = {
     events: function () {
 
         // SUBMIT DOM
-        var submt = $("#GetDLCInfoFromSteamDB_submit");
+        var submt = $("#GetDLCInfofromSteamDB_submit");
 
         // GET DLC LIST SUBMIT
         submt.submit(function (e) {
@@ -308,7 +321,7 @@ var GetDLCInfofromSteamDB = {
             var $this = $(this);
             var result = "";
             // FORMAT
-            var formatKey = $this.find("#GetDLCInfoFromSteamDB_select option:selected").val();
+            var formatKey = $this.find("#GetDLCInfofromSteamDB_select option:selected").val();
             var formatValues = GetDLCInfofromSteamDB.formats[formatKey];
             var formatTitle = formatValues.name;
             var formatIni = formatValues.ini;
@@ -330,22 +343,22 @@ var GetDLCInfofromSteamDB = {
             result += GetDLCInfofromSteamDB.dlcFormatsStr(formatData);
 
             // FILE INI
-            $("#GetDLCInfoFromSteamDB_ini").attr({
+            $("#GetDLCInfofromSteamDB_ini").attr({
                 href: Download.encode(result),
                 download: formatIni
             }).find("span").text(formatIni);
 
             // RESULT
-            $("#GetDLCInfoFromSteamDB_textarea").html(result).show();
+            $("#GetDLCInfofromSteamDB_textarea").html(result).show();
 
             // ..... AUTO DOWNLOAD
-            if (Storage.get("autoDownload") == "true") {
-                document.getElementById("GetDLCInfoFromSteamDB_ini").click();
+            if (Storage.checkbox("autoDownload")) {
+                document.getElementById("GetDLCInfofromSteamDB_ini").click();
             }
             // .....
 
             // ..... SAVE LAST SELECTION
-            if (Storage.get("saveLastSelection") == "true") {
+            if (Storage.checkbox("saveLastSelection")) {
                 Storage.set("saveLastSelectionValue", formatKey);
             }
             // .....
@@ -353,13 +366,13 @@ var GetDLCInfofromSteamDB = {
         });
 
         // ..... AUTO SUBMIT
-        if (Storage.get("autoSubmit") == "true") {
+        if (Storage.checkbox("autoSubmit")) {
             submt.trigger("submit");
         }
         // .....
 
         // SUBMIT OPTIONS
-        $("form#GetDLCInfoFromSteamDB_submitOptions").submit(function (e) {
+        $("form#GetDLCInfofromSteamDB_submitOptions").submit(function (e) {
 
             e.preventDefault();
 
@@ -385,7 +398,7 @@ var GetDLCInfofromSteamDB = {
         });
 
         // RESET OPTIONS
-        $("#GetDLCInfoFromSteamDB_resetOptions").click(function (e) {
+        $("#GetDLCInfofromSteamDB_resetOptions").click(function (e) {
 
             e.preventDefault();
 
@@ -393,19 +406,17 @@ var GetDLCInfofromSteamDB = {
             if (window.confirm("Do you really want to reset options?")) {
                 // CLEAR STORAGE
                 Storage.clear();
+                // LOAD OPTIONS
+                GetDLCInfofromSteamDB.loadOptions();
                 // ALERT
-                alert("Restored default options! Reload page...");
-                // RELOAD PAGE
-                GetDLCInfofromSteamDB.reloadPage();
+                alert("Restored default options!");
             }
 
         });
 
-        // TABs
-        $(document).on("click", "#GetDLCInfofromSteamDB_optionsNav .nav-tabs-link, .tabnav-tab[data-target='#GetDLCInfoFromSteamDB_tab']", function () {
-
+        // TABS
+        $("#GetDLCInfofromSteamDB_optionsNav .nav-tabs-link, .tabnav-tab[data-target='#GetDLCInfofromSteamDB_tab']").click(function () {
             $(this).tab("show");
-
         });
 
     },
@@ -413,7 +424,7 @@ var GetDLCInfofromSteamDB = {
     // LOAD OPTIONS
     loadOptions: function () {
 
-        $("form#GetDLCInfoFromSteamDB_submitOptions").find("input, select").each(function () {
+        $("form#GetDLCInfofromSteamDB_submitOptions").find("input, select").each(function () {
 
             var $this = $(this);
             var type = $this.attr("type");
@@ -441,7 +452,7 @@ var GetDLCInfofromSteamDB = {
             $("#GetDLCInfofromSteamDB_optionsNav").append("<div class='nav-tabs-link' data-target='#" + key + "'>" + name + "</div>");
             $("#GetDLCInfofromSteamDB_optionsContent").append(
                 "<div class='nav-tabs-pane' id='" + key + "'>" +
-                "   <form id='GetDLCInfoFromSteamDB_submitOptions'>" +
+                "   <form id='GetDLCInfofromSteamDB_submitOptions'>" +
                 "       <div style='padding:1rem'>" +
                 "           <button type='submit' class='btn btn-primary btn-lg btn-block'>Save Options</button>" +
                 "       </div>" +
@@ -500,24 +511,24 @@ var GetDLCInfofromSteamDB = {
     },
 
     // DLC EACH
-    dlcEach: function (string, from_zero, format_index, format_index_zeros) {
+    dlcEach: function (str, index_start_zero, index_prefix) {
 
         // RESULT
         var result = "";
-        // INDEX START FROM
-        var index = from_zero ? 0 : -1;
+        // INDEX START ZERO
+        var index = index_start_zero ? 0 : -1;
 
         $.each(GetDLCInfofromSteamDB.steamDB.dlcs, function (id, name) {
 
             // ..... IGNORE DLCs 'SteamDB Unknown App'
-            if (!(Storage.get("ignoreSteamDBUnknownApp") == "true" && name.indexOf("SteamDB Unknown App") !== -1)) {
+            if (!(Storage.checkbox("ignoreSteamDBUnknownApp") && name.indexOf("SteamDB Unknown App") !== -1)) {
 
                 index++;
 
-                result += GetDLCInfofromSteamDB.dlcEachFormat(string, {
+                result += GetDLCInfofromSteamDB.dlcEachFormat(str, {
                     "dlc_id": id,
                     "dlc_name": name,
-                    "dlc_index": GetDLCInfofromSteamDB.dlcIndexFormat(index, format_index, format_index_zeros),
+                    "dlc_index": GetDLCInfofromSteamDB.dlcIndexFormat(index, index_prefix),
                     "dlc_timestamp": GetDLCInfofromSteamDB.info.timestamp
                 });
 
@@ -527,22 +538,6 @@ var GetDLCInfofromSteamDB = {
         });
 
         return result;
-
-    },
-
-    // DLC INDEX FORMAT
-    dlcIndexFormat: function (val, format, zero) {
-
-        if (format) {
-
-            var zeros = "0".repeat(zero || 3);
-            var sub = zeros.length - val.toString().length;
-
-            return sub > 0 ? zeros.substring(0, sub) + val : val;
-
-        }
-
-        return val;
 
     },
 
@@ -561,65 +556,70 @@ var GetDLCInfofromSteamDB = {
 
     },
 
+    // DLC INDEX FORMAT
+    dlcIndexFormat: function (index, zero) {
+
+        index = index.toString();
+        zero = parseInt(zero);
+        var len = index.length;
+
+        if (zero > len) {
+
+            return "0".repeat(zero - len) + index;
+
+        }
+
+        return index;
+
+    },
+
     // DLC FORMATS STR
     dlcFormatsStr: function (str) {
 
-        var re_match = str.match(/\[(\w+)(?:=(.*))?]([^[]+)\[\/(\w+)]/g);
+        var re = /\[(\w+)(?:=(.*))?]([^[]+)\[\/(\w+)]/g;
+        var re_str = str;
+        var re_exec;
 
-        if (re_match !== null && re_match.length) {
+        while ((re_exec = re.exec(re_str)) !== null) {
 
-            $.each(re_match, function (i, val) {
+            if (re_exec.index === re.lastIndex) {
+                re.lastIndex++;
+            }
 
-                var re_exec = /\[(\w+)(?:=(.*))?]([^[]+)\[\/(\w+)]/g.exec(val);
+            var bbcode = re_exec[0];
+            var bbcode_name = re_exec[1];
+            var bbcode_opt = re_exec[2];
+            var bbcode_val = re_exec[3];
+            var bbcode_close = re_exec[4];
 
-                if (re_exec !== null && re_exec.length) {
+            if (bbcode_name == bbcode_close && bbcode_val.length) {
 
-                    var bbcode_name = re_exec[1];
-                    var bbcode_opt = re_exec[2];
-                    var bbcode_val = re_exec[3];
-                    var bbcode_close = re_exec[4];
+                var bbcode_opts = typeof bbcode_opt !== "undefined" ? bbcode_opt.split(":") : [];
 
-                    if (bbcode_name == bbcode_close && bbcode_val.length) {
-
-                        var bbcode_opts = typeof bbcode_opt != "undefined" ? bbcode_opt.split(":") : [];
-
-                        switch (bbcode_name) {
-                            case "steamdb":
-                                if (bbcode_val in GetDLCInfofromSteamDB.steamDB) {
-                                    str = str.replace(val, GetDLCInfofromSteamDB.steamDB[bbcode_val]);
-                                }
-                                break;
-                            case "option":
-                                if (bbcode_opts.length) {
-                                    str = str.replace(val, Storage.getDef(bbcode_val, bbcode_opts[0]));
-                                }
-                                break;
-                            case "dlcEach":
-                                str = str.replace(val, GetDLCInfofromSteamDB.dlcEach(bbcode_val, bbcode_opts[0] == "true", bbcode_opts[1] == "true", bbcode_opts[2] || 0));
-                                break;
-                            case "env":
-                                if (bbcode_val == "datetime") {
-                                    str = str.replace(val, GetDLCInfofromSteamDB.info.datetime);
-                                }
-                                break;
+                switch (bbcode_name) {
+                    case "steamdb":
+                        if (bbcode_val in GetDLCInfofromSteamDB.steamDB) {
+                            str = str.replace(bbcode, GetDLCInfofromSteamDB.steamDB[bbcode_val]);
                         }
-
-                    }
-
+                        break;
+                    case "option":
+                        if (bbcode_opts.length) {
+                            str = str.replace(bbcode, Storage.getDef(bbcode_val, bbcode_opts[0]));
+                        }
+                        break;
+                    case "dlcEach":
+                        str = str.replace(bbcode, GetDLCInfofromSteamDB.dlcEach(bbcode_val, bbcode_opts[0] == "true", bbcode_opts[1] || 0));
+                        break;
+                    case "env":
+                        str = str.replace(bbcode, GetDLCInfofromSteamDB.info[bbcode_val]);
+                        break;
                 }
 
-            });
+            }
 
         }
 
         return str;
-
-    },
-
-    // RELOAD PAGE
-    reloadPage: function () {
-
-        window.location.reload(true);
 
     },
 
@@ -628,10 +628,8 @@ var GetDLCInfofromSteamDB = {
 
         var hash = window.location.hash;
 
-        if (hash == "#GetDLCInfoFromSteamDB_tab") {
-
+        if (hash == "#GetDLCInfofromSteamDB_tab") {
             $(".tabnav-tab[data-target='" + hash + "']").trigger("click");
-
         }
 
     }
@@ -950,7 +948,7 @@ GetDLCInfofromSteamDB.formats["3dmgame"] = {
     name: "3DMGAME",
     ini: "3DMGAME.ini",
     options: {},
-    data: "[dlcEach=true:true:3]; {dlc_name}\r\nDLC{dlc_index} = {dlc_id}\r\n[/dlcEach]"
+    data: "[dlcEach=true:3]; {dlc_name}\r\nDLC{dlc_index} = {dlc_id}\r\n[/dlcEach]"
 };
 
 // ALI213
@@ -974,7 +972,7 @@ GetDLCInfofromSteamDB.formats.codex_t = {
     name: "CODEX (DLC00000, DLCName)",
     ini: "steam_emu.ini",
     options: {},
-    data: "[dlcEach=false:true:5]DLC{dlc_index} = {dlc_id}\r\nDLCName{dlc_index} = {dlc_name}\r\n[/dlcEach]"
+    data: "[dlcEach=false:5]DLC{dlc_index} = {dlc_id}\r\nDLCName{dlc_index} = {dlc_name}\r\n[/dlcEach]"
 };
 
 // RELOADED
@@ -983,7 +981,7 @@ GetDLCInfofromSteamDB.formats.reloaded = {
     ini: "steam_api.ini",
     options: {},
     data: "AppName = [steamdb]appIDName[/steamdb]\r\n" +
-    "[dlcEach=true:true:3]DLC{dlc_index} = {dlc_id}\r\nDLCName{dlc_index} = {dlc_name}\r\n[/dlcEach]" +
+    "[dlcEach=true:3]DLC{dlc_index} = {dlc_id}\r\nDLCName{dlc_index} = {dlc_name}\r\n[/dlcEach]" +
     "DLCCount = [steamdb]dlcsTot[/steamdb]\r\n"
 };
 
