@@ -1,2 +1,2 @@
 # GetDLCInfoFromSteamDB
-http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
+https://sak32009.github.com/steamdb/
