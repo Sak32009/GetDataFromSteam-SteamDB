@@ -1,10 +1,10 @@
-﻿// ==UserScript==
+// ==UserScript==
 // @name             Get DLC Info from SteamDB
 // @namespace        sak32009-get-dlc-info-from-steamdb
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.1.4
+// @version          3.2.0
 // @license          MIT
 // @homepageURL      https://sak32009.github.com/steamdb/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -17,960 +17,1180 @@
 // @noframes
 // ==/UserScript==
 
-// DOWNLOAD
-var Download = {
+((() => {
 
-    // ENCODE
-    encode: function (str) {
+    // DOWNLOAD
+    const Download = {
 
-        return "data:text/plain;charset=utf-8," + encodeURIComponent(str);
+        // ENCODE
+        encode(str) {
 
-    }
+            return `data:text/plain;charset=utf-8,${encodeURIComponent(str)}`;
 
-};
-
-// STORAGE
-var Storage = {
-
-    // PREFIX
-    prefix: "GetDLCInfofromSteamDB_",
-
-    // GET
-    get: function (name) {
-
-        return window.localStorage.getItem(this.prefix + name);
-
-    },
-
-    // SET
-    set: function (name, val) {
-
-        return window.localStorage.setItem(this.prefix + name, val);
-
-    },
-
-    // REMOVE
-    remove: function (name) {
-
-        return window.localStorage.removeItem(this.prefix + name);
-
-    },
-
-    // CLEAR
-    clear: function () {
-
-        window.localStorage.clear();
-
-    },
-
-    // IF NOT (EXISTS RETURN DEFAULT VALUE)
-    ifNot: function (name, def) {
-
-        var item = Storage.get(name);
-
-        return Storage.check(item) ? item : def;
-
-    },
-
-    // CHECK
-    check: function (item) {
-
-        return item !== null && item.length;
-
-    },
-
-    // CHECKBOX
-    checkbox: function (name) {
-
-        return this.get(name) == "true";
-
-    }
-
-};
-
-// MAIN
-var GetDLCInfofromSteamDB = {
-
-    // INFO
-    info: {
-        // AUTHOR
-        author: "Sak32009",
-        // NAME
-        name: GM_info.script.name,
-        // VERSION
-        version: GM_info.script.version,
-        // STEAMDB URL
-        steamDB: "https://steamdb.info/app/",
-        // HOMEPAGE URL
-        homepage: "https://sak32009.github.com/steamdb/",
-        // SUPPORT URL
-        support: "http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837",
-        // TIMESTAMP
-        timestamp: Math.round(new Date().getTime() / 1000),
-        // DATETIME
-        datetime: new Date().toGMTString()
-    },
-
-    // STEAMDB
-    steamDB: {
-        // APPID
-        appID: "",
-        // APPID NAME
-        appIDName: "",
-        // CONFIG EXE
-        configEXE: "",
-        // CONFIG ARGUMENTS
-        configARG: "",
-        // DLCS
-        dlcs: {},
-        // TOTAL DLCS
-        dlcsTot: 0
-    },
-
-    // OPTIONS
-    options: {
-        username: {
-            title: "Username",
-            type: "text",
-            placeholder: "..."
         },
-        gameLanguage: {
-            title: "Game language",
-            type: "text",
-            placeholder: "english"
-        },
-        autoDownload: {
-            title: "Automatically download file .INI",
-            type: "checkbox"
-        },
-        saveLastSelection: {
-            title: "Save the last selected format",
-            type: "checkbox"
-        },
-        autoSubmit: {
-            title: "Automatically submit format when you open the page",
-            type: "checkbox"
-        },
-        ignoreSteamDBUnknownApp: {
-            title: "Ignore DLCs 'SteamDB Unknown App'",
-            type: "checkbox"
+
+        // WINDOWS \r\n
+        windows(str) {
+
+            return str.replace(/\n/g, "\r\n");
+
         }
-    },
 
-    // FORMATS
-    formats: {},
+    };
 
-    // RUN
-    run: function () {
+    // STORAGE
+    const Storage = {
+
+        // PREFIX
+        prefix: `${GM_info.script.namespace}-`,
+
+        // GET
+        get(key) {
+
+            return window.localStorage.getItem(this.prefix + key);
+
+        },
+
+        // SET
+        set(key, value) {
+
+            return window.localStorage.setItem(this.prefix + key, value);
+
+        },
+
+        // REMOVE
+        remove(key) {
+
+            return window.localStorage.removeItem(this.prefix + key);
+
+        },
+
+        // CLEAR
+        clear() {
+
+            window.localStorage.clear();
+
+        },
+
+        // IF NOT EXISTS RETURN DEFAULT VALUE
+        ifNotExists(key, default_value) {
+
+            const item = this.get(key);
+
+            return this.check(item) ? item : default_value;
+
+        },
 
         // CHECK
-        var $check = $(".tabnav-tab[data-target='#dlc']");
+        check(item) {
 
-        if ($check.length) {
+            return item !== null && item.length > 0;
 
-            // GET DATA FROM STEAMDB
-            GetDLCInfofromSteamDB.getDataFromSteamDB();
-            // CREATE STYLES
-            GetDLCInfofromSteamDB.createStyles();
-            // CREATE NEW TAB GLOBAL OPTIONS
-            GetDLCInfofromSteamDB.createTabOptions("global_options", "Global Options", GetDLCInfofromSteamDB.options);
-            // CREATE FORMAT LIST
-            GetDLCInfofromSteamDB.createFormatList();
-            // LOAD OPTIONS
-            GetDLCInfofromSteamDB.loadOptions();
-            // EVENTS
-            GetDLCInfofromSteamDB.events();
+        },
+
+        // CHECKBOX
+        checkbox(key) {
+
+            return this.get(key) === "true";
 
         }
 
-    },
+    };
 
-    // GET DATA FROM STEAMDB
-    getDataFromSteamDB: function () {
+    // FORMATS
+    const Formats = {
+        // DATA
+        data: {
+            // CREAMAPI (FULL INI)
+            creamAPI: {
+                name: "CREAMAPI v2.0.0.7 (FULL INI)",
+                ini: {
+                    name: "cream_api.ini",
+                    data: `[steam]
+; Application ID (http://store.steampowered.com/app/%appid%/)
+appid = [steamdb]appID[/steamdb]
+; Force the usage of specific language.
+; Uncomment this option to turn it on.
+;language = [option=english]global_gameLanguage[/option]
+; Enable/disable automatic DLC unlock. Default option is set to "false".
+; Keep in mind that this option is highly experimental and won't
+; work if game wants to call each DLC by index.
+unlockall = [option=false]creamapi_unlock_all[/option]
+; Original Valve's steam_api.dll.
+; Default is "steam_api_o.dll".
+orgapi = [option=steam_api_o.dll]creamapi_orgapi[/option]
+; Original Valve's steam_api64.dll.
+; Default is "steam_api64_o.dll".
+orgapi64 = [option=steam_api64_o.dll]creamapi_orgapi64[/option]
+; Enable/disable extra protection bypasser.
+; Default is "false".
+extraprotection = [option=false]creamapi_extraprotection[/option]
+; ExtraProtection level.
+; Default is "0".
+; Available options :
+; 0 = minimum, 1 = medium, 2 = maximum
+extraprotectionlevel = [option=0]creamapi_extraprotectionlevel[/option]
+; Turn on the "light" wrapper mode.
+; Default is "false".
+wrappermode = [option=false]creamapi_wrappermode[/option]
+; Enable/disable logging of the DLC functions.
+; Default is "false".
+; If you use log_build, uncomment this option to turn it on.
+;log = [option=false]creamapi_log[/option]
 
-        // APPID
-        GetDLCInfofromSteamDB.steamDB.appID = $(".scope-app[data-appid]").data("appid");
-        // APPID NAME
-        GetDLCInfofromSteamDB.steamDB.appIDName = $("td[itemprop='name']").text().trim();
+[steam_wrapper]
+; Application ID to override (used when the wrapper mode is on)
+newappid = [option=0]creamapi_newappid[/option]
+; Load steam emulator library.
+; Default is "false".
+loademu = [option=false]creamapi_loademu[/option]
+; Emulator library that is used for the stats
+; and storage handling.
+; Default is "emu.dll".
+emudll = [option=emu.dll]creamapi_emudll[/option]
+; Use the emulator storage system.
+; Default is "false".
+wrapperremotestorage = [option=false]creamapi_wrapperremotestorage[/option]
+; Use the emulator stats/achievements system.
+; Default is "false".
+wrapperuserstats = [option=false]creamapi_wrapperuserstats[/option]
+; Use the emulator utils system.
+; Default is "false".
+wrapperutils = [option=false]creamapi_wrapperutils[/option]
+; User the emulator callbacks system.
+; Default is "false".
+wrappercallbacks = [option=false]creamapi_wrappercallbacks[/option]
 
-        // APPID DLCs
-        $(".tab-pane#dlc .app[data-appid]").each(function () {
+[dlc_subscription]
+; This will check if the specifed
+; DLC is owned by the user.
+; Format: <dlc_id> = <true/false>
+; e.g. : 12345 = true
+;        12346 = true
+;        12347 = true
+; If the DLC is not specified in this section
+; then it won't be subscribed.
+; Also if the value is set to "false" the DLC
+; won't be subscribed either.
+[dlcEach]{dlc_id} = true\n[/dlcEach]
 
-            var $this = $(this);
-            var appID = $this.data("appid");
+[dlc_index]
+; DLC handling.
+; Format: <dlc_index> = <dlc_id>
+; e.g. : 0 = 12345
+;        1 = 12346
+;        2 = 12347
+[dlcEach]{dlc_index} = {dlc_id}\n[/dlcEach]
 
-            GetDLCInfofromSteamDB.steamDB.dlcs[appID] = $this.find("td:nth-of-type(2)").text().trim();
-            GetDLCInfofromSteamDB.steamDB.dlcsTot++;
+[dlc_names]
+; Names for the DLCs index put above.
+; Use this only if needed.
+; Format: <dlc_index> = <dlc_name>
+; e.g. : 0 = DLC Name 0
+;        1 = DLC Name 1
+;        2 = DLC Name 2
+[dlcEach]{dlc_index} = {dlc_name}\n[/dlcEach]
 
-        });
-
-        // APPID CONFIG
-        var $config = $(".tab-pane#config > table:nth-of-type(1) tbody tr:nth-of-type(1)");
-        // APPID CONFIG EXE
-        GetDLCInfofromSteamDB.steamDB.configEXE = $config.find("td:nth-of-type(2)").text().trim();
-        // APPID CONFIG ARG
-        GetDLCInfofromSteamDB.steamDB.configARG = $config.find("td:nth-of-type(3)").text().trim();
-
-    },
-
-    // CREATE STYLES
-    createStyles: function () {
-
-        // STYLE
-        $("<style>").text(
-            "#GetDLCInfofromSteamDB_textarea{margin-bottom:10px;width:100%;resize:none;display:none}" +
-            "#GetDLCInfofromSteamDB_dlcRight > *{display:inline-block}" +
-            ".GetDLCInfofromSteamDB_tabNav{color:#2e7d32!important}" +
-            ".GetDLCInfofromSteamDB_tabNav:hover,.GetDLCInfofromSteamDB_tabNav.selected{border-color:#2e7d32!important}").appendTo("head");
-        // DLC RIGHT
-        $("<div id='GetDLCInfofromSteamDB_dlcRight' class='pull-right'>" +
-            "   <form id='GetDLCInfofromSteamDB_submit'>" +
-            "       <select id='GetDLCInfofromSteamDB_select'></select>" +
-            "       <button type='submit' class='btn btn-primary'>Get DLCs List</button>" +
-            "   </form>" +
-            "   <div class='dropdown'>" +
-            "       <button type='button' class='btn'>Download <b class='caret'></b></button>" +
-            "       <ul class='dropdown-menu' style='font-size:14px'>" +
-            "           <li><a href='javascript:;' id='GetDLCInfofromSteamDB_ini'><i class='octicon octicon-file-symlink-file'></i> <span>#.ini</span></a></li>" +
-            "           <li><a href='javascript:;' id='GetDLCInfofromSteamDB_steam_appid'><i class='octicon octicon-file-text'></i> steam_appid.txt</a></li>" +
-            "       </ul>" +
-            "   </div>" +
-            "   <button type='button' class='btn btn-danger' id='GetDLCInfofromSteamDB_resetOptions'>Reset Options</button>" +
-            "</div>").appendTo("#dlc > h2");
-        // TEXTAREA
-        $("<textarea id='GetDLCInfofromSteamDB_textarea' rows='25' readonly></textarea>").insertAfter("#dlc > h2");
-        // STEAM_APPID.TXT
-        $("#GetDLCInfofromSteamDB_steam_appid").attr({
-            href: Download.encode(GetDLCInfofromSteamDB.steamDB.appID),
-            download: "steam_appid.txt"
-        });
-
-    },
-
-    // CREATE FORMAT LIST
-    createFormatList: function () {
-
-        // SELECT DOM
-        var selct = $("#GetDLCInfofromSteamDB_select");
-
-        // EACH
-        $.each(GetDLCInfofromSteamDB.formats, function (key, values) {
-
-            var name = values.name;
-            var options = values.options;
-
-            // ADD OPTION TO SELECT
-            $("<option>").attr("value", key).text(name).appendTo(selct);
-
-            // CREATE NEW TAB WITH FORMAT OPTIONS
-            GetDLCInfofromSteamDB.createTabOptions(key, name, options);
-
-        });
-
-        // ..... SAVE LAST SELECTION
-        if (Storage.checkbox("saveLastSelection") && Storage.check("saveLastSelectionValue")) {
-            selct.find("option[value='" + Storage.get("saveLastSelectionValue") + "']").prop("selected", true);
-        }
-        // .....
-
-    },
-
-    // EVENTS
-    events: function () {
-
-        // SUBMIT DOM
-        var submt = $("#GetDLCInfofromSteamDB_submit");
-
-        // GET DLCS LIST SUBMIT
-        submt.submit(function (e) {
-
-            e.preventDefault();
-
-            // FORMAT
-            var formatKey = $(this).find("#GetDLCInfofromSteamDB_select option:selected").val();
-            var formatValues = GetDLCInfofromSteamDB.formats[formatKey];
-            var formatTitle = formatValues.name;
-            var formatIni = formatValues.ini;
-            var formatData = formatValues.data;
-            // RESULT
-            var result = "";
-
-            // INFO
-            result += "; " + GetDLCInfofromSteamDB.info.name + " by " + GetDLCInfofromSteamDB.info.author + " v" + GetDLCInfofromSteamDB.info.version + "\r\n" +
-                "; Format: " + formatTitle + "\r\n" +
-                "; AppID: " + GetDLCInfofromSteamDB.steamDB.appID + " (" + GetDLCInfofromSteamDB.info.steamDB + GetDLCInfofromSteamDB.steamDB.appID + ")\r\n" +
-                "; AppID Name: " + GetDLCInfofromSteamDB.steamDB.appIDName + "\r\n" +
-                "; Config EXE: " + GetDLCInfofromSteamDB.steamDB.configEXE + "\r\n" +
-                "; Config ARG: " + GetDLCInfofromSteamDB.steamDB.configARG + "\r\n" +
-                "; Total DLCs: " + GetDLCInfofromSteamDB.steamDB.dlcsTot + "\r\n" +
-                "; Homepage: " + GetDLCInfofromSteamDB.info.homepage + "\r\n" +
-                "; Support: " + GetDLCInfofromSteamDB.info.support + "\r\n\r\n";
-
-            // FORMAT DATA
-            result += GetDLCInfofromSteamDB.dlcFormatsStr(formatData);
-
-            // FILE INI
-            $("#GetDLCInfofromSteamDB_ini").attr({
-                href: Download.encode(result),
-                download: formatIni
-            }).find("span").text(formatIni);
-
-            // RESULT
-            $("#GetDLCInfofromSteamDB_textarea").html(result).show().scrollTop(0);
-
-            // ..... AUTO DOWNLOAD
-            if (Storage.checkbox("autoDownload")) {
-                document.getElementById("GetDLCInfofromSteamDB_ini").click();
-            }
-            // .....
-
-            // ..... SAVE LAST SELECTION
-            Storage.set("saveLastSelectionValue", formatKey);
-            // .....
-
-        });
-
-        // ..... AUTO SUBMIT
-        if (Storage.checkbox("autoSubmit")) {
-            submt.trigger("submit");
-        }
-        // .....
-
-        // SUBMIT OPTIONS
-        $("form#GetDLCInfofromSteamDB_submitOptions").submit(function (e) {
-
-            e.preventDefault();
-
-            // SAVE DATA
-            $(this).find("input, select").each(function () {
-
-                var $this = $(this);
-                var val = $this.val();
-                var type = $this.attr("type");
-                var name = $this.attr("name");
-                if (type == "checkbox") {
-                    val = $this.prop("checked");
+[dlc_timestamp]
+; Specifies a unique unix timestamp for the purchased DLC (http://www.onlineconversion.com/unix_time.htm).
+; By default returns the current date timestamp (if nothing was specified).
+; Format: <dlc_id> = <timestamp>
+; e.g. : 12345 = 1420070400
+[dlcEach]{dlc_id} = {dlc_timestamp}\n[/dlcEach]`
+                },
+                options: {
+                    creamapi_unlock_all: {
+                        title: "Enable/disable automatic DLC unlock",
+                        type: "checkbox"
+                    },
+                    creamapi_orgapi: {
+                        title: "Original Valve's steam_api.dll",
+                        type: "text",
+                        placeholder: "steam_api_o.dll"
+                    },
+                    creamapi_orgapi64: {
+                        title: "Original Valve's steam_api64.dll",
+                        type: "text",
+                        placeholder: "steam_api64_o.dll"
+                    },
+                    creamapi_extraprotection: {
+                        title: "Enable/disable extra protection bypasser",
+                        type: "checkbox"
+                    },
+                    creamapi_extraprotectionlevel: {
+                        title: "ExtraProtection level",
+                        type: "select",
+                        options: {
+                            0: "Minimum (Default)",
+                            1: "Medium",
+                            2: "Maximum"
+                        },
+                        default: 0
+                    },
+                    creamapi_wrappermode: {
+                        title: "Turn on the \"light\" wrapper mode",
+                        type: "checkbox"
+                    },
+                    creamapi_log: {
+                        title: "Enable/disable logging of the DLC functions",
+                        type: "checkbox"
+                    },
+                    creamapi_newappid: {
+                        title: "Application ID to override (used when the wrapper mode is on)",
+                        type: "text",
+                        placeholder: "0"
+                    },
+                    creamapi_loademu: {
+                        title: "Load steam emulator library",
+                        type: "checkbox"
+                    },
+                    creamapi_emudll: {
+                        title: "Emulator library that is used for the stats and storage handling.",
+                        type: "text",
+                        placeholder: "emu.dll"
+                    },
+                    creamapi_wrapperremotestorage: {
+                        title: "Use the emulator storage system",
+                        type: "checkbox"
+                    },
+                    creamapi_wrapperuserstats: {
+                        title: "Use the emulator stats/achievements system",
+                        type: "checkbox"
+                    },
+                    creamapi_wrapperutils: {
+                        title: "Use the emulator utils system",
+                        type: "checkbox"
+                    },
+                    creamapi_wrappercallbacks: {
+                        title: "User the emulator callbacks system",
+                        type: "checkbox"
+                    }
                 }
+            },
 
-                // SAVE TO LOCAL STORAGE
-                Storage.set(name, val);
+            // LUMAEMU (FULL INI)
+            lumaemu: {
+                name: "LUMAEMU v1.9.7 (FULL INI)",
+                ini: {
+                    name: "LumaEmu.ini",
+                    data: `[SteamStatus]
+# This will make games think Steam is in offline mode
+Offline = [option=0]lumaemu_offline[/option]
+
+[Player]
+PlayerName = [option=LumaEmu]username[/option]
+PlayerNickname = [option=LumaEmu]username[/option]
+ClanName = [option=LumaEmu]username[/option]
+ClanTag = [option=LumaEmu]username[/option]
+OpenNameChanger = [option=0]lumaemu_opennamechanger[/option]
+
+[Minidumps]
+WriteMinidumps = 1
+
+[Language]
+GameLanguage = [option=english]gameLanguage[/option]
+
+[Cache]
+#These options are only read by Steam.dll
+
+# This will enable loading apps from GCF files
+UseCacheFiles = 0
+
+# Full path to the Steamapps folder, there must be an backslash at the end of the path.
+CachePath = C:\\Program Files (x86)\\Steam\\steamapps\\
+
+[Log]
+# Create LumaEmu.log and LumaEmu_Steamclient.log
+LogFile = [option=1]lumaemu_logfile[/option]
+
+[MasterServer]
+# Set this to 1 to use Valve master server or set it to 2 to use setti master server, this setting is only used by Steam.dll.
+Master = 1
+
+[DLC]
+# With this you can enable and disable DLCs in games
+# If you set this to 2, the LumaEmu_DLC folder will be used without trying to get new DLC AppIds from the internet.
+# If you set this to 3, you can manually specify the DLC you want to be enabled.
+UnlockDLC = 3
+
+[dlcEach]; {dlc_name}\nDLC_{dlc_id} = 1\n[/dlcEach]
+[Overlay]
+# This will tell the game if the Steam Overlay is available
+EnableOverlay = [option=1]lumaemu_enableoverlay[/option]
+
+[StatsAndAchievements]
+# Save Stats and Achievements
+# 1 will save both, 2 will save achievements and 3 will save stats
+Save = [option=1]lumaemu_save[/option]
+
+[SourceEngine]
+# With this enabled you will not lose FPS when the game window does not have focus, only works with Source Engine games.
+FocusPatch = 0
+
+[ServerAuthorization]
+BlockLumaEmu = [option=0]lumaemu_blocklumaemu[/option]
+BlockLegitSteam = [option=0]lumaemu_blocklegitsteam[/option]
+BlockSmartSteamEmu = [option=0]lumaemu_blocksmartsteamemu[/option]
+BlockVACBannedAccounts = [option=1]lumaemu_blockVACbannedaccounts[/option]
+BlockUnknownClient = [option=1]lumaemu_blockunknownclient[/option]
+
+[VR]
+# This will tell games that Steam is running in VR mode.
+EnableVR = 0
+
+[RemoteStorage]
+# Specify custom path to save SteamCloud files
+SaveInCustomPath = [option=0]lumaemu_saveincustompath[/option]
+Path = [option=]lumaemu_path[/option]
+
+[LumaGameLauncher]
+# Used by LumaGameLauncher_x86.exe and LumaGameLauncher_x64.exe
+GameExe = [steamdb]configEXE[/steamdb] -appid [steamdb]appID[/steamdb] [steamdb]configARG[/steamdb]
+LoadLumaCEG = 0
+
+# Requires the "-appid" parameter to be used on the game exe
+AppIDSetByLauncher = 1
+
+[SteamClient]
+# Set path to steamclient.dll or steamclient64.dll (not the original)
+LumaEmuClientDll = [option=steamclient.dll]lumaemu_lumaemuclientDll[/option]
+LumaEmuClientDll64 = [option=steamclient64.dll]lumaemu_lumaemuclientDll64[/option]\n`
+                },
+                options: {
+                    lumaemu_offline: {
+                        title: "Offline",
+                        type: "select",
+                        options: {
+                            0: "Online (Default)",
+                            1: "Offline"
+                        },
+                        default: 0
+                    },
+                    lumaemu_opennamechanger: {
+                        title: "OpenNameChanger",
+                        type: "select",
+                        options: {
+                            0: "Disabled (Default)",
+                            1: "Activated"
+                        },
+                        default: 0
+                    },
+                    lumaemu_logfile: {
+                        title: "LogFile",
+                        type: "select",
+                        options: {
+                            0: "Disabled",
+                            1: "Activated (Default)"
+                        },
+                        default: 1
+                    },
+                    lumaemu_enableoverlay: {
+                        title: "EnableOverlay",
+                        type: "select",
+                        options: {
+                            0: "Disabled",
+                            1: "Activated (Default)"
+                        },
+                        default: 1
+                    },
+                    lumaemu_save: {
+                        title: "Save",
+                        type: "select",
+                        options: {
+                            1: "Will save both (Default)",
+                            2: "Will save both, achievements",
+                            3: "Will save both, achievements, stats"
+                        },
+                        default: 1
+                    },
+                    lumaemu_blocklumaemu: {
+                        title: "BlockLumaEmu",
+                        type: "select",
+                        options: {
+                            0: "Disabled (Default)",
+                            1: "Activated"
+                        },
+                        default: 0
+                    },
+                    lumaemu_blocklegitsteam: {
+                        title: "BlockLegitSteam",
+                        type: "select",
+                        options: {
+                            0: "Disabled (Default)",
+                            1: "Activated"
+                        },
+                        default: 0
+                    },
+                    lumaemu_blocksmartsteamemu: {
+                        title: "BlockSmartSteamEmu",
+                        type: "select",
+                        options: {
+                            0: "Disabled (Default)",
+                            1: "Activated"
+                        },
+                        default: 0
+                    },
+                    lumaemu_blockVACbannedaccounts: {
+                        title: "BlockVACBannedAccounts",
+                        type: "select",
+                        options: {
+                            0: "Disabled",
+                            1: "Activated (Default)"
+                        },
+                        default: 1
+                    },
+                    lumaemu_blockunknownclient: {
+                        title: "BlockUnknownClient",
+                        type: "select",
+                        options: {
+                            0: "Disabled",
+                            1: "Activated (Default)"
+                        },
+                        default: 1
+                    },
+                    lumaemu_saveincustompath: {
+                        title: "SaveInCustomPath",
+                        type: "select",
+                        options: {
+                            0: "Disabled (Default)",
+                            1: "Activated"
+                        },
+                        default: 0
+                    },
+                    lumaemu_path: {
+                        title: "Path",
+                        type: "text",
+                        placeholder: "..."
+                    },
+                    lumaemu_lumaemuclientDll: {
+                        title: "LumaEmuClientDll",
+                        type: "text",
+                        placeholder: "steamclient.dll"
+                    },
+                    lumaemu_lumaemuclientDll64: {
+                        title: "LumaEmuClientDll64",
+                        type: "text",
+                        placeholder: "steamclient64.dll"
+                    }
+                }
+            },
+
+            // LUMAEMU (ONLY DLCs LIST)
+            lumaemu_only_dlcs: {
+                name: "LUMAEMU v1.9.7 (ONLY DLCs LIST)",
+                ini: {
+                    name: "LumaEmu_only_dlcs.ini",
+                    data: "[dlcEach]; {dlc_name}\nDLC_{dlc_id} = 1\n[/dlcEach]"
+                },
+                options: {}
+            },
+
+            // SMARTSTEAMEMU (ONLY DLCs LIST)
+            smartsteamemu_only_dlcs: {
+                name: "SMARTSTEAMEMU (ONLY DLCs LIST)",
+                ini: {
+                    name: "SmartSteamEmu_only_dlcs.ini",
+                    data: "[dlcEach]{dlc_id} = {dlc_name}\n[/dlcEach]"
+                },
+                options: {}
+            },
+
+            // 3DMGAME
+            "3dmgame": {
+                name: "3DMGAME",
+                ini: {
+                    name: "3DMGAME.ini",
+                    data: "[dlcEach=true:3]; {dlc_name}\nDLC{dlc_index} = {dlc_id}\n[/dlcEach]"
+                },
+                options: {}
+            },
+
+            // ALI213
+            ali213: {
+                name: "ALI213",
+                ini: {
+                    name: "ALI213.ini",
+                    data: "[dlcEach]{dlc_id} = {dlc_name}\n[/dlcEach]"
+                },
+                options: {}
+            },
+
+            // CODEX (ID = NAME)
+            codex: {
+                name: "CODEX (ID = NAME)",
+                ini: {
+                    name: "steam_emu.ini",
+                    data: "[dlcEach]{dlc_id} = {dlc_name}\n[/dlcEach]"
+                },
+                options: {}
+            },
+
+            // CODEX (DLC00000, DLCName)
+            codex_t: {
+                name: "CODEX (DLC00000, DLCName)",
+                ini: {
+                    name: "steam_emu.ini",
+                    data: "[dlcEach=false:5]DLC{dlc_index} = {dlc_id}\nDLCName{dlc_index} = {dlc_name}\n[/dlcEach]"
+                },
+                options: {}
+            },
+
+            // RELOADED (old?)
+            reloaded_old: {
+                name: "RELOADED (old?)",
+                ini: {
+                    name: "steam_api.ini",
+                    data: `AppName = [steamdb]appIDName[/steamdb]
+[dlcEach=true:3]DLC{dlc_index} = {dlc_id}\nDLCName{dlc_index} = {dlc_name}\n[/dlcEach]
+DLCCount = [steamdb]appIDDLCsCount[/steamdb]\n`
+                },
+                options: {}
+            },
+
+            // RELOADED (from BO3)
+            reloaded_bo3: {
+                name: "RELOADED (from BO3)",
+                ini: {
+                    name: "steam_api.ini",
+                    data: `AppId = [steamdb]appID[/steamdb]
+[dlcEach=true:3]DLC{dlc_index} = {dlc_id}\n[/dlcEach]
+DLCCount = [steamdb]appIDDLCsCount[/steamdb]\n`
+                },
+                options: {}
+            },
+
+            // REVOLT
+            revolt: {
+                name: "REVOLT",
+                ini: {
+                    name: "REVOLT.ini",
+                    data: `[DLC]
+
+# Base DLC AppID for enumeration, if not set and AppID is set it uses AppID
+DLCEnumBase = [steamdb]appID[/steamdb]
+
+# number of DLCs enumerated
+DLCEnumCount = [steamdb]appIDDLCsCount[/steamdb]
+
+# By default DLC active or not
+# Default value will override all other values, so setting this to true will enable all DLCs!
+Default = false
+
+[dlcEach]; {dlc_name}\n{dlc_index} = {dlc_id}\n[/dlcEach]
+
+# List of all DLCs the app should own. Index starts from 0
+# <index> = <appid>
+[Subscriptions]
+
+# By default subscribed or not
+# Default value will override all other values, so setting this to true will enable all Subscriptions!
+Default = false
+
+# Manual List
+# <appid> = <true/false>
+[dlcEach]{dlc_index} = true\n[/dlcEach]`
+                },
+                options: {}
+            },
+
+            // SKIDROW
+            skidrow: {
+                name: "SKIDROW",
+                ini: {
+                    name: "steam_api.ini",
+                    data: "[dlcEach]; {dlc_name}\n{dlc_id}\n[/dlcEach]"
+                },
+                options: {}
+            },
+
+            // SST311212
+            SST311212: {
+                name: "SST311212 (Steamworks Fix)",
+                ini: {
+                    name: "SST311212.ini",
+                    data: "[dlcEach]{dlc_id} = {dlc_name}\n[/dlcEach]"
+                },
+                options: {}
+            }
+        }
+    };
+
+    // MAIN
+    const GetDLCInfofromSteamDB = {
+
+        // INFO
+        info: {
+            // AUTHOR
+            author: "Sak32009",
+            // NAME
+            name: GM_info.script.name,
+            // VERSION
+            version: GM_info.script.version,
+            // STEAMDB URL
+            steamDB: "https://steamdb.info/app/",
+            // HOMEPAGE URL
+            homepage: "https://sak32009.github.com/steamdb/",
+            // SUPPORT URL
+            support: "http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837"
+        },
+
+        // STEAMDB
+        steamDB: {
+            // APPID
+            appID: "",
+            // APPID NAME
+            appIDName: "",
+            // APPID DLCS
+            appIDDLCs: {},
+            // APPID TOTAL DLCS
+            appIDDLCsCount: 0,
+            // CONFIG EXE
+            configEXE: "",
+            // CONFIG ARGUMENTS
+            configARG: ""
+        },
+
+        // OPTIONS
+        options: {
+            // USERNAME
+            global_username: {
+                title: "Username",
+                type: "text",
+                placeholder: "..."
+            },
+            // GAME LANGUAGE
+            global_gameLanguage: {
+                title: "Game language",
+                type: "select",
+                options: {
+                    english: "english",
+                    german: "german",
+                    french: "french",
+                    italian: "italian",
+                    koreana: "koreana",
+                    spanish: "spanish",
+                    schinese: "schinese",
+                    tchinese: "tchinese",
+                    russian: "russian",
+                    thai: "thai",
+                    japanese: "japanese",
+                    portuguese: "portuguese",
+                    polish: "polish",
+                    danish: "danish",
+                    dutch: "dutch",
+                    finnish: "finnish",
+                    norwegian: "norwegian",
+                    swedish: "swedish",
+                    hungarian: "hungarian",
+                    czech: "czech",
+                    romanian: "romanian",
+                    turkish: "turkish"
+                },
+                default: "english"
+            },
+            // AUTOMATICALLY DOWNLOAD FILE .INI
+            global_autoDownload: {
+                title: "Automatically download file .INI",
+                type: "checkbox"
+            },
+            // SAVE THE LAST SELECTED FORMAT
+            global_saveLastSelection: {
+                title: "Save the last selected format",
+                type: "checkbox"
+            },
+            // AUTO SUBMIT FORM WHEN YOU OPEN THE PAGE
+            global_autoSubmit: {
+                title: "Automatically submit form when you open the page",
+                type: "checkbox"
+            },
+            // IGNORE DLCs 'SteamDB Unknown App'
+            global_ignoreSteamDBUnknownApp: {
+                title: "Ignore DLCs 'SteamDB Unknown App'",
+                type: "checkbox"
+            },
+            // CHANGE IN THE DLC TABLE TEXT FIELDS INTO AN INPUT FIELD
+            global_changeDLCTableTextToInput: {
+                title: "Change in the DLC table text fields into an input field (need reload of the page)",
+                type: "checkbox"
+            }
+        },
+
+        // RUN
+        run() {
+
+            // CHECK IF THE APPID HAS DLCs
+            const $check = $(".tabnav-tab[data-target='#dlc']");
+
+            if ($check.length > 0) {
+
+                // GET DATA
+                this.getData();
+                // CREATE DOM
+                this.createDOM();
+                // CREATE GLOBAL OPTIONS TAB
+                this.createTab("globalOptions", "Global Options", this.options);
+                // CREATE FORMATS
+                this.createFormats();
+                // LOAD OPTIONS
+                this.loadOptions();
+                // LOAD EVENTS
+                this.loadEvents();
+                // INCLUDE EXTRA
+                this.includeExtra();
+
+            }
+
+        },
+
+        // GET DATA
+        getData() {
+
+            // SET APPID
+            this.steamDB.appID = $(".scope-app[data-appid]").data("appid");
+            // SET APPID NAME
+            this.steamDB.appIDName = $("td[itemprop='name']").text().trim();
+
+            // SET APPID DLCs
+            $(".tab-pane#dlc .app[data-appid]").each((_index, dom) => {
+
+                const $this = $(dom);
+                const appID = $this.data("appid");
+                const appIDName = $this.find("td:nth-of-type(2)").text().trim();
+                const appIDTime = $this.find("td:nth-of-type(3)").data("sort");
+
+                this.steamDB.appIDDLCs[appID] = {
+                    name: appIDName,
+                    timestamp: appIDTime,
+                    date: new Date(appIDTime * 1000).toGMTString()
+                };
+                this.steamDB.appIDDLCsCount += 1;
 
             });
 
-            // ALERT
-            alert("Options saved!");
+            // SET CONFIG
+            const $config = $(".tab-pane#config > table:nth-of-type(1) tbody tr:nth-of-type(1)");
+            // SET CONFIG EXE
+            this.steamDB.configEXE = $config.find("td:nth-of-type(2)").text().trim();
+            // SET CONFIG ARG
+            this.steamDB.configARG = $config.find("td:nth-of-type(3)").text().trim();
 
-        });
+        },
 
-        // RESET OPTIONS
-        $("#GetDLCInfofromSteamDB_resetOptions").click(function (e) {
+        // CREATE DOM
+        createDOM() {
 
-            e.preventDefault();
+            // STYLE
+            $("<style>").text(`#GetDLCInfofromSteamDB_textarea{margin-bottom:10px;width:100%;resize:none;display:none}
+#GetDLCInfofromSteamDB_nav > *{display:inline-block}
+.GetDLCInfofromSteamDB_tabNav{color:#2e7d32!important}
+.GetDLCInfofromSteamDB_tabNav:hover,.GetDLCInfofromSteamDB_tabNav.selected{border-color:#2e7d32!important}`).appendTo("head");
 
-            // CONFIRM
-            if (window.confirm("Do you really want to reset options?")) {
-                // CLEAR STORAGE
-                Storage.clear();
-                // LOAD OPTIONS
-                GetDLCInfofromSteamDB.loadOptions();
-                // ALERT
-                alert("Restored default options!");
-            }
+            // NAV
+            $(`<div id='GetDLCInfofromSteamDB_nav' class='pull-right'>
+   <form id='GetDLCInfofromSteamDB_submit'>
+       <select id='GetDLCInfofromSteamDB_select'></select>
+       <button type='submit' class='btn btn-primary'>Get DLCs List</button>
+   </form>
+   <div class='dropdown'>
+       <button type='button' class='btn'>Download <b class='caret'></b></button>
+       <ul class='dropdown-menu' style='font-size:14px'>
+           <li><a href='javascript:;' id='GetDLCInfofromSteamDB_download'><i class='octicon octicon-file-symlink-file'></i> <span>#.ini</span></a></li>
+           <li><a href='javascript:;' id='GetDLCInfofromSteamDB_steamAppID'><i class='octicon octicon-file-text'></i> steam_appid.txt</a></li>
+       </ul>
+   </div>
+   <button type='button' class='btn btn-danger' id='GetDLCInfofromSteamDB_resetOptions'>Reset Options</button>
+</div>`).appendTo("#dlc > h2");
 
-        });
+            // TEXTAREA
+            $("<textarea id='GetDLCInfofromSteamDB_textarea' rows='25' readonly></textarea>").insertAfter("#dlc > h2");
 
-        // TABNAV
-        $(".GetDLCInfofromSteamDB_tabNav").click(function (e) {
+            // STEAM APPID
+            $("#GetDLCInfofromSteamDB_steamAppID").attr({
+                href: Download.encode(this.steamDB.appID),
+                download: "steam_appid.txt"
+            });
 
-            e.preventDefault();
+        },
 
-            // TAB SHOW (from SteamDB)
-            $(this).tab("show");
+        // CREATE FORMATS
+        createFormats() {
 
-        });
+            // EACH
+            $.each(Formats.data, (index, values) => {
 
-    },
+                const name = values.name;
+                const options = values.options;
 
-    // LOAD OPTIONS
-    loadOptions: function () {
+                // ADD OPTION
+                const tag = $("<option>").attr("value", index).text(name);
+                // ..... SAVE LAST SELECTION
+                if (Storage.checkbox("global_saveLastSelection") && Storage.get("global_saveLastSelectionValue") === index) {
+                    tag.prop("selected", true);
+                }
+                // .....
+                tag.appendTo("#GetDLCInfofromSteamDB_select");
 
-        $("form#GetDLCInfofromSteamDB_submitOptions").find("input, select").each(function () {
+                // CREATE TAB
+                this.createTab(index, name, options);
 
-            var $this = $(this);
-            var type = $this.attr("type");
-            var name = $this.attr("name");
-            var tagName = $this.prop("tagName");
-            var item = Storage.get(name);
+            });
 
-            if (tagName == "SELECT") {
-                var optionSel = Storage.check(item) ? "value='" + item + "'" : "selected";
-                $this.find("option[" + optionSel + "]").prop("selected", true);
-            } else if (type == "checkbox") {
-                $this.prop("checked", item == "true");
-            } else {
-                $this.val(item);
-            }
+        },
 
-        });
+        // LOAD EVENTS
+        loadEvents() {
 
-    },
+            // DOM SUBMIT
+            const dom_submit = $("#GetDLCInfofromSteamDB_submit");
 
-    // CREATE TAB OPTIONS
-    createTabOptions: function (key, name, options) {
+            // EVENT SUBMIT
+            $(document).on("submit", dom_submit, e => {
 
-        if (Object.keys(options).length) {
-            $("<a href='#' data-target='#GetDLCInfofromSteamDB_" + key + "' class='tabnav-tab GetDLCInfofromSteamDB_tabNav'>" +
-                "<img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAw1BMVEUAAAAufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTKrCKvxAAAAQHRSTlMAAQIDBAUHCAoNDxAREhcYHh8hJSYoKjM0Nz1FTVhZX2ttb3N4foKFiImdqKqrra+wubrF19ze4OTm6fHz9/n7fSmnEwAAAI5JREFUGFeFjVkbgUAAAGfVSuS+byE5ckeI2v//qzz52jfzOA8zUArUj3RpAJHScIFEFx4w0My9DEiz750fyfsWzFpCAumq65gCRL4yDHxgrTd6ALX5NVVKqfgwtgH2NmBImQOaLvBSx1G9aBWczjRUC6DxzBIXC5CiPT9FnzjcTqpIING2Ox/Y/N1CtgW+zlQifRs/crAAAAAASUVORK5CYII='>" +
-                " " + name +
-                "</a>").insertBefore(".tabnav-tab[data-target='#dlc']");
-            $("<div id='GetDLCInfofromSteamDB_" + key + "' class='tab-pane'>" +
-                "   <h2>" + name + "</h2>" +
-                "   <form id='GetDLCInfofromSteamDB_submitOptions'>" +
-                "       <button type='submit' class='btn btn-primary btn-lg btn-block' style='margin:5px 0'>Save Options</button>" +
-                "       <table class='table table-bordered table-fixed' style='margin-bottom:0'>" +
-                "           <thead><th>Info</th><th>Input</th></thead>" +
-                "           <tbody>" +
-                GetDLCInfofromSteamDB.convertOptions2HTML(options) +
-                "           </tbody>" +
-                "       </table>" +
-                "       <button type='submit' class='btn btn-primary btn-lg btn-block' style='margin:5px 0'>Save Options</button>" +
-                "   </form>" +
-                "</div>").appendTo(".tabbable > .tab-content");
-        }
+                e.preventDefault();
 
-    },
+                // RESULT
+                let result = "";
+                // GET FORMAT DATA
+                const selected_key = $("#GetDLCInfofromSteamDB_select option:selected").val();
+                const format_data = Formats.data[selected_key];
+                const format_name = format_data.name;
+                const format_ini = format_data.ini;
+                const format_ini_name = format_ini.name;
+                const format_ini_data = format_ini.data;
 
-    // CONVERT OPTIONS TO HTML
-    convertOptions2HTML: function (options) {
+                // WRITE INFO
+                result += `; ${this.info.name} by ${this.info.author} v${this.info.version}
+; Format: ${format_name}
+; AppID: ${this.steamDB.appID}
+; AppID Name: ${this.steamDB.appIDName}
+; AppID Total DLCs: ${this.steamDB.appIDDLCsCount}
+; Config EXE: ${this.steamDB.configEXE}
+; Config ARG: ${this.steamDB.configARG}
+; SteamDB: ${this.info.steamDB}${this.steamDB.appID}
+; Homepage: ${this.info.homepage}
+; Support: ${this.info.support}\n\n`;
 
-        // RESULT
-        var result = "";
+                // GET DLCs
+                result += this.dlcEachStr(format_ini_data);
 
-        $.each(options, function (key, values) {
+                // WRITE RESULT
+                $("#GetDLCInfofromSteamDB_textarea").html(result).show().scrollTop(0);
 
-            var title = values.title;
-            var type = values.type;
-            var placeholder = values.placeholder || "";
-            var select_options = values.options || {};
-            var select_default = values.default || "";
+                // SET FILE INI DATA
+                $("#GetDLCInfofromSteamDB_download").attr({
+                    href: Download.encode(Download.windows(result)),
+                    download: format_ini_name
+                }).find("span").text(format_ini_name);
 
-            result += "<tr><td>" + title + "</td><td>";
+                // ..... AUTO DOWNLOAD
+                if (Storage.checkbox("global_autoDownload")) {
+                    document.getElementById("GetDLCInfofromSteamDB_download").click();
+                }
+                // .....
 
-            switch (type) {
-                case "text":
-                    result += "<input type='text' class='input-block' name='" + key + "' placeholder='" + placeholder + "'>";
-                    break;
-                case "checkbox":
-                    result += "<input type='checkbox' name='" + key + "'>";
-                    break;
-                case "select":
-                    result += "<select class='input-block' name='" + key + "'>";
-                    $.each(select_options, function (key, value) {
-                        var selected = key == select_default ? "selected" : "";
-                        result += "<option value='" + key + "' " + selected + ">" + value + "</option>";
-                    });
-                    result += "</select>";
-                    break;
-            }
+                // ..... SAVE LAST SELECTION
+                Storage.set("global_saveLastSelectionValue", selected_key);
+                // .....
 
-            result += "</td></tr>";
+            });
 
-        });
-
-        return result;
-
-    },
-
-    // DLC EACH
-    dlcEach: function (str, index_start_zero, index_prefix) {
-
-        // RESULT
-        var result = "";
-        // INDEX START ZERO
-        var index = index_start_zero ? 0 : -1;
-
-        $.each(GetDLCInfofromSteamDB.steamDB.dlcs, function (id, name) {
-
-            // ..... IGNORE DLCs 'SteamDB Unknown App'
-            if (!(Storage.checkbox("ignoreSteamDBUnknownApp") && name.indexOf("SteamDB Unknown App") !== -1)) {
-
-                index++;
-
-                result += GetDLCInfofromSteamDB.dlcEachFormat(str, {
-                    "dlc_id": id,
-                    "dlc_name": name,
-                    "dlc_index": GetDLCInfofromSteamDB.dlcIndexFormat(index, index_prefix),
-                    "dlc_timestamp": GetDLCInfofromSteamDB.info.timestamp
-                });
-
+            // ..... AUTO SUBMIT
+            if (Storage.checkbox("global_autoSubmit")) {
+                dom_submit.trigger("submit");
             }
             // .....
 
-        });
+            // SUBMIT OPTIONS
+            $(document).on("submit", "#GetDLCInfofromSteamDB_submitOptions", e => {
 
-        return result;
+                e.preventDefault();
 
-    },
+                // EACH
+                $(e.currentTarget).find("input, select").each((_index, dom) => {
 
-    // DLC EACH FORMAT
-    dlcEachFormat: function (str, values) {
+                    const $this = $(dom);
+                    const name = $this.attr("name");
+                    const type = $this.attr("type");
+                    const value = type === "checkbox" ? $this.prop("checked") : $this.val();
 
-        $.each(values, function (key, value) {
+                    // SET
+                    Storage.set(name, value);
 
-            var re = new RegExp("{" + key + "}", "g");
+                });
 
-            str = str.replace(re, value);
+                // ALERT
+                alert("Options saved!");
 
-        });
+            });
 
-        return str;
+            // RESET OPTIONS
+            $(document).on("click", "#GetDLCInfofromSteamDB_resetOptions", e => {
 
-    },
+                e.preventDefault();
 
-    // DLC INDEX FORMAT
-    dlcIndexFormat: function (index, zero) {
+                // CONFIRM
+                if (window.confirm("Do you really want to reset options?")) {
+                    // CLEAR
+                    Storage.clear();
+                    // LOAD OPTIONS
+                    this.loadOptions();
+                    // ALERT
+                    alert("Restored default options!");
+                }
 
-        index = index.toString();
-        zero = parseInt(zero);
-        var len = index.length;
+            });
 
-        return zero > len ? "0".repeat(zero - len) + index : index;
+            // SHOW TABNAV
+            $(document).on("click", ".GetDLCInfofromSteamDB_tabNav", e => {
 
-    },
+                e.preventDefault();
 
-    // DLC FORMATS STR
-    dlcFormatsStr: function (str) {
+                $(e.currentTarget).tab("show");
 
-        var re_exec;
-        var re_str = str;
-        var re = /\[(\w+)(?:=(.*))?]([^[]+)\[\/(\w+)]/g;
+            });
 
-        while ((re_exec = re.exec(re_str)) !== null) {
+        },
 
-            if (re_exec.index === re.lastIndex) {
-                re.lastIndex++;
+        // LOAD OPTIONS
+        loadOptions() {
+
+            $("#GetDLCInfofromSteamDB_submitOptions").find("input, select").each((_index, dom) => {
+
+                const $this = $(dom);
+                const name = $this.attr("name");
+                const type = $this.attr("type");
+                const tagName = $this.prop("tagName");
+                const item = Storage.get(name);
+
+                if (tagName === "SELECT") {
+                    $this.find(`option[${Storage.check(item) ? `value='${item}'` : "selected"}]`).prop("selected", true);
+                } else if (type === "checkbox") {
+                    $this.prop("checked", item === "true");
+                } else {
+                    $this.val(item);
+                }
+
+            });
+
+        },
+
+        // CREATE TAB
+        createTab(key, name, options) {
+
+            // CHECK IF OPTIONS IS EMPTY
+            if (Object.keys(options).length > 0) {
+
+                $(`<a href='#' data-target='#GetDLCInfofromSteamDB_${key}' class='tabnav-tab GetDLCInfofromSteamDB_tabNav'><img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAw1BMVEUAAAAufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTIufTKrCKvxAAAAQHRSTlMAAQIDBAUHCAoNDxAREhcYHh8hJSYoKjM0Nz1FTVhZX2ttb3N4foKFiImdqKqrra+wubrF19ze4OTm6fHz9/n7fSmnEwAAAI5JREFUGFeFjVkbgUAAAGfVSuS+byE5ckeI2v//qzz52jfzOA8zUArUj3RpAJHScIFEFx4w0My9DEiz750fyfsWzFpCAumq65gCRL4yDHxgrTd6ALX5NVVKqfgwtgH2NmBImQOaLvBSx1G9aBWczjRUC6DxzBIXC5CiPT9FnzjcTqpIING2Ox/Y/N1CtgW+zlQifRs/crAAAAAASUVORK5CYII='> ${name}</a>`).insertBefore(".tabnav-tab[data-target='#dlc']");
+
+                $(`<div id='GetDLCInfofromSteamDB_${key}' class='tab-pane'>
+    <h2>${name}</h2>
+    <form id='GetDLCInfofromSteamDB_submitOptions'>
+        <button type='submit' class='btn btn-primary btn-lg btn-block' style='margin:5px 0'>Save Options</button>
+        <table class='table table-bordered table-fixed' style='margin-bottom:0'>
+            <thead><th>Info</th><th>Input</th></thead>
+            <tbody>${this.convertOptions2HTML(options)}</tbody>
+        </table>
+        <button type='submit' class='btn btn-primary btn-lg btn-block' style='margin:5px 0'>Save Options</button>
+    </form>
+</div>`).appendTo(".tabbable > .tab-content");
+
             }
 
-            var bbcode = re_exec[0];
-            var bbcode_name = re_exec[1];
-            var bbcode_opt = re_exec[2];
-            var bbcode_val = re_exec[3];
-            var bbcode_close = re_exec[4];
+        },
 
-            if (bbcode_name == bbcode_close && bbcode_val.length) {
+        // CONVERT OPTIONS TO HTML
+        convertOptions2HTML(options) {
 
-                var bbcode_opts = typeof bbcode_opt !== "undefined" ? bbcode_opt.split(":") : [];
+            // RESULT
+            let result = "";
 
-                switch (bbcode_name) {
-                    case "steamdb":
-                        if (bbcode_val in GetDLCInfofromSteamDB.steamDB) {
-                            str = str.replace(bbcode, GetDLCInfofromSteamDB.steamDB[bbcode_val]);
+            // EACH
+            $.each(options, (index, values) => {
+
+                const title = values.title;
+                const type = values.type;
+                // INPUT TEXT
+                const placeholder = values.placeholder || "";
+                // SELECT
+                const select_options = values.options || {};
+                const select_default = values.default || "";
+
+                result += `<tr><td>${title}</td><td>`;
+
+                switch (type) {
+                    case "text":
+                    {
+                        result += `<input type='text' class='input-block' name='${index}' placeholder='${placeholder}'>`;
+                        break;
+                    }
+                    case "checkbox":
+                    {
+                        result += `<input type='checkbox' name='${index}'>`;
+                        break;
+                    }
+                    case "select":
+                    {
+                        result += `<select class='input-block' name='${index}'>`;
+                        $.each(select_options, (key, value) => {
+                            result += `<option value='${key}' ${select_default === key ? "selected" : ""}>${value}</option>`;
+                        });
+                        result += "</select>";
+                        break;
+                    }
+                }
+
+                result += "</td></tr>";
+
+            });
+
+            return result;
+
+        },
+
+        // INCLUDE EXTRA
+        includeExtra() {
+
+            // ..... CHANGE IN THE DLC TABLE TEXT FIELDS INTO AN INPUT FIELD
+            if (Storage.checkbox("global_changeDLCTableTextToInput")) {
+                $(".tab-pane#dlc .app[data-appid]").each((_index, dom) => {
+
+                    var $this = $(dom);
+                    var $tds = $this.find("> td:nth-of-type(1), > td:nth-of-type(2)");
+
+                    $.each($tds, (_index, dom) => {
+
+                        var $this = $(dom);
+                        var text = $this.text().trim();
+
+                        $this.html("<input type='text' class='input-block' value='" + text + "'>");
+
+                    });
+
+                });
+            }
+            // .....
+
+        },
+
+        // DLC EACH
+        dlcEach(str, index_start_zero, index_prefix) {
+
+            // RESULT
+            let result = "";
+            // INDEX START FROM ZERO
+            let index = index_start_zero ? 0 : -1;
+
+            // EACH
+            $.each(this.steamDB.appIDDLCs, (key, values) => {
+
+                const name = values.name;
+                const date = values.date;
+                const timestamp = values.timestamp;
+
+                // ..... IGNORE DLCs 'SteamDB Unknown App'
+                if (!(Storage.checkbox("global_ignoreSteamDBUnknownApp") && name.includes("SteamDB Unknown App"))) {
+
+                    index += 1;
+
+                    result += this.dlcEachSprint(str, {
+                        "dlc_id": key,
+                        "dlc_name": name,
+                        "dlc_index": this.dlcEachIndex(index, index_prefix),
+                        "dlc_timestamp": timestamp,
+                        "dlc_date": date
+                    });
+
+                }
+                // .....
+
+            });
+
+            return result;
+
+        },
+
+        // DLC EACH SPRINT
+        dlcEachSprint(str, values) {
+
+            $.each(values, (key, value) => {
+
+                const re = new RegExp(`{${key}}`, "g");
+
+                str = str.replace(re, value);
+
+            });
+
+            return str;
+
+        },
+
+        // DLC EACH INDEX
+        dlcEachIndex(index, index_prefix) {
+
+            const indexS = index.toString();
+            const indexSLen = indexS.length;
+            const index_prefixI = parseInt(index_prefix);
+
+            return index_prefixI > indexSLen ? "0".repeat(index_prefixI - indexSLen) + indexS : indexS;
+
+        },
+
+        // DLC EACH STR
+        dlcEachStr(str) {
+
+            let re_exec;
+            const re_str = str;
+            // [tag(=option:option)]tag_data[/tag]
+            const re = /\[(\w+)(?:=(.*))?]([^[]+)\[\/(\w+)]/g;
+
+            while ((re_exec = re.exec(re_str)) !== null) {
+
+                if (re_exec.index === re.lastIndex) {
+                    re.lastIndex += 1;
+                }
+
+                const bbcode = re_exec[0];
+                const bbcode_name = re_exec[1];
+                const bbcode_opt = re_exec[2];
+                const bbcode_opts = typeof bbcode_opt !== "undefined" ? bbcode_opt.split(":") : [];
+                const bbcode_val = re_exec[3];
+                const bbcode_close = re_exec[4];
+
+                if (bbcode_name === bbcode_close && bbcode_val.length > 0) {
+
+                    switch (bbcode_name) {
+                        case "steamdb":
+                        {
+                            if (bbcode_val in this.steamDB) {
+                                str = str.replace(bbcode, this.steamDB[bbcode_val]);
+                            }
+                            break;
                         }
-                        break;
-                    case "option":
-                        if (bbcode_opts.length) {
-                            str = str.replace(bbcode, Storage.ifNot(bbcode_val, bbcode_opts[0]));
+                        case "option":
+                        {
+                            if (bbcode_opts.length > 0) {
+                                str = str.replace(bbcode, Storage.ifNotExists(bbcode_val, bbcode_opts[0]));
+                            }
+                            break;
                         }
-                        break;
-                    case "dlcEach":
-                        str = str.replace(bbcode, GetDLCInfofromSteamDB.dlcEach(bbcode_val, bbcode_opts[0] == "true", bbcode_opts[1] || 0));
-                        break;
-                    case "env":
-                        str = str.replace(bbcode, GetDLCInfofromSteamDB.info[bbcode_val]);
-                        break;
+                        case "dlcEach":
+                        {
+                            str = str.replace(bbcode, this.dlcEach(bbcode_val, bbcode_opts[0] === "true", bbcode_opts[1] || 0));
+                            break;
+                        }
+                    }
+
                 }
 
             }
 
+            return str;
+
         }
 
-        return str;
+    };
 
-    }
-
-};
-
-// FORMATS
-// CREAMAPI (FULL INI)
-GetDLCInfofromSteamDB.formats.creamAPI = {
-    name: "CREAMAPI v2.0.0.7 (FULL INI)",
-    ini: "cream_api.ini",
-    options: {
-        creamapi_unlock_all: {
-            title: "Enable/disable automatic DLC unlock",
-            type: "checkbox"
-        },
-        creamapi_orgapi: {
-            title: "Original Valve's steam_api.dll",
-            type: "text",
-            placeholder: "steam_api_o.dll"
-        },
-        creamapi_orgapi64: {
-            title: "Original Valve's steam_api64.dll",
-            type: "text",
-            placeholder: "steam_api64_o.dll"
-        },
-        creamapi_extraprotection: {
-            title: "Enable/disable extra protection bypasser",
-            type: "checkbox"
-        },
-        creamapi_extraprotectionlevel: {
-            title: "ExtraProtection level",
-            type: "select",
-            options: {
-                0: "Minimum (Default)",
-                1: "Medium",
-                2: "Maximum"
-            },
-            default: 0
-        },
-        creamapi_wrappermode: {
-            title: "Turn on the \"light\" wrapper mode",
-            type: "checkbox"
-        },
-        creamapi_log: {
-            title: "Enable/disable logging of the DLC functions",
-            type: "checkbox"
-        },
-        creamapi_newappid: {
-            title: "Application ID to override (used when the wrapper mode is on)",
-            type: "text",
-            placeholder: "0"
-        },
-        creamapi_loademu: {
-            title: "Load steam emulator library",
-            type: "checkbox"
-        },
-        creamapi_emudll: {
-            title: "Emulator library that is used for the stats and storage handling.",
-            type: "text",
-            placeholder: "emu.dll"
-        },
-        creamapi_wrapperremotestorage: {
-            title: "Use the emulator storage system",
-            type: "checkbox"
-        },
-        creamapi_wrapperuserstats: {
-            title: "Use the emulator stats/achievements system",
-            type: "checkbox"
-        },
-        creamapi_wrapperutils: {
-            title: "Use the emulator utils system",
-            type: "checkbox"
-        },
-        creamapi_wrappercallbacks: {
-            title: "User the emulator callbacks system",
-            type: "checkbox"
-        }
-    },
-    data: "[steam]\r\n" +
-    "appid = [steamdb]appID[/steamdb]\r\n" +
-    "unlockall = [option=false]creamapi_unlock_all[/option]\r\n" +
-    "orgapi = [option=steam_api_o.dll]creamapi_orgapi[/option]\r\n" +
-    "orgapi64 = [option=steam_api64_o.dll]creamapi_orgapi64[/option]\r\n" +
-    "extraprotection = [option=false]creamapi_extraprotection[/option]\r\n" +
-    "extraprotectionlevel = [option=0]creamapi_extraprotectionlevel[/option]\r\n" +
-    "wrappermode = [option=false]creamapi_wrappermode[/option]\r\n" +
-    "; Force the usage of specific language.\r\n" +
-    ";language = [option=english]gameLanguage[/option]\r\n" +
-    "; If you use log_build, uncomment line.\r\n" +
-    ";log = [option=false]creamapi_log[/option]\r\n\r\n" +
-    "[steam_wrapper]\r\n" +
-    "newappid = [option=0]creamapi_newappid[/option]\r\n" +
-    "loademu = [option=false]creamapi_loademu[/option]\r\n" +
-    "emudll = [option=emu.dll]creamapi_emudll[/option]\r\n" +
-    "wrapperremotestorage = [option=false]creamapi_wrapperremotestorage[/option]\r\n" +
-    "wrapperuserstats = [option=false]creamapi_wrapperuserstats[/option]\r\n" +
-    "wrapperutils = [option=false]creamapi_wrapperutils[/option]\r\n" +
-    "wrappercallbacks = [option=false]creamapi_wrappercallbacks[/option]\r\n\r\n" +
-    "[dlc_subscription]\r\n" +
-    "[dlcEach]{dlc_id} = true\r\n[/dlcEach]\r\n" +
-    "[dlc_index]\r\n" +
-    "[dlcEach]{dlc_index} = {dlc_id}\r\n[/dlcEach]\r\n" +
-    "[dlc_names]\r\n" +
-    "[dlcEach]{dlc_index} = {dlc_name}\r\n[/dlcEach]\r\n" +
-    "[dlc_timestamp]\r\n" +
-    "; The installation date is set to:\r\n" +
-    "; [env]datetime[/env]\r\n" +
-    "[dlcEach]{dlc_id} = {dlc_timestamp}\r\n[/dlcEach]"
-};
-
-// CREAMAPI (ONLY DLC LIST)
-GetDLCInfofromSteamDB.formats.creamAPI_o = {
-    name: "CREAMAPI v2.0.0.7 (ONLY DLC LIST)",
-    ini: "cream_api_dlcs.ini",
-    options: {},
-    data: "[dlc_subscription]\r\n" +
-    "[dlcEach]{dlc_id} = true\r\n[/dlcEach]\r\n" +
-    "[dlc_index]\r\n" +
-    "[dlcEach]{dlc_index} = {dlc_id}\r\n[/dlcEach]\r\n" +
-    "[dlc_names]\r\n" +
-    "[dlcEach]{dlc_index} = {dlc_name}\r\n[/dlcEach]\r\n" +
-    "[dlc_timestamp]\r\n" +
-    "; The installation date is set to:\r\n" +
-    "; [env]datetime[/env]\r\n" +
-    "[dlcEach]{dlc_id} = {dlc_timestamp}\r\n[/dlcEach]"
-};
-
-// LUMAEMU (FULL INI)
-GetDLCInfofromSteamDB.formats.lumaemu = {
-    name: "LUMAEMU v1.9.7 (FULL INI)",
-    ini: "LumaEmu.ini",
-    options: {
-        lumaemu_offline: {
-            title: "Offline",
-            type: "select",
-            options: {
-                0: "Online (Default)",
-                1: "Offline"
-            },
-            default: 0
-        },
-        lumaemu_opennamechanger: {
-            title: "OpenNameChanger",
-            type: "select",
-            options: {
-                0: "Disabled (Default)",
-                1: "Activated"
-            },
-            default: 0
-        },
-        lumaemu_logfile: {
-            title: "LogFile",
-            type: "select",
-            options: {
-                0: "Disabled",
-                1: "Activated (Default)"
-            },
-            default: 1
-        },
-        lumaemu_enableoverlay: {
-            title: "EnableOverlay",
-            type: "select",
-            options: {
-                0: "Disabled",
-                1: "Activated (Default)"
-            },
-            default: 1
-        },
-        lumaemu_save: {
-            title: "Save",
-            type: "select",
-            options: {
-                1: "Will save both (Default)",
-                2: "Will save both, achievements",
-                3: "Will save both, achievements, stats"
-            },
-            default: 1
-        },
-        lumaemu_blocklumaemu: {
-            title: "BlockLumaEmu",
-            type: "select",
-            options: {
-                0: "Disabled (Default)",
-                1: "Activated"
-            },
-            default: 0
-        },
-        lumaemu_blocklegitsteam: {
-            title: "BlockLegitSteam",
-            type: "select",
-            options: {
-                0: "Disabled (Default)",
-                1: "Activated"
-            },
-            default: 0
-        },
-        lumaemu_blocksmartsteamemu: {
-            title: "BlockSmartSteamEmu",
-            type: "select",
-            options: {
-                0: "Disabled (Default)",
-                1: "Activated"
-            },
-            default: 0
-        },
-        lumaemu_blockVACbannedaccounts: {
-            title: "BlockVACBannedAccounts",
-            type: "select",
-            options: {
-                0: "Disabled",
-                1: "Activated (Default)"
-            },
-            default: 1
-        },
-        lumaemu_blockunknownclient: {
-            title: "BlockUnknownClient",
-            type: "select",
-            options: {
-                0: "Disabled",
-                1: "Activated (Default)"
-            },
-            default: 1
-        },
-        lumaemu_saveincustompath: {
-            title: "SaveInCustomPath",
-            type: "select",
-            options: {
-                0: "Disabled (Default)",
-                1: "Activated"
-            },
-            default: 0
-        },
-        lumaemu_path: {
-            title: "Path",
-            type: "text",
-            placeholder: "..."
-        },
-        lumaemu_lumaemuclientDll: {
-            title: "LumaEmuClientDll",
-            type: "text",
-            placeholder: "steamclient.dll"
-        },
-        lumaemu_lumaemuclientDll64: {
-            title: "LumaEmuClientDll64",
-            type: "text",
-            placeholder: "steamclient64.dll"
-        }
-    },
-    data: "[SteamStatus]\r\n" +
-    "Offline = [option=0]lumaemu_offline[/option]\r\n\r\n" +
-    "[Player]\r\n" +
-    "PlayerName = [option=LumaEmu]username[/option]\r\n" +
-    "PlayerNickname = [option=LumaEmu]username[/option]\r\n" +
-    "ClanName = [option=LumaEmu]username[/option]\r\n" +
-    "ClanTag = [option=LumaEmu]username[/option]\r\n" +
-    "OpenNameChanger = [option=0]lumaemu_opennamechanger[/option]\r\n\r\n" +
-    "[Minidumps]\r\n" +
-    "WriteMinidumps = 1\r\n\r\n" +
-    "[Language]\r\n" +
-    "GameLanguage = [option=english]gameLanguage[/option]\r\n\r\n" +
-    "[Cache]\r\n" +
-    "UseCacheFiles = 0\r\n" +
-    "CachePath = C:\\Program Files (x86)\\Steam\\steamapps\\\r\n\r\n" +
-    "[Log]\r\n" +
-    "LogFile = [option=1]lumaemu_logfile[/option]\r\n\r\n" +
-    "[MasterServer]\r\n" +
-    "Master = 1\r\n\r\n" +
-    "[DLC]\r\n" +
-    "UnlockDLC = 3\r\n\r\n" +
-    "[dlcEach]; {dlc_name}\r\nDLC_{dlc_id} = 1\r\n[/dlcEach]\r\n" +
-    "[Overlay]\r\n" +
-    "EnableOverlay = [option=1]lumaemu_enableoverlay[/option]\r\n\r\n" +
-    "[StatsAndAchievements]\r\n" +
-    "Save = [option=1]lumaemu_save[/option]\r\n\r\n" +
-    "[SourceEngine]\r\n" +
-    "FocusPatch = 0\r\n\r\n" +
-    "[ServerAuthorization]\r\n" +
-    "BlockLumaEmu = [option=0]lumaemu_blocklumaemu[/option]\r\n" +
-    "BlockLegitSteam = [option=0]lumaemu_blocklegitsteam[/option]\r\n" +
-    "BlockSmartSteamEmu = [option=0]lumaemu_blocksmartsteamemu[/option]\r\n" +
-    "BlockVACBannedAccounts = [option=1]lumaemu_blockVACbannedaccounts[/option]\r\n" +
-    "BlockUnknownClient = [option=1]lumaemu_blockunknownclient[/option]\r\n\r\n" +
-    "[VR]\r\n" +
-    "EnableVR = 0\r\n\r\n" +
-    "[RemoteStorage]\r\n" +
-    "SaveInCustomPath = [option=0]lumaemu_saveincustompath[/option]\r\n" +
-    "Path = [option=]lumaemu_path[/option]\r\n\r\n" +
-    "[LumaGameLauncher]\r\n" +
-    "GameExe = [steamdb]configEXE[/steamdb] -appid [steamdb]appID[/steamdb] [steamdb]configARG[/steamdb]\r\n" +
-    "LoadLumaCEG = 0\r\n" +
-    "AppIDSetByLauncher = 1\r\n\r\n" +
-    "[SteamClient]\r\n" +
-    "LumaEmuClientDll = [option=steamclient.dll]lumaemu_lumaemuclientDll[/option]\r\n" +
-    "LumaEmuClientDll64 = [option=steamclient64.dll]lumaemu_lumaemuclientDll64[/option]\r\n"
-};
-
-// LUMAEMU (ONLY DLC LIST)
-GetDLCInfofromSteamDB.formats.lumaemu_o = {
-    name: "LUMAEMU v1.9.7 (ONLY DLC LIST)",
-    ini: "LumaEmu_dlcs.ini",
-    options: {},
-    data: "[dlcEach]; {dlc_name}\r\nDLC_{dlc_id} = 1\r\n[/dlcEach]"
-};
-
-// SMARTSTEAMEMU (ONLY DLC LIST)
-GetDLCInfofromSteamDB.formats.smartsteamemu_o = {
-    name: "SMARTSTEAMEMU (ONLY DLC LIST)",
-    ini: "SmartSteamEmu_dlcs.ini",
-    options: {},
-    data: "[dlcEach]{dlc_id} = {dlc_name}\r\n[/dlcEach]"
-};
-
-// 3DMGAME
-GetDLCInfofromSteamDB.formats["3dmgame"] = {
-    name: "3DMGAME",
-    ini: "3DMGAME.ini",
-    options: {},
-    data: "[dlcEach=true:3]; {dlc_name}\r\nDLC{dlc_index} = {dlc_id}\r\n[/dlcEach]"
-};
-
-// ALI213
-GetDLCInfofromSteamDB.formats.ali213 = {
-    name: "ALI213",
-    ini: "ALI213.ini",
-    options: {},
-    data: "[dlcEach]{dlc_id} = {dlc_name}\r\n[/dlcEach]"
-};
-
-// CODEX (ID = NAME)
-GetDLCInfofromSteamDB.formats.codex = {
-    name: "CODEX (ID = NAME)",
-    ini: "steam_emu.ini",
-    options: {},
-    data: "[dlcEach]{dlc_id} = {dlc_name}\r\n[/dlcEach]"
-};
-
-// CODEX (DLC00000, DLCName)
-GetDLCInfofromSteamDB.formats.codex_t = {
-    name: "CODEX (DLC00000, DLCName)",
-    ini: "steam_emu.ini",
-    options: {},
-    data: "[dlcEach=false:5]DLC{dlc_index} = {dlc_id}\r\nDLCName{dlc_index} = {dlc_name}\r\n[/dlcEach]"
-};
-
-// RELOADED
-GetDLCInfofromSteamDB.formats.reloaded = {
-    name: "RELOADED",
-    ini: "steam_api.ini",
-    options: {},
-    data: "AppName = [steamdb]appIDName[/steamdb]\r\n" +
-    "[dlcEach=true:3]DLC{dlc_index} = {dlc_id}\r\nDLCName{dlc_index} = {dlc_name}\r\n[/dlcEach]" +
-    "DLCCount = [steamdb]dlcsTot[/steamdb]\r\n"
-};
-
-// REVOLT
-GetDLCInfofromSteamDB.formats.revolt = {
-    name: "REVOLT",
-    ini: "REVOLT.ini",
-    options: {},
-    data: "[DLC]\r\n" +
-    "DLCEnumBase = [steamdb]appID[/steamdb]\r\n" +
-    "DLCEnumCount = [steamdb]dlcsTot[/steamdb]\r\n" +
-    "Default = false\r\n\r\n" +
-    "[dlcEach]; {dlc_name}\r\n{dlc_index} = {dlc_id}\r\n[/dlcEach]\r\n" +
-    "[Subscriptions]\r\n" +
-    "Default = false\r\n\r\n" +
-    "[dlcEach]{dlc_index} = true\r\n[/dlcEach]"
-};
-
-// SKIDROW
-GetDLCInfofromSteamDB.formats.skidrow = {
-    name: "SKIDROW",
-    ini: "steam_api.ini",
-    options: {},
-    data: "[dlcEach]; {dlc_name}\r\n{dlc_id}\r\n[/dlcEach]"
-};
-
-// SST311212
-GetDLCInfofromSteamDB.formats.SST311212 = {
-    name: "SST311212 (Steamworks Fix)",
-    ini: "SST311212.ini",
-    options: {},
-    data: "[dlcEach]{dlc_id} = {dlc_name}\r\n[/dlcEach]"
-};
-
-// RUN
-(function () {
+    // RUN
     GetDLCInfofromSteamDB.run();
-}());
+
+})());
