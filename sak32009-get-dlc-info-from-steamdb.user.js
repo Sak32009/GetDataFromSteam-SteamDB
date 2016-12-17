@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.2.0
+// @version          3.2.1
 // @license          MIT
 // @homepageURL      https://sak32009.github.com/steamdb/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -173,7 +173,6 @@ wrappercallbacks = [option=false]creamapi_wrappercallbacks[/option]
 ; Also if the value is set to "false" the DLC
 ; won't be subscribed either.
 [dlcEach]{dlc_id} = true\n[/dlcEach]
-
 [dlc_index]
 ; DLC handling.
 ; Format: <dlc_index> = <dlc_id>
@@ -181,7 +180,6 @@ wrappercallbacks = [option=false]creamapi_wrappercallbacks[/option]
 ;        1 = 12346
 ;        2 = 12347
 [dlcEach]{dlc_index} = {dlc_id}\n[/dlcEach]
-
 [dlc_names]
 ; Names for the DLCs index put above.
 ; Use this only if needed.
@@ -190,7 +188,6 @@ wrappercallbacks = [option=false]creamapi_wrappercallbacks[/option]
 ;        1 = DLC Name 1
 ;        2 = DLC Name 2
 [dlcEach]{dlc_index} = {dlc_name}\n[/dlcEach]
-
 [dlc_timestamp]
 ; Specifies a unique unix timestamp for the purchased DLC (http://www.onlineconversion.com/unix_time.htm).
 ; By default returns the current date timestamp (if nothing was specified).
@@ -1062,7 +1059,7 @@ Default = false
                         var $this = $(dom);
                         var text = $this.text().trim();
 
-                        $this.html("<input type='text' class='input-block' value='" + text + "'>");
+                        $this.html("<input type='text' class='input-block' onClick='this.select()' value='" + text + "'>");
 
                     });
 
