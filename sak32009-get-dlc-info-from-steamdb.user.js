@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.2.1
+// @version          3.2.2
 // @license          MIT
 // @homepageURL      https://sak32009.github.com/steamdb/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -837,11 +837,8 @@ Default = false
         // LOAD EVENTS
         loadEvents() {
 
-            // DOM SUBMIT
-            const dom_submit = $("#GetDLCInfofromSteamDB_submit");
-
             // EVENT SUBMIT
-            $(document).on("submit", dom_submit, e => {
+            $(document).on("submit", "#GetDLCInfofromSteamDB_submit", e => {
 
                 e.preventDefault();
 
@@ -893,7 +890,7 @@ Default = false
 
             // ..... AUTO SUBMIT
             if (Storage.checkbox("global_autoSubmit")) {
-                dom_submit.trigger("submit");
+                $("#GetDLCInfofromSteamDB_submit").trigger("submit");
             }
             // .....
 

@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.2.1
+// @version          3.2.2
 // @license          MIT
 // @homepageURL      https://sak32009.github.com/steamdb/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
