@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.2.2
+// @version          3.2.3
 // @license          MIT
 // @homepageURL      https://sak32009.github.com/steamdb/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -12,6 +12,10 @@
 // @downloadURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.user.js
 // @icon             data:image/png;base64,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
 // @match            *://steamdb.info/app/*
+// @require          https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js
+// @require          https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js
+// @require          https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js
+// @require          https://steamdb.info/static/js/tabbable.4f8f7fce.js
 // @grant            none
 // @run-at           document-end
 // @noframes
@@ -263,6 +267,13 @@ wrappercallbacks = [option=false]creamapi_wrappercallbacks[/option]
                         type: "checkbox"
                     }
                 }
+            },
+
+            // GREENLUMA
+            greenluma: {
+                name: "GreenLuma",
+                ini: {},
+                options: {}
             },
 
             // LUMAEMU (FULL INI)
@@ -864,23 +875,31 @@ Default = false
 ; Homepage: ${this.info.homepage}
 ; Support: ${this.info.support}\n\n`;
 
-                // GET DLCs
-                result += this.dlcEachStr(format_ini_data);
+                // IS GREENLUMA FORMAT?
+                if (selected_key === "greenluma") {
+                    // CALL FUNC
+                    this.formatGreenLuma(selected_key, format_data, result);
+                } else {
 
-                // WRITE RESULT
-                $("#GetDLCInfofromSteamDB_textarea").html(result).show().scrollTop(0);
+                    // GET DLCs
+                    result += this.dlcEachStr(format_ini_data);
 
-                // SET FILE INI DATA
-                $("#GetDLCInfofromSteamDB_download").attr({
-                    href: Download.encode(Download.windows(result)),
-                    download: format_ini_name
-                }).find("span").text(format_ini_name);
+                    // WRITE RESULT
+                    $("#GetDLCInfofromSteamDB_textarea").html(result).show().scrollTop(0);
 
-                // ..... AUTO DOWNLOAD
-                if (Storage.checkbox("global_autoDownload")) {
-                    document.getElementById("GetDLCInfofromSteamDB_download").click();
+                    // SET FILE INI DATA
+                    $("#GetDLCInfofromSteamDB_download").attr({
+                        href: Download.encode(Download.windows(result)),
+                        download: format_ini_name
+                    }).find("span").text(format_ini_name);
+
+                    // ..... AUTO DOWNLOAD
+                    if (Storage.checkbox("global_autoDownload")) {
+                        document.getElementById("GetDLCInfofromSteamDB_download").click();
+                    }
+                    // .....
+
                 }
-                // .....
 
                 // ..... SAVE LAST SELECTION
                 Storage.set("global_saveLastSelectionValue", selected_key);
@@ -1048,15 +1067,15 @@ Default = false
             if (Storage.checkbox("global_changeDLCTableTextToInput")) {
                 $(".tab-pane#dlc .app[data-appid]").each((_index, dom) => {
 
-                    var $this = $(dom);
-                    var $tds = $this.find("> td:nth-of-type(1), > td:nth-of-type(2)");
+                    const $this = $(dom);
+                    const $tds = $this.find("> td:nth-of-type(1), > td:nth-of-type(2)");
 
                     $.each($tds, (_index, dom) => {
 
-                        var $this = $(dom);
-                        var text = $this.text().trim();
+                        const $this = $(dom);
+                        const text = $this.text().trim();
 
-                        $this.html("<input type='text' class='input-block' onClick='this.select()' value='" + text + "'>");
+                        $this.html(`<input type='text' class='input-block' onClick='this.select()' value='${text}'>`);
 
                     });
 
@@ -1179,6 +1198,67 @@ Default = false
             }
 
             return str;
+
+        },
+
+        // FORMAT GREENLUMA
+        formatGreenLuma(format_key, data, info) {
+
+            const prompt = window.prompt("Insert the latest filename from AppList folder", "0");
+
+            if (prompt !== null && $.isNumeric(prompt)) {
+
+                const prompt_value = Number(prompt);
+                let prompt_c1 = prompt_value + 1;
+                let prompt_c2 = prompt_c1;
+
+                const zip = new JSZip();
+                const dlcs = this.dlcEach("{dlc_id}|||{dlc_name}\n").split("\n");
+
+                info += `file: ?.txt, appid: ${this.steamDB.appID}, game: ${this.steamDB.appIDName}\n`;
+
+                $.each(dlcs, (_index, value) => {
+
+                    if (value.length > 0) {
+
+                        const split = value.split("|||");
+                        const appID = split[0];
+                        const appIDName = split[1];
+
+                        info += `file: ${prompt_c1}.txt, appid: ${appID}, game: ${appIDName}\n`;
+
+                        prompt_c1++;
+
+                    }
+
+                });
+
+                zip.file(`${this.steamDB.appID}.README`, Download.windows(info));
+
+                $.each(dlcs, (_index, value) => {
+
+                    if (value.length > 0) {
+
+                        const split = value.split("|||");
+                        const appID = split[0];
+
+                        zip.file(`${prompt_c2}.txt`, appID);
+
+                        prompt_c2++;
+
+                    }
+
+                });
+
+                zip.generateAsync({type: "blob"}).then((content) => {
+                    saveAs(content, `${this.steamDB.appID}_${format_key}_AppList.zip`);
+                });
+
+            } else {
+
+                alert("Incorrect value!");
+
+            }
 
         }
 
