@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.2.3
+// @version          3.2.4
 // @license          MIT
 // @homepageURL      https://sak32009.github.com/steamdb/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -1206,60 +1206,62 @@ Default = false
 
             const prompt = window.prompt("Insert the latest filename from AppList folder", "0");
 
-            if (prompt !== null && $.isNumeric(prompt)) {
+            if (prompt !== null) {
+                if ($.isNumeric(prompt)) {
 
-                const prompt_value = Number(prompt);
-                let prompt_c1 = prompt_value + 1;
-                let prompt_c2 = prompt_c1;
+                    const prompt_value = Number(prompt);
+                    let prompt_c1 = prompt_value + 1;
+                    let prompt_c2 = prompt_c1;
 
-                const zip = new JSZip();
-                const dlcs = this.dlcEach("{dlc_id}|||{dlc_name}\n").split("\n");
+                    const zip = new JSZip();
+                    const dlcs = this.dlcEach("{dlc_id}§{dlc_name}\n").split("\n");
 
-                info += `file: ?.txt, appid: ${this.steamDB.appID}, game: ${this.steamDB.appIDName}\n`;
+                    info += `file: ?.txt, appid: ${this.steamDB.appID}, game: ${this.steamDB.appIDName}\n`;
 
-                $.each(dlcs, (_index, value) => {
+                    $.each(dlcs, (_index, value) => {
 
-                    if (value.length > 0) {
+                        if (value.length > 0) {
 
-                        const split = value.split("|||");
-                        const appID = split[0];
-                        const appIDName = split[1];
+                            const split = value.split("§");
+                            const appID = split[0];
+                            const appIDName = split[1];
 
-                        info += `file: ${prompt_c1}.txt, appid: ${appID}, game: ${appIDName}\n`;
+                            info += `file: ${prompt_c1}.txt, appid: ${appID}, game: ${appIDName}\n`;
 
-                        prompt_c1++;
+                            prompt_c1++;
 
-                    }
+                        }
 
-                });
+                    });
 
-                zip.file(`${this.steamDB.appID}.README`, Download.windows(info));
+                    zip.file(`${this.steamDB.appID}.README`, Download.windows(info));
 
-                $.each(dlcs, (_index, value) => {
+                    $.each(dlcs, (_index, value) => {
 
-                    if (value.length > 0) {
+                        if (value.length > 0) {
 
-                        const split = value.split("|||");
-                        const appID = split[0];
+                            const split = value.split("§");
+                            const appID = split[0];
 
-                        zip.file(`${prompt_c2}.txt`, appID);
+                            zip.file(`${prompt_c2}.txt`, appID);
 
-                        prompt_c2++;
+                            prompt_c2++;
 
-                    }
+                        }
 
-                });
+                    });
 
-                zip.generateAsync({type: "blob"}).then((content) => {
-                    saveAs(content, `${this.steamDB.appID}_${format_key}_AppList.zip`);
-                });
+                    zip.generateAsync({type: "blob"}).then((content) => {
+                        saveAs(content, `${this.steamDB.appID}_${format_key}_AppList.zip`);
+                    });
 
-            } else {
+                } else {
 
-                alert("Incorrect value!");
+                    alert("Incorrect value!");
+
+                }
 
             }
-
         }
 
     };
