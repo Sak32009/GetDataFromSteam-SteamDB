@@ -1,10 +1,10 @@
-// ==UserScript==
+﻿// ==UserScript==
 // @name             Get DLC Info from SteamDB
 // @namespace        sak32009-get-dlc-info-from-steamdb
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.3.0
+// @version          3.3.1
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -87,12 +87,67 @@
 
         // DATA
         data: {
-            // CREAMAPI (ONLY DLCs LIST)
-            creamAPI_only_dlcs: {
-                name: "CREAMAPI v2.0.0.7 (ONLY DLCs LIST)",
+            // CREAMAPI
+            creamAPI: {
+                name: "CREAMAPI v2.0.0.7",
                 ini: {
-                    name: "cream_api_only_dlcs.ini",
-                    data: `[dlc_subscription]
+                    name: "cream_api.ini",
+                    data: `[steam]
+; Application ID (http://store.steampowered.com/app/%appid%/)
+appid = [steamdb]appID[/steamdb]
+; Force the usage of specific language.
+; Uncomment this option to turn it on.
+;language = [option=english]globalGameLanguage[/option]
+; Enable/disable automatic DLC unlock. Default option is set to "false".
+; Keep in mind that this option is highly experimental and won't
+; work if game wants to call each DLC by index.
+unlockall = false
+; Original Valve's steam_api.dll.
+; Default is "steam_api_o.dll".
+orgapi = steam_api_o.dll
+; Original Valve's steam_api64.dll.
+; Default is "steam_api64_o.dll".
+orgapi64 = steam_api64_o.dll
+; Enable/disable extra protection bypasser.
+; Default is "false".
+extraprotection = false
+; ExtraProtection level.
+; Default is "0".
+; Available options :
+; 0 = minimum, 1 = medium, 2 = maximum
+extraprotectionlevel = 0
+; Turn on the "light" wrapper mode.
+; Default is "false".
+wrappermode = false
+; Enable/disable logging of the DLC functions.
+; Default is "false".
+; If you use log_build, uncomment this option to turn it on.
+;log = false
+
+[steam_wrapper]
+; Application ID to override (used when the wrapper mode is on)
+newappid = 0
+; Load steam emulator library.
+; Default is "false".
+loademu = false
+; Emulator library that is used for the stats
+; and storage handling.
+; Default is "emu.dll".
+emudll = emu.dll
+; Use the emulator storage system.
+; Default is "false".
+wrapperremotestorage = false
+; Use the emulator stats/achievements system.
+; Default is "false".
+wrapperuserstats = false
+; Use the emulator utils system.
+; Default is "false".
+wrapperutils = false
+; User the emulator callbacks system.
+; Default is "false".
+wrappercallbacks = false
+
+[dlc_subscription]
 ; This will check if the specifed
 ; DLC is owned by the user.
 ; Format: <dlc_id> = <true/false>
@@ -134,7 +189,7 @@
                 name: "GreenLuma",
                 ini: {},
                 options: {},
-                callback(data) {
+                callback(data, app) {
 
                     // PROMPT
                     let lastNum = window.prompt("Insert the latest filename from AppList folder", "0");
@@ -151,10 +206,10 @@
                             const zip = new JSZip();
 
                             // ADD INFO
-                            info += `file: ?.txt || appid: ${GetDLCInfofromSteamDB.steamDB.appID} || game: ${GetDLCInfofromSteamDB.steamDB.appIDName}\n`;
+                            info += `file: ?.txt || appid: ${app.steamDB.appID} || game: ${app.steamDB.appIDName}\n`;
 
                             // EACH
-                            $.each(GetDLCInfofromSteamDB.steamDB.appIDDLCs, (key, values) => {
+                            $.each(app.steamDB.appIDDLCs, (key, values) => {
 
                                 // NAME
                                 const name = values.name;
@@ -177,13 +232,13 @@
                             });
 
                             // ADD README TO ZIP
-                            zip.file(`${GetDLCInfofromSteamDB.steamDB.appID}.README`, LineBreak.to(info));
+                            zip.file(`${app.steamDB.appID}.README`, LineBreak.to(info));
 
                             // GENERATE
                             zip.generateAsync({
                                 type: "blob"
                             }).then((content) => {
-                                saveAs(content, `${GetDLCInfofromSteamDB.steamDB.appID}_${format}_AppList.zip`);
+                                saveAs(content, `${app.steamDB.appID}_${format}_AppList.zip`);
                             });
 
                         } else {
@@ -609,7 +664,7 @@ Default = false
                     formatCallback({
                         "format": optionData,
                         "info": result
-                    });
+                    }, this);
 
                 } else {
 
@@ -731,7 +786,7 @@ Default = false
 
                 // ADD TABNAV-TAB
                 $(`<a href='#' data-target='#GetDLCInfofromSteamDB_${key}' class='tabnav-tab GetDLCInfofromSteamDB_tabNav'>
-    <img src='https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-inverse.png' style="width:16px;height:16px;margin-top:-4px;"> ${name}
+    <img src='https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb.png' style="width:16px;height:16px;margin-top:-4px;"> ${name}
 </a>`).insertBefore(".tabnav-tab[data-target='#dlc']");
 
                 // ADD TAB-PANE
@@ -906,7 +961,7 @@ Default = false
                         case "option": {
                             if (bbcode_opts.length > 0) {
                                 const item = Storage.get(bbcode_val);
-                                str = str.replace(bbcode, Storage.check(item) ? item : bbcode_opts[0]);
+                                str = str.replace(bbcode, Storage.isValid(item) ? item : bbcode_opts[0]);
                             }
                             break;
                         }
