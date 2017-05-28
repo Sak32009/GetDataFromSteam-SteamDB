@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.3.2
+// @version          3.3.3
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -89,7 +89,7 @@
         data: {
             // CREAMAPI
             creamAPI: {
-                name: "CREAMAPI v3.0.0.0",
+                name: "CREAMAPI v3.0.0.1",
                 ini: {
                     name: "cream_api.ini",
                     data: `[steam]
@@ -111,7 +111,10 @@ orgapi64 = steam_api64_o.dll
 ; Enable/disable extra protection bypasser.
 ; Default is "false".
 extraprotection = false
-; Turn on the "light" wrapper mode.
+; The game will think that you're offline (supported by some games)
+; Default is "false"
+forceoffline = false
+; Turn on the wrapper mode.
 ; Default is "false".
 wrappermode = false
 
@@ -128,6 +131,9 @@ wrapperuserstats = false
 ; By default the data will is stored at: %appdata%/CreamAPI/%appid%/
 ; Default is "false".
 saveindirectory = false
+; Disable/Enable a StoreStats callback. Takes effect only if "wrapperuserstats" is set to "true"
+; Default is "true"
+;storestatscallback = false
 
 [dlc]
 ; DLC handling.
