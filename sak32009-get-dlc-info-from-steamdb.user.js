@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.3.3
+// @version          3.3.4
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -148,7 +148,7 @@ saveindirectory = false
 
             // GREENLUMA
             greenluma: {
-                name: "GreenLuma",
+                name: "GreenLuma [NORMALE MODE]",
                 ini: {},
                 options: {},
                 callback(data, app) {
@@ -185,7 +185,7 @@ saveindirectory = false
                                     zip.file(`${lastNum}.txt`, key);
 
                                     // INCREMENT
-                                    lastNum++;
+                                    lastNum += 1;
 
                                 }
                                 // .....
@@ -207,6 +207,64 @@ saveindirectory = false
                         }
 
                     }
+
+                }
+            },
+
+            // GREENLUMA BATCH MODE
+            greenluma_batch_mode: {
+                name: "GreenLuma [BATCH MODE]",
+                ini: {},
+                options: {},
+                callback(data, app) {
+
+                    const info = data.info.replace(/; /g, ":: ");
+
+                    // COUNTER
+                    let counter = 1;
+                    // BATCH
+                    let batch = info + `@echo off
+TITLE ${app.steamDB.appIDName} - ${app.info.name} by ${app.info.author} v${app.info.version}
+CLS
+
+:: CHECK APPLIST DIR
+IF EXIST .\\AppList\\NUL (
+	RMDIR /S /Q .\\AppList\\
+)
+:: CREATE APPLIST DIR
+mkdir .\\AppList\\
+:: CREATE DLCS FILES
+:: ${app.steamDB.appIDName}
+echo ${app.steamDB.appID}> .\\AppList\\0.txt\n`;
+
+                    // EACH
+                    $.each(app.steamDB.appIDDLCs, (key, values) => {
+
+                        // NAME
+                        const name = values.name;
+
+                        // ..... IGNORE DLCs 'SteamDB Unknown App'
+                        if (!(Storage.isChecked("globalIgnoreSteamDBUnknownApp") && name.includes("SteamDB Unknown App"))) {
+
+                            // ADD INFO
+                            batch += `:: ${name}
+echo ${key}> .\\AppList\\${counter}.txt\n`;
+
+                            // INCREMENT COUNTER
+                            counter += 1;
+
+                        }
+                        // .....
+
+                    });
+
+                    batch += `:: START STEAMLITE
+SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password #\n`;
+
+                    // GENERATE
+                    saveAs(new File([LineBreak.to(batch)], `${app.steamDB.appIDName}.bat`, {
+                        type: "application/octet-stream;charset=utf-8"
+                    }));
 
                 }
             },
