@@ -232,10 +232,10 @@ IF EXIST .\\AppList\\NUL (
 	RMDIR /S /Q .\\AppList\\
 )
 :: CREATE APPLIST DIR
-mkdir .\\AppList\\
+MKDIR .\\AppList\\
 :: CREATE DLCS FILES
 :: ${app.steamDB.appIDName}
-echo ${app.steamDB.appID}> .\\AppList\\0.txt\n`;
+ECHO ${app.steamDB.appID}> .\\AppList\\0.txt\n`;
 
                     // EACH
                     $.each(app.steamDB.appIDDLCs, (key, values) => {
@@ -248,7 +248,7 @@ echo ${app.steamDB.appID}> .\\AppList\\0.txt\n`;
 
                             // ADD INFO
                             batch += `:: ${name}
-echo ${key}> .\\AppList\\${counter}.txt\n`;
+ECHO ${key}> .\\AppList\\${counter}.txt\n`;
 
                             // INCREMENT COUNTER
                             counter += 1;
