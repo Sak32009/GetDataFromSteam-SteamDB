@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.3.4
+// @version          3.3.5
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -89,7 +89,7 @@
         data: {
             // CREAMAPI
             creamAPI: {
-                name: "CREAMAPI v3.0.0.1",
+                name: "CREAMAPI v3.0.0.1 Hotfix",
                 ini: {
                     name: "cream_api.ini",
                     data: `[steam]
@@ -325,6 +325,16 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 ini: {
                     name: "ALI213.ini",
                     data: "[dlcEach]{dlc_id} = {dlc_name}\n[/dlcEach]"
+                },
+                options: {}
+            },
+
+            // SKIDROW
+            skidrow: {
+                name: "SKIDROW",
+                ini: {
+                    name: "steam_api.ini",
+                    data: "[dlcEach]; {dlc_name}\n{dlc_id}\n[/dlcEach]"
                 },
                 options: {}
             }
