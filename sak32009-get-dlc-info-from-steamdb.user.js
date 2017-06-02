@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.3.5
+// @version          3.3.6
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -13,7 +13,6 @@
 // @icon             https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb.png
 // @match            *://steamdb.info/app/*
 // @require          https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js
-// @require          https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.12/ua-parser.min.js
 // @require          https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js
 // @require          https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js
 // @require          https://steamdb.info/static/js/tabbable.4f8f7fce.js
@@ -23,16 +22,6 @@
 // ==/UserScript==
 
 ((() => {
-
-    // LINE BREAK
-    const LineBreak = {
-
-        // TO
-        to(str) {
-            return $.ua.os.name.toLowerCase() === "windows" ? str.replace(/\n/g, "\r\n") : str;
-        }
-
-    };
 
     // DOWNLOAD
     const Download = {
@@ -82,11 +71,11 @@
 
     };
 
-    // FORMATS
-    const Formats = {
+    // MAIN
+    const GetDLCInfofromSteamDB = {
 
-        // DATA
-        data: {
+        // FORMATS
+        formats: {
             // CREAMAPI
             creamAPI: {
                 name: "CREAMAPI v3.0.0.1 Hotfix",
@@ -141,7 +130,7 @@ saveindirectory = false
 ; e.g. : 247295 = Saints Row IV - GAT V Pack
 ; If the DLC is not specified in this section
 ; then it won't be unlocked
-[dlcEach]{dlc_id} = {dlc_name}\n[/dlcEach]`
+[dlcEach]{dlc_id} = {dlc_name}\r\n[/dlcEach]`
                 },
                 options: {}
             },
@@ -167,7 +156,7 @@ saveindirectory = false
                             const zip = new JSZip();
 
                             // ADD INFO
-                            info += `file: ?.txt || appid: ${app.steamDB.appID} || game: ${app.steamDB.appIDName}\n`;
+                            info += `file: ?.txt || appid: ${app.steamDB.appID} || game: ${app.steamDB.appIDName}\r\n`;
 
                             // EACH
                             $.each(app.steamDB.appIDDLCs, (key, values) => {
@@ -179,7 +168,7 @@ saveindirectory = false
                                 if (!(Storage.isChecked("globalIgnoreSteamDBUnknownApp") && name.includes("SteamDB Unknown App"))) {
 
                                     // ADD INFO
-                                    info += `file: ${lastNum}.txt || appid: ${key} || game: ${name}\n`;
+                                    info += `file: ${lastNum}.txt || appid: ${key} || game: ${name}\r\n`;
 
                                     // ADD FILE TO ZIP
                                     zip.file(`${lastNum}.txt`, key);
@@ -193,7 +182,7 @@ saveindirectory = false
                             });
 
                             // ADD README TO ZIP
-                            zip.file(`${app.steamDB.appID}.README`, LineBreak.to(info));
+                            zip.file(`${app.steamDB.appID}.README`, info);
 
                             // GENERATE
                             zip.generateAsync({
@@ -218,12 +207,9 @@ saveindirectory = false
                 options: {},
                 callback(data, app) {
 
-                    const info = data.info.replace(/; /g, ":: ");
-
-                    // COUNTER
-                    let counter = 1;
                     // BATCH
-                    let batch = info + `@echo off
+                    let batch = data.info.replace(/; /g, ":: ");
+                    batch += `@echo off
 TITLE ${app.steamDB.appIDName} - ${app.info.name} by ${app.info.author} v${app.info.version}
 CLS
 
@@ -235,34 +221,14 @@ IF EXIST .\\AppList\\NUL (
 MKDIR .\\AppList\\
 :: CREATE DLCS FILES
 :: ${app.steamDB.appIDName}
-ECHO ${app.steamDB.appID}> .\\AppList\\0.txt\n`;
-
-                    // EACH
-                    $.each(app.steamDB.appIDDLCs, (key, values) => {
-
-                        // NAME
-                        const name = values.name;
-
-                        // ..... IGNORE DLCs 'SteamDB Unknown App'
-                        if (!(Storage.isChecked("globalIgnoreSteamDBUnknownApp") && name.includes("SteamDB Unknown App"))) {
-
-                            // ADD INFO
-                            batch += `:: ${name}
-ECHO ${key}> .\\AppList\\${counter}.txt\n`;
-
-                            // INCREMENT COUNTER
-                            counter += 1;
-
-                        }
-                        // .....
-
-                    });
-
+ECHO ${app.steamDB.appID}> .\\AppList\\0.txt\r\n`;
+                    batch += app.dlcEach(`:: {dlc_name}
+ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\r\n`, true);
                     batch += `:: START STEAMLITE
-SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password #\n`;
+SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password #\r\n`;
 
                     // GENERATE
-                    saveAs(new File([LineBreak.to(batch)], `${app.steamDB.appIDName}.bat`, {
+                    saveAs(new File([batch], `${app.steamDB.appIDName}.bat`, {
                         type: "application/octet-stream;charset=utf-8"
                     }));
 
@@ -274,7 +240,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 name: "LUMAEMU v1.9.7 (ONLY DLCs LIST)",
                 ini: {
                     name: "LumaEmu_only_dlcs.ini",
-                    data: "[dlcEach]; {dlc_name}\nDLC_{dlc_id} = 1\n[/dlcEach]"
+                    data: "[dlcEach]; {dlc_name}\r\nDLC_{dlc_id} = 1\r\n[/dlcEach]"
                 },
                 options: {}
             },
@@ -284,7 +250,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 name: "SMARTSTEAMEMU (ONLY DLCs LIST)",
                 ini: {
                     name: "SmartSteamEmu_only_dlcs.ini",
-                    data: "[dlcEach]{dlc_id} = {dlc_name}\n[/dlcEach]"
+                    data: "[dlcEach]{dlc_id} = {dlc_name}\r\n[/dlcEach]"
                 },
                 options: {}
             },
@@ -294,7 +260,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 name: "CODEX (ID = NAME)",
                 ini: {
                     name: "steam_emu.ini",
-                    data: "[dlcEach]{dlc_id} = {dlc_name}\n[/dlcEach]"
+                    data: "[dlcEach]{dlc_id} = {dlc_name}\r\n[/dlcEach]"
                 },
                 options: {}
             },
@@ -304,7 +270,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 name: "CODEX (DLC00000, DLCName)",
                 ini: {
                     name: "steam_emu.ini",
-                    data: "[dlcEach=false:5]DLC{dlc_index} = {dlc_id}\nDLCName{dlc_index} = {dlc_name}\n[/dlcEach]"
+                    data: "[dlcEach=false:5]DLC{dlc_index} = {dlc_id}\r\nDLCName{dlc_index} = {dlc_name}\r\n[/dlcEach]"
                 },
                 options: {}
             },
@@ -314,7 +280,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 name: "3DMGAME",
                 ini: {
                     name: "3DMGAME.ini",
-                    data: "[dlcEach=true:3]; {dlc_name}\nDLC{dlc_index} = {dlc_id}\n[/dlcEach]"
+                    data: "[dlcEach=true:3]; {dlc_name}\r\nDLC{dlc_index} = {dlc_id}\r\n[/dlcEach]"
                 },
                 options: {}
             },
@@ -324,7 +290,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 name: "ALI213",
                 ini: {
                     name: "ALI213.ini",
-                    data: "[dlcEach]{dlc_id} = {dlc_name}\n[/dlcEach]"
+                    data: "[dlcEach]{dlc_id} = {dlc_name}\r\n[/dlcEach]"
                 },
                 options: {}
             },
@@ -334,17 +300,11 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 name: "SKIDROW",
                 ini: {
                     name: "steam_api.ini",
-                    data: "[dlcEach]; {dlc_name}\n{dlc_id}\n[/dlcEach]"
+                    data: "[dlcEach]; {dlc_name}\r\n{dlc_id}\r\n[/dlcEach]"
                 },
                 options: {}
             }
-
-        }
-
-    };
-
-    // MAIN
-    const GetDLCInfofromSteamDB = {
+        },
 
         // INFO
         info: {
@@ -380,7 +340,6 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
 
         // OPTIONS
         options: {
-
             // AUTOMATICALLY DOWNLOAD FILE .INI
             globalAutoDownload: {
                 title: "Automatically download file .INI",
@@ -517,7 +476,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
         createFormats() {
 
             // EACH
-            $.each(Formats.data, (index, values) => {
+            $.each(this.formats, (index, values) => {
 
                 const name = values.name;
                 const options = values.options;
@@ -544,7 +503,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
         loadEvents() {
 
             // EVENT SUBMIT
-            $(document).on("submit", "#GetDLCInfofromSteamDB_submit", e => {
+            $(document).on("submit", "#GetDLCInfofromSteamDB_submit", (e) => {
 
                 e.preventDefault();
 
@@ -553,7 +512,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 // OPTION DATA
                 const optionData = $("#GetDLCInfofromSteamDB_select option:selected").val();
                 // GET FORMAT DATA
-                const formatData = Formats.data[optionData];
+                const formatData = this.formats[optionData];
                 const formatName = formatData.name;
                 const formatINI = formatData.ini;
                 const formatININame = formatINI.name;
@@ -570,17 +529,14 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
 ; Config ARG: ${this.steamDB.configARG}
 ; SteamDB: ${this.info.steamDB}${this.steamDB.appID}
 ; Homepage: ${this.info.homepage}
-; Support: ${this.info.support}\n\n`;
+; Support: ${this.info.support}\r\n\r\n`;
 
                 // CALLBACK
                 if ($.isFunction(formatCallback)) {
-
-                    // CALL FUNC
                     formatCallback({
                         "format": optionData,
                         "info": result
                     }, this);
-
                 } else {
 
                     // GET DLCs
@@ -591,7 +547,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
 
                     // SET FILE INI DATA
                     $("#GetDLCInfofromSteamDB_download").attr({
-                        href: Download.encode(LineBreak.to(result)),
+                        href: Download.encode(result),
                         download: formatININame
                     }).find("span").text(formatININame);
 
@@ -618,7 +574,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
             // .....
 
             // SUBMIT OPTIONS
-            $(document).on("submit", "form#GetDLCInfofromSteamDB_submitOptions", e => {
+            $(document).on("submit", "form#GetDLCInfofromSteamDB_submitOptions", (e) => {
 
                 e.preventDefault();
 
@@ -641,7 +597,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
             });
 
             // RESET OPTIONS
-            $(document).on("click", "#GetDLCInfofromSteamDB_resetOptions", e => {
+            $(document).on("click", "#GetDLCInfofromSteamDB_resetOptions", (e) => {
 
                 e.preventDefault();
 
@@ -658,7 +614,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
             });
 
             // STEAMDB - SHOW TABNAV
-            $(document).on("click", ".GetDLCInfofromSteamDB_tabNav", e => {
+            $(document).on("click", ".GetDLCInfofromSteamDB_tabNav", (e) => {
 
                 e.preventDefault();
 
@@ -820,42 +776,31 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
 
         // DLC EACH SPRINT
         dlcEachSprint(str, values) {
-
             $.each(values, (key, value) => {
                 str = str.replace(new RegExp(`{${key}}`, "g"), value);
             });
-
             return str;
-
         },
 
         // DLC EACH INDEX
         dlcEachIndex(index, prefix) {
-
             const len = index.length;
-
             return prefix > len ? "0".repeat(prefix - len) + index : index;
-
         },
 
         // DLC EACH STR
         dlcEachStr(str) {
 
-            let re_exec;
-            const re_str = str;
             const re = /\[(\w+)(?:=(.*))?]([^[]+)\[\/(\w+)]/g;
+            let re_exec;
 
-            while ((re_exec = re.exec(re_str)) !== null) {
-
-                if (re_exec.index === re.lastIndex) {
-                    re.lastIndex += 1;
-                }
+            while ((re_exec = re.exec(str)) !== null) {
 
                 // GET DATA
                 const [bbcode, bbcode_open, bbcode_opt, bbcode_val, bbcode_close] = re_exec;
 
                 // CHECK
-                if (bbcode_open === bbcode_close && bbcode_val.length > 0) {
+                if (bbcode_open === bbcode_close) {
 
                     const bbcode_opts = typeof bbcode_opt !== "undefined" ? bbcode_opt.split(":") : [];
 
@@ -867,9 +812,9 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                             break;
                         }
                         case "option": {
-                            if (bbcode_opts.length > 0) {
-                                const item = Storage.get(bbcode_val);
-                                str = str.replace(bbcode, Storage.isValid(item) ? item : bbcode_opts[0]);
+                            const item = Storage.get(bbcode_val);
+                            if (Storage.isValid(item)) {
+                                str = str.replace(bbcode, item);
                             }
                             break;
                         }
