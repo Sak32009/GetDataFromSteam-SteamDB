@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.3.6
+// @version          3.3.7
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -22,6 +22,11 @@
 // ==/UserScript==
 
 ((() => {
+
+    // LINE BREAK
+    const LineBreak = function (str) {
+        return str.replace(/\n/g, "\r\n");
+    };
 
     // DOWNLOAD
     const Download = {
@@ -78,7 +83,7 @@
         formats: {
             // CREAMAPI
             creamAPI: {
-                name: "CREAMAPI v3.0.0.1 Hotfix",
+                name: "CREAMAPI v3.0.0.2",
                 ini: {
                     name: "cream_api.ini",
                     data: `[steam]
@@ -89,7 +94,7 @@ appid = [steamdb]appID[/steamdb]
 ;language = german
 ; Enable/disable automatic DLC unlock. Default option is set to "false".
 ; Keep in mind that this option is highly experimental and won't
-; work if game wants to call each DLC by index.
+; work if the game wants to call each DLC by index.
 unlockall = false
 ; Original Valve's steam_api.dll.
 ; Default is "steam_api_o.dll".
@@ -101,8 +106,16 @@ orgapi64 = steam_api64_o.dll
 ; Default is "false".
 extraprotection = false
 ; The game will think that you're offline (supported by some games)
-; Default is "false"
+; Default is "false".
 forceoffline = false
+; Disables the internal SteamUser interface handler.
+; Does have an effect on the games that are using the license check for the DLC/application.
+; Default is "false".
+disableuserinterface = false
+; Disables the internal SteamUtils interface handler.
+; Does have an effect on the games that are checking for the actual AppId (only matters when "wrappermode" is set to "true").
+; Default is "false".
+disableutilsinterface = false
 ; Turn on the wrapper mode.
 ; Default is "false".
 wrappermode = false
@@ -130,7 +143,7 @@ saveindirectory = false
 ; e.g. : 247295 = Saints Row IV - GAT V Pack
 ; If the DLC is not specified in this section
 ; then it won't be unlocked
-[dlcEach]{dlc_id} = {dlc_name}\r\n[/dlcEach]`
+[dlcEach]{dlc_id} = {dlc_name}\n[/dlcEach]`
                 },
                 options: {}
             },
@@ -156,7 +169,7 @@ saveindirectory = false
                             const zip = new JSZip();
 
                             // ADD INFO
-                            info += `file: ?.txt || appid: ${app.steamDB.appID} || game: ${app.steamDB.appIDName}\r\n`;
+                            info += `file: ?.txt || appid: ${app.steamDB.appID} || game: ${app.steamDB.appIDName}\n`;
 
                             // EACH
                             $.each(app.steamDB.appIDDLCs, (key, values) => {
@@ -168,7 +181,7 @@ saveindirectory = false
                                 if (!(Storage.isChecked("globalIgnoreSteamDBUnknownApp") && name.includes("SteamDB Unknown App"))) {
 
                                     // ADD INFO
-                                    info += `file: ${lastNum}.txt || appid: ${key} || game: ${name}\r\n`;
+                                    info += `file: ${lastNum}.txt || appid: ${key} || game: ${name}\n`;
 
                                     // ADD FILE TO ZIP
                                     zip.file(`${lastNum}.txt`, key);
@@ -182,7 +195,7 @@ saveindirectory = false
                             });
 
                             // ADD README TO ZIP
-                            zip.file(`${app.steamDB.appID}.README`, info);
+                            zip.file(`${app.steamDB.appID}.README`, LineBreak(info));
 
                             // GENERATE
                             zip.generateAsync({
@@ -221,14 +234,14 @@ IF EXIST .\\AppList\\NUL (
 MKDIR .\\AppList\\
 :: CREATE DLCS FILES
 :: ${app.steamDB.appIDName}
-ECHO ${app.steamDB.appID}> .\\AppList\\0.txt\r\n`;
+ECHO ${app.steamDB.appID}> .\\AppList\\0.txt\n`;
                     batch += app.dlcEach(`:: {dlc_name}
-ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\r\n`, true);
+ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true);
                     batch += `:: START STEAMLITE
-SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password #\r\n`;
+SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password #\n`;
 
                     // GENERATE
-                    saveAs(new File([batch], `${app.steamDB.appIDName}.bat`, {
+                    saveAs(new File([LineBreak(batch)], `${app.steamDB.appIDName}.bat`, {
                         type: "application/octet-stream;charset=utf-8"
                     }));
 
@@ -240,7 +253,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 name: "LUMAEMU v1.9.7 (ONLY DLCs LIST)",
                 ini: {
                     name: "LumaEmu_only_dlcs.ini",
-                    data: "[dlcEach]; {dlc_name}\r\nDLC_{dlc_id} = 1\r\n[/dlcEach]"
+                    data: "[dlcEach]; {dlc_name}\nDLC_{dlc_id} = 1\n[/dlcEach]"
                 },
                 options: {}
             },
@@ -250,7 +263,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 name: "SMARTSTEAMEMU (ONLY DLCs LIST)",
                 ini: {
                     name: "SmartSteamEmu_only_dlcs.ini",
-                    data: "[dlcEach]{dlc_id} = {dlc_name}\r\n[/dlcEach]"
+                    data: "[dlcEach]{dlc_id} = {dlc_name}\n[/dlcEach]"
                 },
                 options: {}
             },
@@ -260,7 +273,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 name: "CODEX (ID = NAME)",
                 ini: {
                     name: "steam_emu.ini",
-                    data: "[dlcEach]{dlc_id} = {dlc_name}\r\n[/dlcEach]"
+                    data: "[dlcEach]{dlc_id} = {dlc_name}\n[/dlcEach]"
                 },
                 options: {}
             },
@@ -270,7 +283,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 name: "CODEX (DLC00000, DLCName)",
                 ini: {
                     name: "steam_emu.ini",
-                    data: "[dlcEach=false:5]DLC{dlc_index} = {dlc_id}\r\nDLCName{dlc_index} = {dlc_name}\r\n[/dlcEach]"
+                    data: "[dlcEach=false:5]DLC{dlc_index} = {dlc_id}\nDLCName{dlc_index} = {dlc_name}\n[/dlcEach]"
                 },
                 options: {}
             },
@@ -280,7 +293,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 name: "3DMGAME",
                 ini: {
                     name: "3DMGAME.ini",
-                    data: "[dlcEach=true:3]; {dlc_name}\r\nDLC{dlc_index} = {dlc_id}\r\n[/dlcEach]"
+                    data: "[dlcEach=true:3]; {dlc_name}\nDLC{dlc_index} = {dlc_id}\n[/dlcEach]"
                 },
                 options: {}
             },
@@ -290,7 +303,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 name: "ALI213",
                 ini: {
                     name: "ALI213.ini",
-                    data: "[dlcEach]{dlc_id} = {dlc_name}\r\n[/dlcEach]"
+                    data: "[dlcEach]{dlc_id} = {dlc_name}\n[/dlcEach]"
                 },
                 options: {}
             },
@@ -300,7 +313,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 name: "SKIDROW",
                 ini: {
                     name: "steam_api.ini",
-                    data: "[dlcEach]; {dlc_name}\r\n{dlc_id}\r\n[/dlcEach]"
+                    data: "[dlcEach]; {dlc_name}\n{dlc_id}\n[/dlcEach]"
                 },
                 options: {}
             }
@@ -529,7 +542,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
 ; Config ARG: ${this.steamDB.configARG}
 ; SteamDB: ${this.info.steamDB}${this.steamDB.appID}
 ; Homepage: ${this.info.homepage}
-; Support: ${this.info.support}\r\n\r\n`;
+; Support: ${this.info.support}\n\n`;
 
                 // CALLBACK
                 if ($.isFunction(formatCallback)) {
@@ -547,7 +560,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
 
                     // SET FILE INI DATA
                     $("#GetDLCInfofromSteamDB_download").attr({
-                        href: Download.encode(result),
+                        href: Download.encode(LineBreak(result)),
                         download: formatININame
                     }).find("span").text(formatININame);
 
