@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.3.7
+// @version          3.3.8
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -144,6 +144,102 @@ saveindirectory = false
 ; If the DLC is not specified in this section
 ; then it won't be unlocked
 [dlcEach]{dlc_id} = {dlc_name}\n[/dlcEach]`
+                },
+                options: {}
+            },
+
+            // CREAMAPI v2.0.0.7
+            creamAPI_2_0_0_7: {
+                name: "CREAMAPI v2.0.0.7",
+                ini: {
+                    name: "cream_api.ini",
+                    data: `[steam]
+; Application ID (http://store.steampowered.com/app/%appid%/)
+appid = [steamdb]appID[/steamdb]
+; Force the usage of specific language.
+; Uncomment this option to turn it on.
+;language = german
+; Enable/disable automatic DLC unlock. Default option is set to "false".
+; Keep in mind that this option is highly experimental and won't
+; work if game wants to call each DLC by index.
+unlockall = false
+; Original Valve's steam_api.dll.
+; Default is "steam_api_o.dll".
+orgapi = steam_api_o.dll
+; Original Valve's steam_api64.dll.
+; Default is "steam_api64_o.dll".
+orgapi64 = steam_api64_o.dll
+; Enable/disable extra protection bypasser.
+; Default is "false".
+extraprotection = false
+; ExtraProtection level.
+; Default is "0".
+; Available options :
+; 0 = minimum, 1 = medium, 2 = maximum
+extraprotectionlevel = 0
+; Turn on the "light" wrapper mode.
+; Default is "false".
+wrappermode = false
+; Enable/disable logging of the DLC functions.
+; Default is "false".
+; If you use log_build, uncomment this option to turn it on.
+;log = false
+
+[steam_wrapper]
+; Application ID to override (used when the wrapper mode is on)
+newappid = 0
+; Load steam emulator library.
+; Default is "false".
+loademu = false
+; Emulator library that is used for the stats
+; and storage handling.
+; Default is "emu.dll".
+emudll = emu.dll
+; Use the emulator storage system.
+; Default is "false".
+wrapperremotestorage = false
+; Use the emulator stats/achievements system.
+; Default is "false".
+wrapperuserstats = false
+; Use the emulator utils system.
+; Default is "false".
+wrapperutils = false
+; User the emulator callbacks system.
+; Default is "false".
+wrappercallbacks = false
+
+[dlc_subscription]
+; This will check if the specifed
+; DLC is owned by the user.
+; Format: <dlc_id> = <true/false>
+; e.g. : 12345 = true
+;        12346 = true
+;        12347 = true
+; If the DLC is not specified in this section
+; then it won't be subscribed.
+; Also if the value is set to "false" the DLC
+; won't be subscribed either.
+[dlcEach]{dlc_id} = true\n[/dlcEach]
+[dlc_index]
+; DLC handling.
+; Format: <dlc_index> = <dlc_id>
+; e.g. : 0 = 12345
+;        1 = 12346
+;        2 = 12347
+[dlcEach]{dlc_index} = {dlc_id}\n[/dlcEach]
+[dlc_names]
+; Names for the DLCs index put above.
+; Use this only if needed.
+; Format: <dlc_index> = <dlc_name>
+; e.g. : 0 = DLC Name 0
+;        1 = DLC Name 1
+;        2 = DLC Name 2
+[dlcEach]{dlc_index} = {dlc_name}\n[/dlcEach]
+[dlc_timestamp]
+; Specifies a unique unix timestamp for the purchased DLC (http://www.onlineconversion.com/unix_time.htm).
+; By default returns the current date timestamp (if nothing was specified).
+; Format: <dlc_id> = <timestamp>
+; e.g. : 12345 = 1420070400\n`
                 },
                 options: {}
             },
