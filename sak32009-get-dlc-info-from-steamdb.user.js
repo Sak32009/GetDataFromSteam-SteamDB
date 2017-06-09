@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.3.8
+// @version          3.3.9
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -24,9 +24,7 @@
 ((() => {
 
     // LINE BREAK
-    const LineBreak = function (str) {
-        return str.replace(/\n/g, "\r\n");
-    };
+    const LineBreak = (str) => str.replace(/\n/g, "\r\n");
 
     // DOWNLOAD
     const Download = {
@@ -412,6 +410,16 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                     data: "[dlcEach]; {dlc_name}\n{dlc_id}\n[/dlcEach]"
                 },
                 options: {}
+            },
+
+            // SST311212
+            SST311212: {
+                name: "SST311212",
+                ini: {
+                    name: "SST311212.ini",
+                    data: "[dlcEach]{dlc_id} = {dlc_name}\n[/dlcEach]"
+                },
+                options: {}
             }
         },
 
@@ -440,11 +448,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
             // APPID DLCS
             appIDDLCs: {},
             // APPID TOTAL DLCS
-            appIDDLCsCount: 0,
-            // CONFIG EXE
-            configEXE: "",
-            // CONFIG ARGUMENTS
-            configARG: ""
+            appIDDLCsCount: 0
         },
 
         // OPTIONS
@@ -492,10 +496,10 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 this.getData();
                 // CREATE DOM
                 this.createDOM();
-                // CREATE GLOBAL OPTIONS TAB
-                this.createTab("globalOptions", "Global Options", this.options);
                 // CREATE FORMATS
                 this.createFormats();
+                // CREATE GLOBAL OPTIONS TAB
+                this.createTab("globalOptions", "Global Options", this.options);
                 // LOAD OPTIONS
                 this.loadOptions();
                 // LOAD EVENTS
@@ -534,13 +538,6 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
 
             });
 
-            // SET CONFIG
-            const $config = $(".tab-pane#config > table:nth-of-type(1) tbody tr:nth-of-type(1)");
-            // SET CONFIG EXE
-            this.steamDB.configEXE = $config.find("td:nth-of-type(2)").text().trim();
-            // SET CONFIG ARG
-            this.steamDB.configARG = $config.find("td:nth-of-type(3)").text().trim();
-
         },
 
         // CREATE DOM
@@ -548,36 +545,23 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
 
             // STYLE
             $("<style>").text(`#GetDLCInfofromSteamDB_textarea{margin-bottom:10px;width:100%;display:none}
-#GetDLCInfofromSteamDB_nav > h2, #GetDLCInfofromSteamDB_nav > div > *{display:inline-block}
-#GetDLCInfofromSteamDB_nav > div{margin-top:15px}`).appendTo("head");
+#GetDLCInfofromSteamDB_header h2, #GetDLCInfofromSteamDB_header form{display:inline-block}`).appendTo("head");
 
             // WRAP
-            $("#dlc > h2").wrap($("<div>").attr("id", "GetDLCInfofromSteamDB_nav"));
+            $("#dlc > h2").wrap($("<div>").attr("id", "GetDLCInfofromSteamDB_header"));
 
-            // NAV
-            $(`<div class='pull-right'>
+            // HEADER
+            $(`<div class='pull-right' style='margin-top:15px'>
    <form id='GetDLCInfofromSteamDB_submit'>
        <select id='GetDLCInfofromSteamDB_select'></select>
        <button type='submit' class='btn btn-primary'>Get DLCs List</button>
    </form>
-   <div class='dropdown'>
-       <button type='button' class='btn'>Download <b class='caret'></b></button>
-       <ul class='dropdown-menu'>
-           <li><a href='javascript:;' id='GetDLCInfofromSteamDB_download'><i class='octicon octicon-file-symlink-file'></i> <span>#.ini</span></a></li>
-           <li><a href='javascript:;' id='GetDLCInfofromSteamDB_steamAppID'><i class='octicon octicon-file-text'></i> steam_appid.txt</a></li>
-       </ul>
-   </div>
+   <a href='javascript:;' class='btn' id='GetDLCInfofromSteamDB_downloadFile'><i class='octicon octicon-file-symlink-file'></i> Download File</a>
    <button type='button' class='btn btn-danger' id='GetDLCInfofromSteamDB_resetOptions'>Reset Options</button>
-</div>`).appendTo("#GetDLCInfofromSteamDB_nav");
+</div>`).appendTo("#GetDLCInfofromSteamDB_header");
 
             // TEXTAREA
-            $("<textarea id='GetDLCInfofromSteamDB_textarea' rows='25'></textarea>").insertAfter("#GetDLCInfofromSteamDB_nav");
-
-            // STEAM APPID
-            $("#GetDLCInfofromSteamDB_steamAppID").attr({
-                href: Download.encode(this.steamDB.appID),
-                download: "steam_appid.txt"
-            });
+            $("<textarea id='GetDLCInfofromSteamDB_textarea' rows='20'></textarea>").insertAfter("#GetDLCInfofromSteamDB_header");
 
         },
 
@@ -618,14 +602,13 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
 
                 // RESULT
                 let result = "";
-                // OPTION DATA
-                const optionData = $("#GetDLCInfofromSteamDB_select option:selected").val();
+                // SELECTED FORMAT
+                const selectedFormat = $("#GetDLCInfofromSteamDB_select option:selected").val();
                 // GET FORMAT DATA
-                const formatData = this.formats[optionData];
+                const formatData = this.formats[selectedFormat];
                 const formatName = formatData.name;
-                const formatINI = formatData.ini;
-                const formatININame = formatINI.name;
-                const formatINIData = formatINI.data;
+                const formatININame = formatData.ini.name;
+                const formatINIData = formatData.ini.data;
                 const formatCallback = formatData.callback;
 
                 // WRITE INFO
@@ -634,8 +617,6 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
 ; AppID: ${this.steamDB.appID}
 ; AppID Name: ${this.steamDB.appIDName}
 ; AppID Total DLCs: ${this.steamDB.appIDDLCsCount}
-; Config EXE: ${this.steamDB.configEXE}
-; Config ARG: ${this.steamDB.configARG}
 ; SteamDB: ${this.info.steamDB}${this.steamDB.appID}
 ; Homepage: ${this.info.homepage}
 ; Support: ${this.info.support}\n\n`;
@@ -643,7 +624,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 // CALLBACK
                 if ($.isFunction(formatCallback)) {
                     formatCallback({
-                        "format": optionData,
+                        "format": selectedFormat,
                         "info": result
                     }, this);
                 } else {
@@ -654,15 +635,15 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                     // WRITE RESULT
                     $("#GetDLCInfofromSteamDB_textarea").html(result).show().scrollTop(0);
 
-                    // SET FILE INI DATA
-                    $("#GetDLCInfofromSteamDB_download").attr({
+                    // SET DOWNLOAD FILE
+                    $("#GetDLCInfofromSteamDB_downloadFile").attr({
                         href: Download.encode(LineBreak(result)),
                         download: formatININame
-                    }).find("span").text(formatININame);
+                    });
 
                     // ..... AUTO DOWNLOAD
                     if (Storage.isChecked("globalAutoDownload")) {
-                        document.getElementById("GetDLCInfofromSteamDB_download").click();
+                        document.getElementById("GetDLCInfofromSteamDB_downloadFile").click();
                     }
                     // .....
 
@@ -670,7 +651,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
 
                 // ..... SAVE LAST SELECTION
                 if (Storage.isChecked("globalSaveLastSelection")) {
-                    Storage.set("globalSaveLastSelectionValue", optionData);
+                    Storage.set("globalSaveLastSelectionValue", selectedFormat);
                 }
                 // .....
 
