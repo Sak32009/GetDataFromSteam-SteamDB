@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.3.9
+// @version          3.4.0
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -17,6 +17,4 @@
 // @require          https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js
 // @require          https://steamdb.info/static/js/tabbable.4f8f7fce.js
 // @grant            none
-// @run-at           document-end
-// @noframes
 // ==/UserScript==

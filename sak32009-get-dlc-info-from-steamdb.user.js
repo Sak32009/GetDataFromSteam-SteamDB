@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.3.9
+// @version          3.4.0
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -17,8 +17,6 @@
 // @require          https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js
 // @require          https://steamdb.info/static/js/tabbable.4f8f7fce.js
 // @grant            none
-// @run-at           document-end
-// @noframes
 // ==/UserScript==
 
 ((() => {
@@ -27,14 +25,7 @@
     const LineBreak = (str) => str.replace(/\n/g, "\r\n");
 
     // DOWNLOAD
-    const Download = {
-
-        // ENCODE
-        encode(str) {
-            return `data:text/plain;charset=utf-8,${encodeURIComponent(str)}`;
-        }
-
-    };
+    const Download = (str) => LineBreak(`data:text/plain;charset=utf-8,${encodeURIComponent(str)}`);
 
     // STORAGE
     const Storage = {
@@ -244,7 +235,7 @@ wrappercallbacks = false
 
             // GREENLUMA
             greenluma: {
-                name: "GreenLuma [NORMALE MODE]",
+                name: "GreenLuma [NORMAL MODE]",
                 ini: {},
                 options: {},
                 callback(data, app) {
@@ -256,7 +247,6 @@ wrappercallbacks = false
                         lastNum = Number(lastNum);
                         if ($.isNumeric(lastNum)) {
 
-                            const format = data.format;
                             let info = data.info;
 
                             // NEW ZIP
@@ -295,7 +285,7 @@ wrappercallbacks = false
                             zip.generateAsync({
                                 type: "blob"
                             }).then((content) => {
-                                saveAs(content, `${app.steamDB.appID}_${format}_AppList.zip`);
+                                saveAs(content, `${app.steamDB.appID}_AppList.zip`);
                             });
 
                         } else {
@@ -328,14 +318,14 @@ IF EXIST .\\AppList\\NUL (
 MKDIR .\\AppList\\
 :: CREATE DLCS FILES
 :: ${app.steamDB.appIDName}
-ECHO ${app.steamDB.appID}> .\\AppList\\0.txt\n`;
-                    batch += app.dlcEach(`:: {dlc_name}
-ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true);
-                    batch += `:: START STEAMLITE
+ECHO ${app.steamDB.appID}> .\\AppList\\0.txt
+${app.dlcEach(`:: {dlc_name}
+ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}
+:: START STEAMLITE
 SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password #\n`;
 
                     // GENERATE
-                    saveAs(new File([LineBreak(batch)], `${app.steamDB.appIDName}.bat`, {
+                    saveAs(new File([LineBreak(batch)], `${app.steamDB.appIDName}_AppList.bat`, {
                         type: "application/octet-stream;charset=utf-8"
                     }));
 
@@ -459,15 +449,9 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 type: "checkbox"
             },
 
-            // SAVE THE LAST SELECTED FORMAT
-            globalSaveLastSelection: {
-                title: "Save the last selected format",
-                type: "checkbox"
-            },
-
-            // AUTO SUBMIT FORM WHEN YOU OPEN THE PAGE
-            globalAutoSubmit: {
-                title: "Automatically submit form when you open the page",
+            // SAVE THE LAST SELECTED FORMAT AND SUBMIT FORM WHEN YOU OPEN THE PAGE
+            globalSaveLastSelectionAndAutoSubmit: {
+                title: "Save the last selected format and submit form when you open the page",
                 type: "checkbox"
             },
 
@@ -578,7 +562,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 const tag = $("<option>").attr("value", index).text(name);
 
                 // ..... SAVE LAST SELECTION
-                if (Storage.isChecked("globalSaveLastSelection") && Storage.get("globalSaveLastSelectionValue") === index) {
+                if (Storage.isChecked("globalSaveLastSelectionAndAutoSubmit") && Storage.get("globalSaveLastSelectionValue") === index) {
                     tag.prop("selected", true);
                 }
                 // .....
@@ -624,7 +608,6 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 // CALLBACK
                 if ($.isFunction(formatCallback)) {
                     formatCallback({
-                        "format": selectedFormat,
                         "info": result
                     }, this);
                 } else {
@@ -637,7 +620,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
 
                     // SET DOWNLOAD FILE
                     $("#GetDLCInfofromSteamDB_downloadFile").attr({
-                        href: Download.encode(LineBreak(result)),
+                        href: Download(result),
                         download: formatININame
                     });
 
@@ -650,7 +633,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
                 }
 
                 // ..... SAVE LAST SELECTION
-                if (Storage.isChecked("globalSaveLastSelection")) {
+                if (Storage.isChecked("globalSaveLastSelectionAndAutoSubmit")) {
                     Storage.set("globalSaveLastSelectionValue", selectedFormat);
                 }
                 // .....
@@ -658,7 +641,7 @@ SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password 
             });
 
             // ..... AUTO SUBMIT
-            if (Storage.isChecked("globalAutoSubmit")) {
+            if (Storage.isChecked("globalSaveLastSelectionAndAutoSubmit")) {
                 $("#GetDLCInfofromSteamDB_submit").trigger("submit");
             }
             // .....
