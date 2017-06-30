@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.4.2
+// @version          3.4.3
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -256,9 +256,7 @@ MKDIR .\\AppList\\
 :: ${app.steamDB.appIDName}
 ECHO ${app.steamDB.appID}> .\\AppList\\0.txt
 ${app.dlcEach(`:: {dlc_name}
-ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}
-:: START STEAMLITE
-SteamLite64.exe -applaunch ${app.steamDB.appID} -AutoExit -Username # -Password #\n`;
+ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
 
                     // GENERATE
                     saveAs(new File([LineBreak(batch)], `${app.steamDB.appIDName}_AppList.bat`, {
