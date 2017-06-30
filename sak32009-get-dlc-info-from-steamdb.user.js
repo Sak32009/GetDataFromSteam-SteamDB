@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.4.1
+// @version          3.4.2
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -14,7 +14,6 @@
 // @match            *://steamdb.info/app/*
 // @require          https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js
 // @require          https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js
-// @require          https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js
 // @require          https://steamdb.info/static/js/tabbable.4f8f7fce.js
 // @grant            none
 // @run-at           document-end
@@ -232,70 +231,6 @@ wrappercallbacks = false
 ; e.g. : 12345 = 1420070400\n`
                 },
                 options: {}
-            },
-
-            // GREENLUMA
-            greenluma: {
-                name: "GreenLuma [NORMAL MODE]",
-                ini: {},
-                options: {},
-                callback(data, app) {
-
-                    // PROMPT
-                    let lastNum = window.prompt("Insert the latest filename from AppList folder", "0");
-
-                    if (lastNum !== null) {
-                        lastNum = Number(lastNum);
-                        if ($.isNumeric(lastNum)) {
-
-                            let info = data.info;
-
-                            // NEW ZIP
-                            const zip = new JSZip();
-
-                            // ADD INFO
-                            info += `file: ?.txt || appid: ${app.steamDB.appID} || game: ${app.steamDB.appIDName}\n`;
-
-                            // EACH
-                            $.each(app.steamDB.appIDDLCs, (key, values) => {
-
-                                // NAME
-                                const name = values.name;
-
-                                // ..... IGNORE DLCs 'SteamDB Unknown App'
-                                if (!(Storage.isChecked("globalIgnoreSteamDBUnknownApp") && name.includes("SteamDB Unknown App"))) {
-
-                                    // ADD INFO
-                                    info += `file: ${lastNum}.txt || appid: ${key} || game: ${name}\n`;
-
-                                    // ADD FILE TO ZIP
-                                    zip.file(`${lastNum}.txt`, key);
-
-                                    // INCREMENT
-                                    lastNum += 1;
-
-                                }
-                                // .....
-
-                            });
-
-                            // ADD README TO ZIP
-                            zip.file(`${app.steamDB.appID}.README`, LineBreak(info));
-
-                            // GENERATE
-                            zip.generateAsync({
-                                type: "blob"
-                            }).then((content) => {
-                                saveAs(content, `${app.steamDB.appID}_AppList.zip`);
-                            });
-
-                        } else {
-                            alert("Incorrect value!");
-                        }
-
-                    }
-
-                }
             },
 
             // GREENLUMA BATCH MODE
