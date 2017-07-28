@@ -1,10 +1,10 @@
-﻿// ==UserScript==
+// ==UserScript==
 // @name             Get DLC Info from SteamDB
 // @namespace        sak32009-get-dlc-info-from-steamdb
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.4.3
+// @version          3.4.4
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -25,7 +25,7 @@
     const LineBreak = (str) => str.replace(/\n/g, "\r\n");
 
     // DOWNLOAD
-    const Download = (str) => LineBreak(`data:text/plain;charset=utf-8,${encodeURIComponent(str)}`);
+    const Download = (str) => `data:text/plain;charset=utf-8,${encodeURIComponent(LineBreak(str))}`;
 
     // STORAGE
     const Storage = {
@@ -72,7 +72,7 @@
         formats: {
             // CREAMAPI
             creamAPI: {
-                name: "CREAMAPI v3.0.0.2",
+                name: "CREAMAPI v3.0.0.3 Hotfix",
                 ini: {
                     name: "cream_api.ini",
                     data: `[steam]
@@ -94,9 +94,15 @@ orgapi64 = steam_api64_o.dll
 ; Enable/disable extra protection bypasser.
 ; Default is "false".
 extraprotection = false
-; The game will think that you're offline (supported by some games)
+; This option will force the usage of the default Steam user data folder.
+; Default is "true".
+;forceuserdatafolder = false
+; The game will think that you're offline (supported by some games).
 ; Default is "false".
 forceoffline = false
+; Some games are checking for the low violence presence.
+; Default is "false".
+;lowviolence = true
 ; Disables the internal SteamUser interface handler.
 ; Does have an effect on the games that are using the license check for the DLC/application.
 ; Default is "false".
@@ -122,7 +128,7 @@ wrapperuserstats = false
 ; By default the data will is stored at: %appdata%/CreamAPI/%appid%/
 ; Default is "false".
 saveindirectory = false
-; Disable/Enable a StoreStats callback. Takes effect only if "wrapperuserstats" is set to "true"
+; Disable/Enable a StoreStats callback. Takes effect only if "wrapperuserstats" is set to "true".
 ; Default is "true"
 ;storestatscallback = false
 
