@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.4.5
+// @version          3.4.6
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -72,7 +72,7 @@
         formats: {
             // CREAMAPI
             creamAPI: {
-                name: "CREAMAPI v3.1.0.0",
+                name: "CREAMAPI v3.1.0.0 Hotfix",
                 ini: {
                     name: "cream_api.ini",
                     data: `[steam]
