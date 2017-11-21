@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.4.6
+// @version          3.4.7
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -72,7 +72,7 @@
         formats: {
             // CREAMAPI
             creamAPI: {
-                name: "CREAMAPI v3.1.0.0 Hotfix",
+                name: "CREAMAPI v3.1.1.0",
                 ini: {
                     name: "cream_api.ini",
                     data: `[steam]
@@ -109,6 +109,9 @@ forceoffline = false
 ; e.g. <install_directory>\\480
 ; Default is "true".
 ;dlcasinstalldir = false
+; Purchase timestamp for the DLC (http://www.onlineconversion.com/unix_time.htm).
+; Default is "1167609600" (2007/01/01).
+;purchasetimestamp = 0
 ; Turn on the wrapper mode.
 ; Default is "false".
 wrappermode = false
@@ -122,13 +125,10 @@ disableuserinterface = false
 ; Does have an effect on the games that are checking for the actual AppId (only matters when "wrappermode" is set to "true").
 ; Default is "false".
 disableutilsinterface = false
-; This option will force the usage of the default Steam user data folder.
-; Default is "true".
-;forceuserdatafolder = false
 ; Unlock/Lock Steam parental restrictions.
 ; Default is "true".
 ;unlockparentalrestrictions = false
-; SteamId to override. Note that this action could be risky !
+; SteamId64 to override. Note that this action could be risky !
 ; This option can only work if "disableuserinterface = false".
 ;steamid = 0
 ; Bypass VAC signature check. Note that this action could be risky !
@@ -148,8 +148,11 @@ wrapperuserstats = false
 ; By default the data will is stored at: %appdata%/CreamAPI/%appid%/
 ; Default is "false".
 saveindirectory = false
+; Disable internal callbacks system.
+; Default is "false".
+;disablecallbacks = true
 ; Disable/Enable a StoreStats callback. Takes effect only if "wrapperuserstats" is set to "true".
-; Default is "true"
+; Default is "true".
 ;storestatscallback = false
 
 [dlc]
@@ -161,7 +164,8 @@ saveindirectory = false
 [dlcEach]{dlc_id} = {dlc_name}\n[/dlcEach]
 [dlc_installdirs]
 ; Installation path for the specific DLC (dependent from "installdir" option).
-; e.g. : 556760 = DLCRoot0`
+; This section works only if "dlcasinstalldir" option is set to "false".
+; example of usage : 556760 = DLCRoot0`
                 },
                 options: {}
             },
