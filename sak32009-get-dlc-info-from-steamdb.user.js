@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.4.7
+// @version          3.4.8
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -72,7 +72,7 @@
         formats: {
             // CREAMAPI
             creamAPI: {
-                name: "CREAMAPI v3.1.1.0",
+                name: "CREAMAPI v3.2.0.0",
                 ini: {
                     name: "cream_api.ini",
                     data: `[steam]
@@ -101,10 +101,10 @@ forceoffline = false
 ; Default is "false".
 ;lowviolence = true
 ; Installation path for the game.
-; Note, that you can use .\\ to set the parent directory (from where executable file is located).
-; Maximum number of parent directories: 5 (.\\.\\.\\.\\.\\)
+; Note, that you can use ..\\ to set the parent directory (from where executable file is located).
+; Maximum number of parent directories: 5 (..\\..\\..\\..\\..\\)
 ; Default is the path to current working directory.
-;installdir = .\\
+;installdir = ..\\
 ; Use DLC id as the appended installation directory.
 ; e.g. <install_directory>\\480
 ; Default is "true".
@@ -144,6 +144,9 @@ wrapperremotestorage = false
 ; Use the internal stats/achievements system.
 ; Default is "false".
 wrapperuserstats = false
+; Use the internal workshop (UGC) system.
+; Default is "false".
+wrapperugc = false
 ; Store the data in the current directory (incl. stats)
 ; By default the data will is stored at: %appdata%/CreamAPI/%appid%/
 ; Default is "false".
@@ -165,7 +168,15 @@ saveindirectory = false
 [dlc_installdirs]
 ; Installation path for the specific DLC (dependent from "installdir" option).
 ; This section works only if "dlcasinstalldir" option is set to "false".
-; example of usage : 556760 = DLCRoot0`
+; Format: <dlc_id> = <install_dir>
+; e.g. : 556760 = DLCRoot0
+
+[steam_ugc]
+; Subscribed workshop items.
+; This section works only if "wrappermode" and "wrapperugc" options are set to "true".
+; Format: <dlc_id> = <true/false>
+; e.g. : 812713531 = true
+; Please refer to __README_WORKSHOP_EN__.txt for more details.`
                 },
                 options: {}
             },
