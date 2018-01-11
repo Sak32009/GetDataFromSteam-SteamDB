@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.4.8
+// @version          3.4.9
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -72,14 +72,15 @@
         formats: {
             // CREAMAPI
             creamAPI: {
-                name: "CREAMAPI v3.2.0.0",
+                name: "CREAMAPI v3.3.0.0",
                 ini: {
                     name: "cream_api.ini",
                     data: `[steam]
 ; Application ID (http://store.steampowered.com/app/%appid%/)
 appid = [steamdb]appID[/steamdb]
-; Force the usage of specific language.
+; Current game language.
 ; Uncomment this option to turn it on.
+; Default is "english".
 ;language = german
 ; Enable/disable automatic DLC unlock. Default option is set to "false".
 ; Keep in mind that this option is highly experimental and won't
@@ -110,7 +111,7 @@ forceoffline = false
 ; Default is "true".
 ;dlcasinstalldir = false
 ; Purchase timestamp for the DLC (http://www.onlineconversion.com/unix_time.htm).
-; Default is "1167609600" (2007/01/01).
+; Default is "0" (1970/01/01).
 ;purchasetimestamp = 0
 ; Turn on the wrapper mode.
 ; Default is "false".
@@ -157,6 +158,10 @@ saveindirectory = false
 ; Disable/Enable a StoreStats callback. Takes effect only if "wrapperuserstats" is set to "true".
 ; Default is "true".
 ;storestatscallback = false
+; Fixed achievements count.
+; Some games can only work if this option is configured properly (e.g. Wolfenstein II).
+; Default is "0".
+achievementscount = 0
 
 [dlc]
 ; DLC handling.
