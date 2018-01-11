@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.4.9
+// @version          3.5.0
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -186,6 +186,40 @@ achievementscount = 0
                 options: {}
             },
 
+            // CREAMAPI MANUAL
+            creamAPI_manual_mode: {
+                name: "CreamAPI [MANUAL MODE]",
+                ini: {},
+                options: {},
+                callback({info}, app) {
+
+                    // INI
+                    let ini = info;
+                    let txt = $("#GetDLCInfofromSteamDB_textarea");
+
+                    if(txt.css("display") !== "none"){
+                        if(txt.length > 0 ){
+
+                            ini += txt.val();
+                            ini = ini.replace(/appid = (\w+)/g, `appid = ${app.steamDB.appID}`);
+                            ini = ini.replace(/\[dlc\]/g, `[dlc]\n${app.dlcEach(`{dlc_id} = {dlc_name}\n`)}`);
+
+                            // GENERATE
+                            saveAs(new File([LineBreak(ini)], `cream_api.ini`, {
+                                type: "application/octet-stream;charset=utf-8"
+                            }));
+
+                        }else{
+                            window.alert("No content!");
+                        }
+                    }else{
+                        window.alert("CTRL+C and CTRL+V content of cream_api.ini to textarea!");
+                        txt.show().scrollTop(0).val("CTRL+V");
+                    }
+
+                }
+            },
+
             // GREENLUMA BATCH MODE
             greenluma_batch_mode: {
                 name: "GreenLuma [BATCH MODE]",
@@ -201,7 +235,7 @@ CLS
 
 :: CHECK APPLIST DIR
 IF EXIST .\\AppList\\NUL (
-	RMDIR /S /Q .\\AppList\\
+    RMDIR /S /Q .\\AppList\\
 )
 :: CREATE APPLIST DIR
 MKDIR .\\AppList\\
@@ -552,7 +586,7 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
                 });
 
                 // ALERT
-                alert("Options saved!");
+                window.alert("Options saved!");
 
             });
 
@@ -568,7 +602,7 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
                     // LOAD OPTIONS
                     this.loadOptions();
                     // ALERT
-                    alert("Restored default options!");
+                    window.alert("Restored default options!");
                 }
 
             });
