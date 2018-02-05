@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.5.0
+// @version          3.5.1
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -149,9 +149,15 @@ wrapperuserstats = false
 ; Default is "false".
 wrapperugc = false
 ; Store the data in the current directory (incl. stats)
-; By default the data will is stored at: %appdata%/CreamAPI/%appid%/
+; By default the data is stored at: %appdata%/CreamAPI/%appid%/
 ; Default is "false".
 saveindirectory = false
+; Force the usage of a full save path instead of the relative one.
+; Default is "false".
+forcefullsavepath = false
+; Type of the used internal callbacks system. Could be "0" or "1".
+; Default is "0".
+callbackstype = 0
 ; Disable internal callbacks system.
 ; Default is "false".
 ;disablecallbacks = true
