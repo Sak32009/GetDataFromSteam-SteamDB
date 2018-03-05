@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB.
 // @author           Sak32009
 // @contributor      CS.RIN.RU Users
-// @version          3.5.4
+// @version          3.5.5
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -194,7 +194,125 @@ achievementscount = 0
                 options: {}
             },
 
-			// CREAMAPI v3.0.0.3 Hotfix
+            // CREAMAPI v3.3.0.0
+            creamAPI_3_3_0_0: {
+                name: "CREAMAPI v3.3.0.0",
+                callback({info}, app){
+                    return {
+                        name: "cream_api.ini",
+                        data: `[steam]
+; Application ID (http://store.steampowered.com/app/%appid%/)
+appid = [steamdb]appID[/steamdb]
+; Current game language.
+; Uncomment this option to turn it on.
+; Default is "english".
+;language = german
+; Enable/disable automatic DLC unlock. Default option is set to "false".
+; Keep in mind that this option is highly experimental and won't
+; work if the game wants to call each DLC by index.
+unlockall = false
+; Original Valve's steam_api.dll.
+; Default is "steam_api_o.dll".
+orgapi = steam_api_o.dll
+; Original Valve's steam_api64.dll.
+; Default is "steam_api64_o.dll".
+orgapi64 = steam_api64_o.dll
+; Enable/disable extra protection bypasser.
+; Default is "false".
+extraprotection = false
+; The game will think that you're offline (supported by some games).
+; Default is "false".
+forceoffline = false
+; Some games are checking for the low violence presence.
+; Default is "false".
+;lowviolence = true
+; Installation path for the game.
+; Note, that you can use ..\\ to set the parent directory (from where executable file is located).
+; Maximum number of parent directories: 5 (..\\..\\..\\..\\..\\)
+; Default is the path to current working directory.
+;installdir = ..\\
+; Use DLC id as the appended installation directory.
+; e.g. <install_directory>\\480
+; Default is "true".
+;dlcasinstalldir = false
+; Purchase timestamp for the DLC (http://www.onlineconversion.com/unix_time.htm).
+; Default is "0" (1970/01/01).
+;purchasetimestamp = 0
+; Turn on the wrapper mode.
+; Default is "false".
+wrappermode = false
+
+[steam_misc]
+; Disables the internal SteamUser interface handler.
+; Does have an effect on the games that are using the license check for the DLC/application.
+; Default is "false".
+disableuserinterface = false
+; Disables the internal SteamUtils interface handler.
+; Does have an effect on the games that are checking for the actual AppId (only matters when "wrappermode" is set to "true").
+; Default is "false".
+disableutilsinterface = false
+; Unlock/Lock Steam parental restrictions.
+; Default is "true".
+;unlockparentalrestrictions = false
+; SteamId64 to override. Note that this action could be risky !
+; This option can only work if "disableuserinterface = false".
+;steamid = 0
+; Bypass VAC signature check. Note that this action could be risky !
+; Default is "false".
+;signaturebypass = true
+
+[steam_wrapper]
+; Application ID to override (used when the wrapper mode is on)
+newappid = 0
+; Use the internal storage system.
+; Default is "false".
+wrapperremotestorage = false
+; Use the internal stats/achievements system.
+; Default is "false".
+wrapperuserstats = false
+; Use the internal workshop (UGC) system.
+; Default is "false".
+wrapperugc = false
+; Store the data in the current directory (incl. stats)
+; By default the data will is stored at: %appdata%/CreamAPI/%appid%/
+; Default is "false".
+saveindirectory = false
+; Disable internal callbacks system.
+; Default is "false".
+;disablecallbacks = true
+; Disable/Enable a StoreStats callback. Takes effect only if "wrapperuserstats" is set to "true".
+; Default is "true".
+;storestatscallback = false
+; Fixed achievements count.
+; Some games can only work if this option is configured properly (e.g. Wolfenstein II).
+; Default is "0".
+achievementscount = 0
+
+[dlc]
+; DLC handling.
+; Format: <dlc_id> = <dlc_description>
+; e.g. : 247295 = Saints Row IV - GAT V Pack
+; If the DLC is not specified in this section
+; then it won't be unlocked
+[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]
+[dlc_installdirs]
+; Installation path for the specific DLC (dependent from "installdir" option).
+; This section works only if "dlcasinstalldir" option is set to "false".
+; Format: <dlc_id> = <install_dir>
+; e.g. : 556760 = DLCRoot0
+
+[steam_ugc]
+; Subscribed workshop items.
+; This section works only if "wrappermode" and "wrapperugc" options are set to "true".
+; Format: <dlc_id> = <true/false>
+; e.g. : 812713531 = true
+; Please refer to __README_WORKSHOP_EN__.txt for more details.`
+                    };
+                },
+                options: {}
+            },
+
+            // CREAMAPI v3.0.0.3 Hotfix
             creamAPI_3_0_0_3_h: {
                 name: "CREAMAPI v3.0.0.3 Hotfix",
                 callback({info}, app){
@@ -269,7 +387,7 @@ saveindirectory = false
                 options: {}
             },
 
-			// CREAMAPI v2.0.0.7
+            // CREAMAPI v2.0.0.7
             creamAPI_2_0_0_7: {
                 name: "CREAMAPI v2.0.0.7",
                 callback({info}, app){
