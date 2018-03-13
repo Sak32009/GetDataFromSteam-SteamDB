@@ -1,19 +1,19 @@
 // ==UserScript==
 // @name             Get DLC Info from SteamDB
 // @namespace        sak32009-get-dlc-info-from-steamdb
-// @description      Get DLC Info from SteamDB.
+// @description      Get DLC Info from SteamDB
 // @author           Sak32009
-// @contributor      CS.RIN.RU Users
-// @version          3.5.5
+// @contributor      cs.rin.ru
+// @version          3.5.6
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
 // @updateURL        https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.meta.js
 // @downloadURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.user.js
-// @icon             https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb.png
+// @icon             https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-32.png
+// @icon64           https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-64.png
 // @match            *://steamdb.info/app/*
 // @require          https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js
-// @require          https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js
 // @require          https://steamdb.info/static/js/tabbable.4f8f7fce.js
 // @grant            none
 // @run-at           document-end
@@ -21,11 +21,37 @@
 
 ((() => {
 
-    // LINE BREAK
-    const LineBreak = (str) => str.replace(/\n/g, "\r\n");
+    // MISSING
+    if(GM_info.scriptHandler !== "Tampermonkey"){
+        GM_info.script.author = "Sak32009";
+        GM_info.script.homepage = "https://github.com/Sak32009/GetDLCInfoFromSteamDB/";
+        GM_info.script.supportURL = "http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837";
+        GM_info.script.icon = "https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-32.png";
+        GM_info.script.icon64 = "https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-64.png";
+    }
 
-    // DOWNLOAD
-    const Download = (str) => `data:text/plain;charset=utf-8,${encodeURIComponent(LineBreak(str))}`;
+    // WINDDOWS LINE BREAK
+    const winLineBreak = (str) => str.replace(/\n/g, "\r\n");
+
+    // DOWNLOAD ENCODE
+    const downloadEncode = (str) => `data:text/plain;charset=utf-8,${encodeURIComponent(winLineBreak(str))}`;
+
+    // DOWNLOAD AS
+    const downloadAs = (filename, content) => {
+
+        const fake = $("<a>").attr({
+            href: downloadEncode(content),
+            download: filename
+        }).text("fake");
+
+        fake.appendTo(document.body);
+        fake[0].click();
+
+        window.setTimeout(() => {
+            fake.remove();
+        }, 50);
+
+    };
 
     // STORAGE
     const Storage = {
@@ -487,7 +513,7 @@ wrappercallbacks = false
 
             // CREAMAPI MANUAL
             creamAPI_manual_mode: {
-                name: "CreamAPI [MANUAL MODE]",
+                name: "CREAMAPI [MANUAL MODE]",
                 callback({info}, app) {
 
                     // INI
@@ -502,9 +528,7 @@ wrappercallbacks = false
                             ini = ini.replace(/\[dlc\]/g, `[dlc]\n${app.dlcList(`{dlc_id} = {dlc_name}\n`)}`);
 
                             // GENERATE
-                            saveAs(new File([LineBreak(ini)], `cream_api.ini`, {
-                                type: "application/octet-stream;charset=utf-8"
-                            }));
+                            downloadAs(`cream_api.ini`, ini);
 
                         }else{
                             window.alert("No content!");
@@ -524,8 +548,7 @@ wrappercallbacks = false
                 callback({info}, app) {
 
                     // BATCH
-                    let batch = info.replace(/; /g, ":: ");
-                    batch += `@echo off
+                    const batch = info.replace(/; /g, ":: ") + `@echo off
 TITLE ${app.steamDB.appIDName} - ${app.info.name} by ${app.info.author} v${app.info.version}
 CLS
 
@@ -542,9 +565,7 @@ ${app.dlcList(`:: {dlc_name}
 ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
 
                     // GENERATE
-                    saveAs(new File([LineBreak(batch)], `${app.steamDB.appIDName}_AppList.bat`, {
-                        type: "application/octet-stream;charset=utf-8"
-                    }));
+                    downloadAs(`${app.steamDB.appIDName}_AppList.bat`, batch);
 
                 },
                 options: {}
@@ -557,30 +578,6 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
                     return {
                         name: "LumaEmu_only_dlcs.ini",
                         data: "[dlcs]; {dlc_name}\nDLC_{dlc_id} = 1\n[/dlcs]"
-                    };
-                },
-                options: {}
-            },
-
-            // SMARTSTEAMEMU (ONLY DLCs LIST)
-            smartsteamemu_only_dlcs: {
-                name: "SMARTSTEAMEMU (ONLY DLCs LIST)",
-                callback({info}, app) {
-                    return {
-                        name: "SmartSteamEmu_only_dlcs.ini",
-                        data: "[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]"
-                    };
-                },
-                options: {}
-            },
-
-            // CODEX (ID = NAME)
-            codex: {
-                name: "CODEX (ID = NAME)",
-                callback({info}, app) {
-                    return {
-                        name: "steam_emu.ini",
-                        data: "[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]"
                     };
                 },
                 options: {}
@@ -610,18 +607,6 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
                 options: {}
             },
 
-            // ALI213
-            ali213: {
-                name: "ALI213",
-                callback({info}, app) {
-                    return {
-                        name: "ALI213.ini",
-                        data: "[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]"
-                    };
-                },
-                options: {}
-            },
-
             // SKIDROW
             skidrow: {
                 name: "SKIDROW",
@@ -634,33 +619,34 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
                 options: {}
             },
 
-            // SST311212
-            SST311212: {
-                name: "SST311212",
+            // NORMALLY (ID = NAME)
+            normally_id_name: {
+                name: "ID = NAME",
                 callback({info}, app) {
                     return {
-                        name: "SST311212.ini",
+                        name: "dlcs_id_name.ini",
                         data: "[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]"
                     };
                 },
                 options: {}
-            }
+            },
+
         },
 
         // INFO
         info: {
             // AUTHOR
-            author: "Sak32009",
+            author: GM_info.script.author,
             // NAME
             name: GM_info.script.name,
             // VERSION
             version: GM_info.script.version,
-            // STEAMDB URL
-            steamDB: "https://steamdb.info/app/",
             // HOMEPAGE URL
-            homepage: "https://github.com/Sak32009/GetDLCInfoFromSteamDB/",
+            homepage: GM_info.script.homepage,
             // SUPPORT URL
-            support: "http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837"
+            support: GM_info.script.supportURL,
+            // STEAMDB URL
+            steamDB: "https://steamdb.info/app/"
         },
 
         // STEAMDB
@@ -701,10 +687,10 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
 
                 // GET DATA
                 this.getData();
-                // CREATE DOM
-                this.createDOM();
-                // CREATE FORMATS
-                this.createFormats();
+                // CREATE INTERFACE
+                this.createInterface();
+                // FILL SELECT FORMATS
+                this.fillSelectFormats();
                 // CREATE GLOBAL OPTIONS TAB
                 this.createTab("globalOptions", "Global Options", this.options);
                 // LOAD OPTIONS
@@ -745,15 +731,16 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
 
         },
 
-        // CREATE DOM
-        createDOM() {
+        // CREATE INTERFACE
+        createInterface() {
 
             // STYLE
-            $("<style>").text(`.GetDLCInfofromSteamDB_tabNav img{width:16px;height:16px;margin-top:-4px}
-#dlc > h2{display:none}`).appendTo("head");
+            $("<style>").text(`.GetDLCInfofromSteamDB_tabNav img{width:16px;height:16px;margin-top:-2px}#dlc > h2{display:none}#GetDLCInfofromSteamDB_header_img{text-align:center}`).appendTo("head");
 
             // HEADER
             $(`<div id='GetDLCInfofromSteamDB_header' style='margin-bottom:10px'>
+    <div id='GetDLCInfofromSteamDB_header_img'><img src='${GM_info.script.icon64}' alt='${GM_info.script.name}'></div>
+    <h3 style='text-align:center;margin-bottom:20px'>${GM_info.script.name} v${this.info.version}</h3>
     <form id='GetDLCInfofromSteamDB_submit'>
         <select id='GetDLCInfofromSteamDB_select'></select>
         <button type='submit' class='btn btn-primary'><i class='octicon octicon-clippy'></i> Get DLCs List</button>
@@ -762,15 +749,15 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
             <button type='button' class='btn btn-danger' id='GetDLCInfofromSteamDB_resetOptions'><i class='octicon octicon-trashcan'></i> Reset Options</button>
         </span>
     </form>
-</div>`).insertAfter("#dlc > h2");
+</div><hr>`).insertAfter("#dlc > h2");
 
             // TEXTAREA
             $("<textarea id='GetDLCInfofromSteamDB_textarea' rows='20' style='margin-bottom:10px;width:100%;display:none'></textarea>").insertAfter("#GetDLCInfofromSteamDB_header");
 
         },
 
-        // CREATE FORMATS
-        createFormats() {
+        // FILL SELECT FORMATS
+        fillSelectFormats() {
 
             // EACH
             $.each(this.formats, (index, values) => {
@@ -824,9 +811,10 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
 
                 // CALLBACK
                 const formatCallback = formatData.callback({
-                    "info": result
+                    info: result
                 }, this);
 
+                // CALLBACK CHECK TYPE
                 if (typeof formatCallback === "object") {
 
                     // GET DLCs
@@ -836,14 +824,14 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
                     $("#GetDLCInfofromSteamDB_textarea").html(result).show().scrollTop(0);
 
                     // SET DOWNLOAD FILE
-                    $("#GetDLCInfofromSteamDB_downloadFile").attr({
-                        href: Download(result),
+                    const setDwFile = $("#GetDLCInfofromSteamDB_downloadFile").attr({
+                        href: downloadEncode(result),
                         download: formatCallback.name
                     });
 
                     // ..... AUTO DOWNLOAD
                     if (Storage.isChecked("globalAutoDownload")) {
-                        document.getElementById("GetDLCInfofromSteamDB_downloadFile").click();
+                        setDwFile[0].click();
                     }
                     // .....
 
@@ -946,13 +934,13 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
             if (Object.keys(options).length > 0) {
 
                 // ADD TABNAV-TAB
-                $(`<a href='#' data-target='#GetDLCInfofromSteamDB_${key}' class='tabnav-tab GetDLCInfofromSteamDB_tabNav'><img src='https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb.png'> ${name}</a>`).insertBefore(".tabnav-tab[data-target='#dlc']");
+                $(`<a href='#' data-target='#GetDLCInfofromSteamDB_${key}' class='tabnav-tab GetDLCInfofromSteamDB_tabNav'><img src='${GM_info.script.icon}'> ${name}</a>`).insertBefore(".tabnav-tab[data-target='#dlc']");
 
                 // ADD TAB-PANE
                 $(`<div id='GetDLCInfofromSteamDB_${key}' class='tab-pane'>
-    <h2>${GM_info.script.name} - ${name}</h2>
+    <div id='GetDLCInfofromSteamDB_header_img'><img src='${GM_info.script.icon64}' alt='${GM_info.script.name}'></div>
+    <h3 style='text-align:center;margin-bottom:20px'>${GM_info.script.name} v${this.info.version} - <b>${name}</b></h3>
     <form id='GetDLCInfofromSteamDB_submitOptions'>
-        <button type='submit' class='btn btn-primary btn-lg btn-block' style='margin:5px 0'>Save Options</button>
         <table class='table table-bordered table-fixed' style='margin-bottom:0'>
             <tbody>${this.optionsToInput(options)}</tbody>
         </table>
@@ -1012,12 +1000,12 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
         },
 
         // DLC LIST
-        dlcList(str, index_start_zero, index_prefix) {
+        dlcList(str, indexFromZero, indexPrefix) {
 
             // RESULT
             let result = "";
             // INDEX START FROM ZERO
-            let index = index_start_zero ? 0 : -1;
+            let index = indexFromZero ? 0 : -1;
 
             // EACH
             $.each(this.steamDB.appIDDLCs, (key, values) => {
@@ -1034,7 +1022,7 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
                     result += this.dlcInfoReplace(str, {
                         "dlc_id": key,
                         "dlc_name": name,
-                        "dlc_index": this.dlcIDPrefix(index.toString(), parseInt(index_prefix)),
+                        "dlc_index": this.dlcIDPrefix(index.toString(), parseInt(indexPrefix)),
                         "dlc_timestamp": timestamp,
                         "dlc_date": date
                     });
@@ -1065,13 +1053,13 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
         // BBCODE
         bbcode(str) {
 
+            let reExec;
             const re = /\[(\w+)(?:=(.*))?]([^[]+)\[\/(\w+)]/g;
-            let re_exec;
 
-            while ((re_exec = re.exec(str)) !== null) {
+            while ((reExec = re.exec(str)) !== null) {
 
                 // GET DATA
-                const [bbcode, bbcodeOpen, bbcodeOpt, bbcodeVal, bbcodeClose] = re_exec;
+                const [bbcode, bbcodeOpen, bbcodeOpt, bbcodeVal, bbcodeClose] = reExec;
 
                 // CHECK
                 if (bbcodeOpen === bbcodeClose) {
