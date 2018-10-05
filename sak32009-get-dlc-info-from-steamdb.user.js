@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB
 // @author           Sak32009
 // @contributor      cs.rin.ru
-// @version          3.5.7
+// @version          3.5.8
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -712,7 +712,7 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
 
                 const $this = $(dom);
 
-                if(this.info.isSearchPage && $this.find("td:nth-of-type(2)").text().trim() === "Game"){
+                if(this.info.isSearchPage && $this.find("td:nth-of-type(2)").text().trim() !== "DLC"){
                    return;
                 }
 
