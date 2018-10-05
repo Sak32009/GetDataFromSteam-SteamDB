@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB
 // @author           Sak32009
 // @contributor      cs.rin.ru
-// @version          3.5.6
+// @version          3.5.7
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -13,6 +13,7 @@
 // @icon             https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-32.png
 // @icon64           https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-64.png
 // @match            *://steamdb.info/app/*
+// @match            *://steamdb.info/search/*
 // @require          https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js
 // @require          https://steamdb.info/static/js/tabbable.4f8f7fce.js
 // @grant            none
@@ -646,7 +647,9 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
             // SUPPORT URL
             support: GM_info.script.supportURL,
             // STEAMDB URL
-            steamDB: "https://steamdb.info/app/"
+            steamDB: "https://steamdb.info/app/",
+            // IS SEARCH PAGE?
+            isSearchPage: $("#table-sortable .app[data-appid]").length > 1
         },
 
         // STEAMDB
@@ -681,9 +684,9 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
         run() {
 
             // CHECK IF THE APPID HAS DLCs
-            const $check = $(".tab-pane#dlc .app[data-appid]");
+            const $check = $(".tab-pane#dlc .app[data-appid], #table-sortable .app[data-appid]").length > 0;
 
-            if ($check.length > 0) {
+            if ($check) {
 
                 // GET DATA
                 this.getData();
@@ -702,22 +705,22 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
 
         },
 
-        // GET DATA
-        getData() {
+        // GET DATA DLCS
+        getDataDLCS(){
 
-            // SET APPID
-            this.steamDB.appID = $(".scope-app[data-appid]").data("appid");
-            // SET APPID NAME
-            this.steamDB.appIDName = $("td[itemprop='name']").text().trim();
-
-            // SET APPID DLCs
-            $(".tab-pane#dlc .app[data-appid]").each((_index, dom) => {
+            $(".tab-pane#dlc .app[data-appid], #table-sortable .app[data-appid]").each((_index, dom) => {
 
                 const $this = $(dom);
+
+                if(this.info.isSearchPage && $this.find("td:nth-of-type(2)").text().trim() === "Game"){
+                   return;
+                }
+
                 const appID = $this.data("appid");
-                const appIDName = $this.find("td:nth-of-type(2)").text().trim();
-                const appIDTime = $this.find("td:nth-of-type(3)").data("sort");
-                const appIDDate = new Date(appIDTime * 1000).toUTCString();
+                const appIDName = (this.info.isSearchPage ? $this.find("td:nth-of-type(3)") : $this.find("td:nth-of-type(2)")).text().trim();
+                const appIDDateIndex = this.info.isSearchPage ? 4 : 3;
+                const appIDTime = $this.find(`td:nth-of-type(${appIDDateIndex})`).data("sort");
+                const appIDDate = $this.find(`td:nth-of-type(${appIDDateIndex})`).attr("title");
 
                 this.steamDB.appIDDLCs[appID] = {
                     name: appIDName,
@@ -728,6 +731,32 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
                 this.steamDB.appIDDLCsCount += 1;
 
             });
+
+        },
+
+        // GET DATA
+        getData() {
+
+            // SET APPID
+            this.steamDB.appID = $(".scope-app[data-appid]").data("appid");
+            // SET APPID NAME
+            this.steamDB.appIDName = this.info.isSearchPage ? $("input#inputQuery").val().trim() : $("td[itemprop='name']").text().trim();
+
+            // SET APPID DLCs
+            if(!this.info.isSearchPage){
+                this.getDataDLCS();
+            }else{
+
+                $("li.paginate_button:not(:first):not(:last)").each((index, value) => {
+
+                    const $value = $(value);
+
+                    $value.click();
+                    GetDLCInfofromSteamDB.getDataDLCS();
+
+                });
+
+            }
 
         },
 
@@ -749,7 +778,7 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
             <button type='button' class='btn btn-danger' id='GetDLCInfofromSteamDB_resetOptions'><i class='octicon octicon-trashcan'></i> Reset Options</button>
         </span>
     </form>
-</div><hr>`).insertAfter("#dlc > h2");
+</div><hr>`).insertAfter("#dlc > h2, div.panel:nth-child(3)");
 
             // TEXTAREA
             $("<textarea id='GetDLCInfofromSteamDB_textarea' rows='20' style='margin-bottom:10px;width:100%;display:none'></textarea>").insertAfter("#GetDLCInfofromSteamDB_header");
@@ -934,7 +963,7 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
             if (Object.keys(options).length > 0) {
 
                 // ADD TABNAV-TAB
-                $(`<a href='#' data-target='#GetDLCInfofromSteamDB_${key}' class='tabnav-tab GetDLCInfofromSteamDB_tabNav'><img src='${GM_info.script.icon}'> ${name}</a>`).insertBefore(".tabnav-tab[data-target='#dlc']");
+                $(`<a href='#' data-target='#GetDLCInfofromSteamDB_${key}' class='tabnav-tab GetDLCInfofromSteamDB_tabNav'><img src='${GM_info.script.icon}'> ${name}</a>`).insertBefore(".tabnav-tab[data-target='#dlc'], .tabnav-tab[data-target='#apps_linked']");
 
                 // ADD TAB-PANE
                 $(`<div id='GetDLCInfofromSteamDB_${key}' class='tab-pane'>
@@ -946,7 +975,7 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
         </table>
         <button type='submit' class='btn btn-primary btn-lg btn-block' style='margin:5px 0'>Save Options</button>
     </form>
-</div>`).appendTo(".tabbable > .tab-content");
+</div>`).appendTo(".tab-content");
 
             }
 
