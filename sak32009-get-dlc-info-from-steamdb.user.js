@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB
 // @author           Sak32009
 // @contributor      cs.rin.ru
-// @version          3.5.8
+// @version          3.5.9
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -747,14 +747,18 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
                 this.getDataDLCS();
             }else{
 
-                $("li.paginate_button:not(:first):not(:last)").each((index, value) => {
+                const interval = window.setInterval(() => {
 
-                    const $value = $(value);
+                    const btnNext = $("#table-sortable_next");
 
-                    $value.click();
-                    GetDLCInfofromSteamDB.getDataDLCS();
+                    if(btnNext.hasClass("disabled")){
+                        window.clearInterval(interval);
+                    }else{
+                        btnNext.click();
+                        GetDLCInfofromSteamDB.getDataDLCS();
+                    }
 
-                });
+                }, 500);
 
             }
 
