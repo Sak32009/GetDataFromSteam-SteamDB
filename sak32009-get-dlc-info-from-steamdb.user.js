@@ -568,16 +568,25 @@ MKDIR .\\AppList\\
 ECHO ${app.steamDB.appID}> .\\AppList\\0.txt
 ${app.dlcList(`:: {dlc_name}
 ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}
-:: EXIT STEAM AND START GREENLUMA
+:: OPTION START GREENLUMA AND GAME
+IF EXIST .\GreenLuma_Reborn.exe GOTO :Q ELSE GOTO :EXIT
+
 :Q
-SET /P c=Do you want to start GreenLuma Reborn now [Y/N]?
-IF /I "%c%" EQU "Y" GOTO :start
-IF /I "%c%" EQU "N" GOTO :exit
+SET /P c=Do you want to start GreenLuma Reborn and the game now [Y/N]? 
+IF /I "%c%" EQU "Y" GOTO :START
+IF /I "%c%" EQU "N" GOTO :EXIT
 GOTO :Q
 
 :START
+CLS
+ECHO Launching Greenluma Reborn...
 TASKKILL /F /IM steam.exe >nul 2>&1
-START GreenLuma_Reborn.exe -NoHook
+ECHO Click 'Yes' when asked to use saved App List
+GreenLuma_Reborn.exe -NoHook
+
+ECHO Launching ${app.steamDB.appIDName}...
+TIMEOUT /T 2 >nul 2>&1
+START steam://rungameid/${app.steamDB.appID}
 
 :EXIT
 EXIT`;
