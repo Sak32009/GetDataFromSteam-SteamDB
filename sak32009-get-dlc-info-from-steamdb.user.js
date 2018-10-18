@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB
 // @author           Sak32009
 // @contributor      cs.rin.ru
-// @version          3.5.9
+// @version          3.5.10
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -549,21 +549,47 @@ wrappercallbacks = false
                 callback({info}, app) {
 
                     // BATCH
-                    const batch = info.replace(/; /g, ":: ") + `@echo off
+                    const batch = info.replace(/; /g, ":: ") + `@ECHO OFF
 TITLE ${app.steamDB.appIDName} - ${app.info.name} by ${app.info.author} v${app.info.version}
 CLS
+
+:: WINDOWS WORKING DIR BUG WORKAROUND
+CD /D %~dp0
 
 :: CHECK APPLIST DIR
 IF EXIST .\\AppList\\NUL (
     RMDIR /S /Q .\\AppList\\
 )
+
 :: CREATE APPLIST DIR
 MKDIR .\\AppList\\
 :: CREATE DLCS FILES
 :: ${app.steamDB.appIDName}
 ECHO ${app.steamDB.appID}> .\\AppList\\0.txt
 ${app.dlcList(`:: {dlc_name}
-ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}`;
+ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}
+:: OPTION START GREENLUMA AND GAME
+IF EXIST .\GreenLuma_Reborn.exe GOTO :Q ELSE GOTO :EXIT
+
+:Q
+SET /P c=Do you want to start GreenLuma Reborn and the game now [Y/N]? 
+IF /I "%c%" EQU "Y" GOTO :START
+IF /I "%c%" EQU "N" GOTO :EXIT
+GOTO :Q
+
+:START
+CLS
+ECHO Launching Greenluma Reborn...
+TASKKILL /F /IM steam.exe >nul 2>&1
+ECHO Click 'Yes' when asked to use saved App List
+GreenLuma_Reborn.exe -NoHook
+
+ECHO Launching ${app.steamDB.appIDName}...
+TIMEOUT /T 2 >nul 2>&1
+START steam://rungameid/${app.steamDB.appID}
+
+:EXIT
+EXIT`;
 
                     // GENERATE
                     downloadAs(`${app.steamDB.appIDName}_AppList.bat`, batch);
