@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB
 // @author           Sak32009
 // @contributor      cs.rin.ru
-// @version          3.6.0
+// @version          3.6.1
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -99,9 +99,7 @@ const GetDLCInfofromSteamDB = {
         // CREAMAPI
         creamAPI: {
             name: "CREAMAPI v3.4.1.0",
-            callback({
-                info
-            }, app) {
+            callback({info}, app) {
                 return {
                     name: "cream_api.ini",
                     data: `[steam]
@@ -225,9 +223,7 @@ achievementscount = 0
         // CREAMAPI v3.3.0.0
         creamAPI_3_3_0_0: {
             name: "CREAMAPI v3.3.0.0",
-            callback({
-                info
-            }, app) {
+            callback({info}, app) {
                 return {
                     name: "cream_api.ini",
                     data: `[steam]
@@ -345,9 +341,7 @@ achievementscount = 0
         // CREAMAPI v3.0.0.3 Hotfix
         creamAPI_3_0_0_3_h: {
             name: "CREAMAPI v3.0.0.3 Hotfix",
-            callback({
-                info
-            }, app) {
+            callback({info}, app) {
                 return {
                     name: "cream_api.ini",
                     data: `[steam]
@@ -422,9 +416,7 @@ saveindirectory = false
         // CREAMAPI v2.0.0.7
         creamAPI_2_0_0_7: {
             name: "CREAMAPI v2.0.0.7",
-            callback({
-                info
-            }, app) {
+            callback({info}, app) {
                 return {
                     name: "cream_api.ini",
                     data: `[steam]
@@ -522,9 +514,7 @@ wrappercallbacks = false
         // CREAMAPI MANUAL
         creamAPI_manual_mode: {
             name: "CREAMAPI [MANUAL MODE]",
-            callback({
-                info
-            }, app) {
+            callback({info}, app) {
 
                 // INI
                 let ini = info;
@@ -555,9 +545,7 @@ wrappercallbacks = false
         // GREENLUMA BATCH MODE
         greenluma_batch_mode: {
             name: "GreenLuma [BATCH MODE]",
-            callback({
-                info
-            }, app) {
+            callback({info}, app) {
 
                 // BATCH
                 const batch = info.replace(/; /g, ":: ") + `@ECHO OFF
@@ -612,9 +600,7 @@ EXIT`;
         // LUMAEMU (ONLY DLCs LIST)
         lumaemu_only_dlcs: {
             name: "LUMAEMU v1.9.7 (ONLY DLCs LIST)",
-            callback({
-                info
-            }, app) {
+            callback({info}, app) {
                 return {
                     name: "LumaEmu_only_dlcs.ini",
                     data: "[dlcs]; {dlc_name}\nDLC_{dlc_id} = 1\n[/dlcs]"
@@ -626,9 +612,7 @@ EXIT`;
         // CODEX (DLC00000, DLCName)
         codex_t: {
             name: "CODEX (DLC00000, DLCName)",
-            callback({
-                info
-            }, app) {
+            callback({info}, app) {
                 return {
                     name: "steam_emu.ini",
                     data: "[dlcs=false:5]DLC{dlc_index} = {dlc_id}\nDLCName{dlc_index} = {dlc_name}\n[/dlcs]"
@@ -640,9 +624,7 @@ EXIT`;
         // 3DMGAME
         "3dmgame": {
             name: "3DMGAME",
-            callback({
-                info
-            }, app) {
+            callback({info}, app) {
                 return {
                     name: "3DMGAME.ini",
                     data: "[dlcs=true:3]; {dlc_name}\nDLC{dlc_index} = {dlc_id}\n[/dlcs]"
@@ -654,9 +636,7 @@ EXIT`;
         // SKIDROW
         skidrow: {
             name: "SKIDROW",
-            callback({
-                info
-            }, app) {
+            callback({info}, app) {
                 return {
                     name: "steam_api.ini",
                     data: "[dlcs]; {dlc_name}\n{dlc_id}\n[/dlcs]"
@@ -668,9 +648,7 @@ EXIT`;
         // NORMALLY (ID = NAME)
         normally_id_name: {
             name: "ID = NAME",
-            callback({
-                info
-            }, app) {
+            callback({info}, app) {
                 return {
                     name: "dlcs_id_name.ini",
                     data: "[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]"
@@ -792,22 +770,6 @@ EXIT`;
         // SET APPID DLCs
         if (!this.info.isSearchPage) {
             this.getDataDLCS();
-        } else {
-
-            const interval = window.setInterval(() => {
-
-                const btnNext = $("#table-sortable_next");
-
-                if (btnNext.hasClass("disabled")) {
-					$("#GetDLCInfofromSteamDB_alertSearchPage").hide();
-                    window.clearInterval(interval);
-                } else {
-                    btnNext.click();
-                    GetDLCInfofromSteamDB.getDataDLCS();
-                }
-
-            }, 500);
-
         }
 
     },
@@ -817,43 +779,38 @@ EXIT`;
 
         // ADD OPEN MODAL BUTTON
         $(`<div id="GetDLCInfofromSteamDB_openModal" style="position: fixed;bottom: 0;right: 0;margin: 20px;margin-bottom: 0;">
-	<a style="border-radius: 10px 10px 0 0;display: block;padding: 10px;font-size: 14px;text-align: center;" class="btn btn-primary" href="#">${GM_info.script.name} <b>v${this.info.version}</b> <small>by ${this.info.author}</small></a>
+    <a style="border-radius: 10px 10px 0 0;display: block;padding: 10px;font-size: 14px;text-align: center;" class="btn btn-primary" href="#">${GM_info.script.name} <b>v${this.info.version}</b> <small>by ${this.info.author}</small></a>
 </div>`).appendTo("body");
-
-		// ALERT SEARCH PAGE FN
-		if(this.info.isSearchPage){
-			$(`<div style="padding:10px;font-size:14px;text-align:center;background:red;color:white;margin-bottom:10px;border:0;cursor:auto;display:block" id="GetDLCInfofromSteamDB_alertSearchPage" class="btn">Please wait! Extracting data from all pages!</div>`).prependTo("#GetDLCInfofromSteamDB_openModal");
-		}
 
         // ADD MODAL CONTAINER
         $(`<div id="GetDLCInfofromSteamDB_modal" class="modal" style="display:none;background-color:rgba(0,0,0,.60);z-index:999999;position:fixed;top:0;left:0;right:0;bottom:0;overflow-x:hidden;overflow-y:auto">
-	<div class="modal-dialog" style="max-width:900px;margin:auto;margin-top:30px;margin-bottom:30px;border-radius:4px;box-shadow:0 3px 9px rgba(0,0,0,.5);background-color:#fff">
-	<div class="modal-header" style="text-align:center;padding:15px;padding-bottom:0">
-		<img src='${GM_info.script.icon64}' alt='${GM_info.script.name}'>
-		<h3 style="color:#006400">${GM_info.script.name} <b>v${this.info.version}</b> <small>by ${this.info.author}</small></h3>
-	</div>
-	<div class="modal-container">
-		<div class="tabnav">
-			<nav class="tabnav-tabs" style="padding-left:10px">
-				<a href="#" data-target="#GetDLCInfofromSteamDB_getDlcsList" class="tabnav-tab selected GetDLCInfofromSteamDB_tabNav">Get DLCs List</a>
-			</nav>
-		</div>
-		<div class="tab-content" style="padding:15px;padding-top:0">
-			<div id="GetDLCInfofromSteamDB_getDlcsList" class="tab-pane selected">
-				<div>
-					<select id='GetDLCInfofromSteamDB_selectInput'></select>
-					<button type='button' id="GetDLCInfofromSteamDB_submitInput" class='btn btn-primary'><i class='octicon octicon-clippy'></i> Get DLCs List</button>
-					<div style='float:right'>
-						<a href='javascript:;' class='btn' id='GetDLCInfofromSteamDB_downloadFile'><i class='octicon octicon-file-symlink-file'></i> Download File</a>
-						<button type='button' class='btn btn-danger' id='GetDLCInfofromSteamDB_resetOptions'><i class='octicon octicon-trashcan'></i> Reset Options</button>
-					</div>
-				</div>
-				<hr>
-				<textarea id='GetDLCInfofromSteamDB_textareaOutput' rows='20' style='margin-top:10px;width:100%'></textarea>
-			</div>
-		</div>
+    <div class="modal-dialog" style="max-width:900px;margin:auto;margin-top:30px;margin-bottom:30px;border-radius:4px;box-shadow:0 3px 9px rgba(0,0,0,.5);background-color:#fff">
+    <div class="modal-header" style="text-align:center;padding:15px;padding-bottom:0">
+        <img src='${GM_info.script.icon64}' alt='${GM_info.script.name}'>
+        <h3 style="color:#006400">${GM_info.script.name} <b>v${this.info.version}</b> <small>by ${this.info.author}</small></h3>
+    </div>
+    <div class="modal-container">
+        <div class="tabnav">
+            <nav class="tabnav-tabs" style="padding-left:10px">
+                <a href="#" data-target="#GetDLCInfofromSteamDB_getDlcsList" class="tabnav-tab selected GetDLCInfofromSteamDB_tabNav">Get DLCs List</a>
+            </nav>
+        </div>
+        <div class="tab-content" style="padding:15px;padding-top:0">
+            <div id="GetDLCInfofromSteamDB_getDlcsList" class="tab-pane selected">
+                <div>
+                    <select id='GetDLCInfofromSteamDB_selectInput'></select>
+                    <button type='button' id="GetDLCInfofromSteamDB_submitInput" class='btn btn-primary'><i class='octicon octicon-clippy'></i> Get DLCs List</button>
+                    <div style='float:right'>
+                        <a href='javascript:;' class='btn' id='GetDLCInfofromSteamDB_downloadFile'><i class='octicon octicon-file-symlink-file'></i> Download File</a>
+                        <button type='button' class='btn btn-danger' id='GetDLCInfofromSteamDB_resetOptions'><i class='octicon octicon-trashcan'></i> Reset Options</button>
+                    </div>
+                </div>
+                <hr>
+                <textarea id='GetDLCInfofromSteamDB_textareaOutput' rows='20' style='margin-top:10px;width:100%'></textarea>
+            </div>
+        </div>
         <div style="text-align:center;padding:15px;padding-top:0"><small>To close press ESC!</small></div>
-	</div>
+    </div>
 </div>`).appendTo("body");
 
     },
@@ -1009,7 +966,35 @@ EXIT`;
             e.preventDefault();
 
             // SHOW
-            eventModalDom.open();
+            if(this.info.isSearchPage){
+
+                if(Object.keys(this.steamDB.appIDDLCs).length > 0){
+                    eventModalDom.open();
+                }else{
+                    if($("#GetDLCInfofromSteamDB_openModal div").length < 1){
+
+                        $(`<div style="padding:10px;font-size:14px;text-align:center;background:red;color:white;margin-bottom:10px;border:0;cursor:auto;display:block" id="GetDLCInfofromSteamDB_alertSearchPage" class="btn">Please wait! Extracting data from all pages!</div>`).prependTo("#GetDLCInfofromSteamDB_openModal");
+                        
+                        const interval = window.setInterval(() => {
+
+                            const btnNext = $("#table-sortable_next");
+
+                            if (btnNext.hasClass("disabled")) {
+                                $("#GetDLCInfofromSteamDB_alertSearchPage").hide();
+                                window.clearInterval(interval);
+                            } else {
+                                btnNext.click();
+                                GetDLCInfofromSteamDB.getDataDLCS();
+                            }
+
+                        }, 500);
+
+                    }
+                }
+
+            }else{
+                eventModalDom.open();
+            }
 
         });
 
