@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB
 // @author           Sak32009
 // @contributor      cs.rin.ru
-// @version          3.6.2
+// @version          3.6.2f
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -23,11 +23,11 @@
 
 // MISSING
 if (GM_info.scriptHandler !== "Tampermonkey") {
-    GM_info.script.author     = "Sak32009";
-    GM_info.script.homepage   = "https://github.com/Sak32009/GetDLCInfoFromSteamDB/";
+    GM_info.script.author = "Sak32009";
+    GM_info.script.homepage = "https://github.com/Sak32009/GetDLCInfoFromSteamDB/";
     GM_info.script.supportURL = "http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837";
-    GM_info.script.icon       = "https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-32.png";
-    GM_info.script.icon64     = "https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-64.png";
+    GM_info.script.icon = "https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-32.png";
+    GM_info.script.icon64 = "https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-64.png";
 }
 
 // DOWNLOAD
@@ -39,9 +39,11 @@ const Download = {
     },
 
     // ENCODE
-    encode(str){
+    encode(str) {
 
-        const blob = new Blob([str], {type:"application/octet-stream"});
+        const blob = new Blob([str], {
+            type: "application/octet-stream"
+        });
 
         return window.URL.createObjectURL(blob);
 
@@ -193,7 +195,7 @@ const GetDLCInfofromSteamDB = {
             }
 
             const appID = $this.data("appid");
-            const appIDName = $this.find("td:nth-of-type(" + this.info.isSearchPage ? 3 : 2 + ")").text().trim();
+            const appIDName = $this.find(`td:nth-of-type(${this.info.isSearchPage}` ? 3 : `${2})`).text().trim();
             const appIDDateIndex = this.info.isSearchPage ? 4 : 3;
             const appIDTime = $this.find(`td:nth-of-type(${appIDDateIndex})`).data("sort");
             const appIDDate = $this.find(`td:nth-of-type(${appIDDateIndex})`).attr("title");
@@ -307,7 +309,9 @@ const GetDLCInfofromSteamDB = {
 ; Support: ${this.info.support}\n\n`;
 
             // CALLBACK
-            const formatCallback = formatData.callback({info: result}, this);
+            const formatCallback = formatData.callback({
+                info: result
+            }, this);
 
             // CALLBACK CHECK TYPE
             if (typeof formatCallback === "object") {
@@ -404,15 +408,15 @@ const GetDLCInfofromSteamDB = {
             e.preventDefault();
 
             // SHOW
-            if(this.info.isSearchPage){
+            if (this.info.isSearchPage) {
 
-                if(Object.keys(this.steamDB.appIDDLCs).length > 0){
+                if (Object.keys(this.steamDB.appIDDLCs).length > 0) {
                     eventModalDom.open();
-                }else{
-                    if($("#GetDLCInfofromSteamDB_openModal div").length < 1){
+                } else {
+                    if ($("#GetDLCInfofromSteamDB_openModal div").length < 1) {
 
                         $(`<div style="padding:10px;font-size:14px;text-align:center;background:red;color:white;margin-bottom:10px;border:0;cursor:auto;display:block" id="GetDLCInfofromSteamDB_alertSearchPage" class="btn">Please wait! Extracting data from all pages!</div>`).prependTo("#GetDLCInfofromSteamDB_openModal");
-                        
+
                         const interval = window.setInterval(() => {
 
                             const btnNext = $("#table-sortable_next");
@@ -433,7 +437,7 @@ const GetDLCInfofromSteamDB = {
                     }
                 }
 
-            }else{
+            } else {
                 eventModalDom.open();
             }
 
@@ -639,12 +643,10 @@ const GetDLCInfofromSteamDB = {
 
         return str;
 
-    }
+    },
 
-};
-
-// ADD FORMATS
-GetDLCInfoFromSteamDB.formats = {
+    // FORMATS
+    formats: {
         // CREAMAPI
         creamAPI: {
             name: "CREAMAPI v3.4.1.0",
@@ -1089,7 +1091,7 @@ ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}
 IF EXIST .\GreenLuma_Reborn.exe GOTO :Q ELSE GOTO :EXIT
 
 :Q
-SET /P c=Do you want to start GreenLuma Reborn and the game now [Y/N]? 
+SET /P c=Do you want to start GreenLuma Reborn and the game now [Y/N]?
 IF /I "%c%" EQU "Y" GOTO :START
 IF /I "%c%" EQU "N" GOTO :EXIT
 GOTO :Q
@@ -1174,6 +1176,7 @@ EXIT`;
             },
             options: {}
         }
+    }
 
 };
 
