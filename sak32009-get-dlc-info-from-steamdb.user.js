@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB
 // @author           Sak32009
 // @contributor      cs.rin.ru
-// @version          3.6.2f
+// @version          3.6.2a
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -195,7 +195,7 @@ const GetDLCInfofromSteamDB = {
             }
 
             const appID = $this.data("appid");
-            const appIDName = $this.find(`td:nth-of-type(${this.info.isSearchPage}` ? 3 : `${2})`).text().trim();
+            const appIDName = $this.find("td:nth-of-type(" + (this.info.isSearchPage ? 3 : 2) + ")").text().trim();
             const appIDDateIndex = this.info.isSearchPage ? 4 : 3;
             const appIDTime = $this.find(`td:nth-of-type(${appIDDateIndex})`).data("sort");
             const appIDDate = $this.find(`td:nth-of-type(${appIDDateIndex})`).attr("title");
