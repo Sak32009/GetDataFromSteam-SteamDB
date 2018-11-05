@@ -763,9 +763,9 @@ EXIT`;
     getData() {
 
         // SET APPID
-        this.steamDB.appID = $(".scope-app[data-appid]").data("appid");
+        this.steamDB.appID = this.info.isSearchPage ? $(".tab-pane.selected input#inputAppID").val() : $(".scope-app[data-appid]").data("appid");
         // SET APPID NAME
-        this.steamDB.appIDName = this.info.isSearchPage ? $("input#inputQuery").val().trim() : $("td[itemprop='name']").text().trim();
+        this.steamDB.appIDName = this.info.isSearchPage ? ($(".tab-pane.selected input#inputQuery").val() || "").trim() : $("td[itemprop='name']").text().trim();
 
         // SET APPID DLCs
         if (!this.info.isSearchPage) {
@@ -979,12 +979,13 @@ EXIT`;
 
                             const btnNext = $("#table-sortable_next");
 
+                            GetDLCInfofromSteamDB.getDataDLCS();
                             if (btnNext.hasClass("disabled")) {
                                 $("#GetDLCInfofromSteamDB_alertSearchPage").hide();
                                 window.clearInterval(interval);
+                                eventModalDom.open();
                             } else {
                                 btnNext.click();
-                                GetDLCInfofromSteamDB.getDataDLCS();
                             }
 
                         }, 500);
