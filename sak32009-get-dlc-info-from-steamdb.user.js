@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB
 // @author           Sak32009
 // @contributor      cs.rin.ru
-// @version          3.6.2a
+// @version          3.6.3
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -1113,6 +1113,28 @@ EXIT`;
                 // GENERATE
                 Download.as(`${app.steamDB.appIDName}_AppList.bat`, batch);
 
+            },
+            options: {}
+        },
+
+        // GREENLUMA .ACF GENERATOR
+        greenluma_acf_mode: {
+            name: "GreenLuma [.ACF GENERATOR]",
+            callback({info}, app) {
+                return {
+                    name: app.steamDB.appID + ".acf",
+                    data: `"InstalledDepots"
+{
+
+    ..... other data
+
+[dlcs]    "{dlc_id}"
+    {
+        "dlcappid" "{dlc_id}"
+    }\n[/dlcs]
+
+}`
+                };
             },
             options: {}
         },
