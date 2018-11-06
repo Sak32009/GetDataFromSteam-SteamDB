@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB
 // @author           Sak32009
 // @contributor      cs.rin.ru
-// @version          3.6.3
+// @version          3.6.4
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -16,8 +16,10 @@
 // @match            *://steamdb.info/search/*
 // @require          https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js
 // @require          https://raw.githubusercontent.com/zewish/rmodal.js/master/dist/rmodal.min.js
+// @require          https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js
 // @require          https://steamdb.info/static/js/tabbable.4f8f7fce.js
-// @grant            none
+// @grant            GM.xmlHttpRequest
+// @grant            GM_xmlhttpRequest
 // @run-at           document-end
 // ==/UserScript==
 
@@ -28,6 +30,10 @@ if (GM_info.scriptHandler !== "Tampermonkey") {
     GM_info.script.supportURL = "http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837";
     GM_info.script.icon = "https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-32.png";
     GM_info.script.icon64 = "https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-64.png";
+}
+
+if (typeof GM_xmlhttpRequest === "function") {
+	GM.xmlHttpRequest = GM_xmlhttpRequest;
 }
 
 // DOWNLOAD
@@ -42,7 +48,7 @@ const Download = {
     encode(str) {
 
         const blob = new Blob([str], {
-            type: "application/octet-stream"
+            type: "application/octet-stream;charset=utf-8"
         });
 
         return window.URL.createObjectURL(blob);
@@ -51,7 +57,9 @@ const Download = {
 
     // AS
     as(fileName, fileContent) {
-        return window.open(this.encode(fileContent), fileName);
+        saveAs(new Blob([fileContent], {
+            type: "application/octet-stream;charset=utf-8"
+        }), fileName);
     }
 
 };
@@ -111,6 +119,8 @@ const GetDLCInfofromSteamDB = {
         support: GM_info.script.supportURL,
         // STEAMDB URL
         steamDB: "https://steamdb.info/app/",
+        // STEAMDB DEPOT
+        steamDBdepot: "https://steamdb.info/depot/",
         // IS SEARCH PAGE?
         isSearchPage: $("#table-sortable .app[data-appid]").length > 1
     },
@@ -186,6 +196,8 @@ const GetDLCInfofromSteamDB = {
     // GET DATA DLCS
     getDataDLCS() {
 
+        const objthis = this;
+
         $(".tab-pane#dlc .app[data-appid], #table-sortable .app[data-appid]").each((_index, dom) => {
 
             const $this = $(dom);
@@ -195,18 +207,32 @@ const GetDLCInfofromSteamDB = {
             }
 
             const appID = $this.data("appid");
-            const appIDName = $this.find("td:nth-of-type(" + (this.info.isSearchPage ? 3 : 2) + ")").text().trim();
+            const appIDName = $this.find(`td:nth-of-type(${this.info.isSearchPage ? 3 : 2})`).text().trim();
             const appIDDateIndex = this.info.isSearchPage ? 4 : 3;
             const appIDTime = $this.find(`td:nth-of-type(${appIDDateIndex})`).data("sort");
             const appIDDate = $this.find(`td:nth-of-type(${appIDDateIndex})`).attr("title");
 
-            this.steamDB.appIDDLCs[appID] = {
-                name: appIDName,
-                timestamp: appIDTime,
-                date: appIDDate
-            };
+			GM.xmlHttpRequest({
+				method: "GET",
+				url: this.info.steamDBdepot + appID,
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded"
+				},
+				onload(data) {
+					
+					const $manifest = $($.parseHTML(data.responseText)).find("td:contains('Manifest ID')").closest("tr").find("td:nth-child(2)");
 
-            this.steamDB.appIDDLCsCount += 1;
+					objthis.steamDB.appIDDLCs[appID] = {
+						name: appIDName,
+						timestamp: appIDTime,
+						date: appIDDate,
+						manifestID: $manifest.length > 0 ? $manifest.text().trim() : 0
+					};
+
+					objthis.steamDB.appIDDLCsCount += 1;
+				
+				}
+			});
 
         });
 
@@ -561,6 +587,7 @@ const GetDLCInfofromSteamDB = {
             const name = values.name;
             const date = values.date;
             const timestamp = values.timestamp;
+            const manifestID = values.manifestID;
 
             // ..... IGNORE DLCs 'SteamDB Unknown App'
             if (!(Storage.isChecked("globalIgnoreSteamDBUnknownApp") && name.includes("SteamDB Unknown App"))) {
@@ -572,7 +599,8 @@ const GetDLCInfofromSteamDB = {
                     "dlc_name": name,
                     "dlc_index": this.dlcIDPrefix(index.toString(), parseInt(indexPrefix)),
                     "dlc_timestamp": timestamp,
-                    "dlc_date": date
+                    "dlc_date": date,
+                    "dlc_manifest_id": manifestID
                 });
 
             }
@@ -888,7 +916,7 @@ achievementscount = 0
             },
             options: {}
         },
-
+    
         // CREAMAPI v3.0.0.3 Hotfix
         creamAPI_3_0_0_3_h: {
             name: "CREAMAPI v3.0.0.3 Hotfix",
@@ -1088,7 +1116,8 @@ ECHO ${app.steamDB.appID}> .\\AppList\\0.txt
 ${app.dlcList(`:: {dlc_name}
 ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}
 :: OPTION START GREENLUMA AND GAME
-IF EXIST .\GreenLuma_Reborn.exe GOTO :Q ELSE GOTO :EXIT
+IF EXIST .\\GreenLuma_Reborn.exe GOTO :Q
+GOTO :EXIT
 
 :Q
 SET /P c=Do you want to start GreenLuma Reborn and the game now [Y/N]?
@@ -1099,13 +1128,11 @@ GOTO :Q
 :START
 CLS
 ECHO Launching Greenluma Reborn...
-TASKKILL /F /IM steam.exe >nul 2>&1
-ECHO Click 'Yes' when asked to use saved App List
-GreenLuma_Reborn.exe -NoHook
-
 ECHO Launching ${app.steamDB.appIDName}...
+ECHO Click 'Yes' when asked to use saved App List
+TASKKILL /F /IM steam.exe >nul 2>&1
 TIMEOUT /T 2 >nul 2>&1
-START steam://rungameid/${app.steamDB.appID}
+GreenLuma_Reborn.exe -applaunch ${app.steamDB.appID} -NoHook -AutoExit
 
 :EXIT
 EXIT`;
@@ -1121,20 +1148,22 @@ EXIT`;
         greenluma_acf_mode: {
             name: "GreenLuma [.ACF GENERATOR]",
             callback({info}, app) {
-                return {
-                    name: app.steamDB.appID + ".acf",
-                    data: `"InstalledDepots"
+
+                // ACF
+                const acf = `"InstalledDepots"
 {
 
     ..... other data
 
-[dlcs]    "{dlc_id}"
+${app.dlcList(`    "{dlc_id}"
     {
+        "manifest" "{dlc_manifest_id}"
         "dlcappid" "{dlc_id}"
-    }\n[/dlcs]
+    }\n\n`)}}`;
 
-}`
-                };
+                // GENERATE
+                Download.as(`${app.steamDB.appID}_by_${app.info.author}_.acf`, acf);
+
             },
             options: {}
         },
