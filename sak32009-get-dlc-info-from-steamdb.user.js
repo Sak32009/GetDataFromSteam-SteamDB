@@ -33,7 +33,7 @@ if (GM_info.scriptHandler !== "Tampermonkey") {
 }
 
 if (typeof GM_xmlhttpRequest === "function") {
-	GM.xmlHttpRequest = GM_xmlhttpRequest;
+    GM.xmlHttpRequest = GM_xmlhttpRequest;
 }
 
 // DOWNLOAD
@@ -212,27 +212,27 @@ const GetDLCInfofromSteamDB = {
             const appIDTime = $this.find(`td:nth-of-type(${appIDDateIndex})`).data("sort");
             const appIDDate = $this.find(`td:nth-of-type(${appIDDateIndex})`).attr("title");
 
-			GM.xmlHttpRequest({
-				method: "GET",
-				url: this.info.steamDBdepot + appID,
-				headers: {
-					"Content-Type": "application/x-www-form-urlencoded"
-				},
-				onload(data) {
-					
-					const $manifest = $($.parseHTML(data.responseText)).find("td:contains('Manifest ID')").closest("tr").find("td:nth-child(2)");
+            GM.xmlHttpRequest({
+                method: "GET",
+                url: this.info.steamDBdepot + appID,
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                onload(data) {
+                    
+                    const $manifest = $($.parseHTML(data.responseText)).find("td:contains('Manifest ID')").closest("tr").find("td:nth-child(2)");
 
-					objthis.steamDB.appIDDLCs[appID] = {
-						name: appIDName,
-						timestamp: appIDTime,
-						date: appIDDate,
-						manifestID: $manifest.length > 0 ? $manifest.text().trim() : 0
-					};
+                    objthis.steamDB.appIDDLCs[appID] = {
+                        name: appIDName,
+                        timestamp: appIDTime,
+                        date: appIDDate,
+                        manifestID: $manifest.length > 0 ? $manifest.text().trim() : 0
+                    };
 
-					objthis.steamDB.appIDDLCsCount += 1;
-				
-				}
-			});
+                    objthis.steamDB.appIDDLCsCount += 1;
+                
+                }
+            });
 
         });
 
