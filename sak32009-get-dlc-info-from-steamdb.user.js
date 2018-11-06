@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB
 // @author           Sak32009
 // @contributor      cs.rin.ru
-// @version          3.6.4
+// @version          3.6.5
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -47,7 +47,7 @@ const Download = {
     // ENCODE
     encode(str) {
 
-        const blob = new Blob([str], {
+        const blob = new Blob([this.winLineBreak(str)], {
             type: "application/octet-stream;charset=utf-8"
         });
 
@@ -57,7 +57,7 @@ const Download = {
 
     // AS
     as(fileName, fileContent) {
-        saveAs(new Blob([fileContent], {
+        saveAs(new Blob([this.winLineBreak(fileContent)], {
             type: "application/octet-stream;charset=utf-8"
         }), fileName);
     }
