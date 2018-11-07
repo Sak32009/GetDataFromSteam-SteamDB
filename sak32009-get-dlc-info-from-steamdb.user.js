@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB
 // @author           Sak32009
 // @contributor      cs.rin.ru
-// @version          3.6.5
+// @version          3.6.6
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -46,13 +46,9 @@ const Download = {
 
     // ENCODE
     encode(str) {
-
-        const blob = new Blob([this.winLineBreak(str)], {
+        return window.URL.createObjectURL(new Blob([this.winLineBreak(str)], {
             type: "application/octet-stream;charset=utf-8"
-        });
-
-        return window.URL.createObjectURL(blob);
-
+        }));
     },
 
     // AS
@@ -160,7 +156,6 @@ const GetDLCInfofromSteamDB = {
         const $check = $(".tab-pane#dlc .app[data-appid], #table-sortable .app[data-appid]").length > 0;
 
         if ($check) {
-
             // GET DATA
             this.getData();
             // CREATE INTERFACE
@@ -173,7 +168,6 @@ const GetDLCInfofromSteamDB = {
             this.loadOptions();
             // LOAD EVENTS
             this.loadEvents();
-
         }
 
     },
@@ -182,9 +176,9 @@ const GetDLCInfofromSteamDB = {
     getData() {
 
         // SET APPID
-        this.steamDB.appID = this.info.isSearchPage ? $(".tab-pane.selected input#inputAppID").val() : $(".scope-app[data-appid]").data("appid");
+        this.steamDB.appID = (this.info.isSearchPage ? ($(".tab-pane.selected input#inputAppID").val() || "NOT_FOUND") : $(".scope-app[data-appid]").data("appid")).trim();
         // SET APPID NAME
-        this.steamDB.appIDName = (this.info.isSearchPage ? ($(".tab-pane.selected input#inputQuery").val() || "") : $("td[itemprop='name']").text()).trim();
+        this.steamDB.appIDName = (this.info.isSearchPage ? ($(".tab-pane.selected input#inputQuery").val() || "NOT FOUND") : $("td[itemprop='name']").text()).trim();
 
         // SET APPID DLCs
         if (!this.info.isSearchPage) {
@@ -219,7 +213,7 @@ const GetDLCInfofromSteamDB = {
                     "Content-Type": "application/x-www-form-urlencoded"
                 },
                 onload(data) {
-                    
+
                     const $manifest = $($.parseHTML(data.responseText)).find("td:contains('Manifest ID')").closest("tr").find("td:nth-child(2)");
 
                     objthis.steamDB.appIDDLCs[appID] = {
@@ -230,7 +224,7 @@ const GetDLCInfofromSteamDB = {
                     };
 
                     objthis.steamDB.appIDDLCsCount += 1;
-                
+
                 }
             });
 
@@ -242,8 +236,8 @@ const GetDLCInfofromSteamDB = {
     createInterface() {
 
         // ADD OPEN MODAL BUTTON
-        $(`<div id="GetDLCInfofromSteamDB_openModal" style="position: fixed;bottom: 0;right: 0;margin: 20px;margin-bottom: 0;">
-    <a style="border-radius: 10px 10px 0 0;display: block;padding: 10px;font-size: 14px;text-align: center;" class="btn btn-primary" href="#">${GM_info.script.name} <b>v${this.info.version}</b> <small>by ${this.info.author}</small></a>
+        $(`<div id="GetDLCInfofromSteamDB_openModal" style="position:fixed;bottom:0;right:0;margin:20px;margin-bottom:0">
+    <a style="border-radius:10px 10px 0 0;display:block;padding:10px;font-size:14px;text-align:center" class="btn btn-primary" href="#">${GM_info.script.name} <b>v${this.info.version}</b> <small>by ${this.info.author}</small></a>
 </div>`).appendTo("body");
 
         // ADD MODAL CONTAINER
@@ -429,39 +423,29 @@ const GetDLCInfofromSteamDB = {
         // EVENT MODAL
         const eventModalDom = new RModal(document.getElementById("GetDLCInfofromSteamDB_modal"));
 
+        // SHOW
         $(document).on("click", "#GetDLCInfofromSteamDB_openModal a.btn", (e) => {
 
             e.preventDefault();
 
-            // SHOW
-            if (this.info.isSearchPage) {
+            if (this.info.isSearchPage && $("#GetDLCInfofromSteamDB_alertSearchPage").length < 1) {
 
-                if (Object.keys(this.steamDB.appIDDLCs).length > 0) {
-                    eventModalDom.open();
-                } else {
-                    if ($("#GetDLCInfofromSteamDB_openModal div").length < 1) {
+                $(`<div style="padding:10px;font-size:14px;text-align:center;background:red;color:white;margin-bottom:10px;border:0;cursor:auto;display:block" id="GetDLCInfofromSteamDB_alertSearchPage" class="btn">Please wait! Extracting data from all pages!</div>`).prependTo("#GetDLCInfofromSteamDB_openModal");
 
-                        $(`<div style="padding:10px;font-size:14px;text-align:center;background:red;color:white;margin-bottom:10px;border:0;cursor:auto;display:block" id="GetDLCInfofromSteamDB_alertSearchPage" class="btn">Please wait! Extracting data from all pages!</div>`).prependTo("#GetDLCInfofromSteamDB_openModal");
+                const interval = window.setInterval(() => {
 
-                        const interval = window.setInterval(() => {
+                    GetDLCInfofromSteamDB.getDataDLCS();
 
-                            const btnNext = $("#table-sortable_next");
-
-                            GetDLCInfofromSteamDB.getDataDLCS();
-
-                            if (btnNext.hasClass("disabled")) {
-                                $("#GetDLCInfofromSteamDB_alertSearchPage").hide();
-                                window.clearInterval(interval);
-                                eventModalDom.open();
-                            } else {
-                                btnNext.click();
-                                GetDLCInfofromSteamDB.getDataDLCS();
-                            }
-
-                        }, 500);
-
+                    const btnNext = $("#table-sortable_next");
+                    if (btnNext.hasClass("disabled")) {
+                        $("#GetDLCInfofromSteamDB_alertSearchPage").hide();
+                        window.clearInterval(interval);
+                        eventModalDom.open();
+                    } else {
+                        btnNext.click();
                     }
-                }
+
+                }, 500);
 
             } else {
                 eventModalDom.open();
@@ -469,8 +453,8 @@ const GetDLCInfofromSteamDB = {
 
         });
 
+        // HIDE
         $(document).on("keydown", (e) => {
-            // HIDE
             eventModalDom.keydown(e);
         });
 
