@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB
 // @author           Sak32009
 // @contributor      cs.rin.ru
-// @version          3.6.6
+// @version          3.6.7
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -176,7 +176,7 @@ const GetDLCInfofromSteamDB = {
     getData() {
 
         // SET APPID
-        this.steamDB.appID = (this.info.isSearchPage ? ($(".tab-pane.selected input#inputAppID").val() || "NOT_FOUND") : $(".scope-app[data-appid]").data("appid")).trim();
+        this.steamDB.appID = (this.info.isSearchPage ? ($(".tab-pane.selected input#inputAppID").val() || "NOT_FOUND") : $(".scope-app[data-appid]").data("appid")).toString().trim();
         // SET APPID NAME
         this.steamDB.appIDName = (this.info.isSearchPage ? ($(".tab-pane.selected input#inputQuery").val() || "NOT FOUND") : $("td[itemprop='name']").text()).trim();
 
