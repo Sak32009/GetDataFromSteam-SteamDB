@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB
 // @author           Sak32009
 // @contributor      cs.rin.ru
-// @version          3.6.7
+// @version          3.6.8
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -32,8 +32,8 @@ if (GM_info.scriptHandler !== "Tampermonkey") {
     GM_info.script.icon64 = "https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-64.png";
 }
 
-if (typeof GM_xmlhttpRequest === "function") {
-    GM.xmlHttpRequest = GM_xmlhttpRequest;
+if (typeof GM_xmlhttpRequest !== "function") {
+    GM_xmlhttpRequest = GM.xmlHttpRequest;
 }
 
 // DOWNLOAD
@@ -206,7 +206,7 @@ const GetDLCInfofromSteamDB = {
             const appIDTime = $this.find(`td:nth-of-type(${appIDDateIndex})`).data("sort");
             const appIDDate = $this.find(`td:nth-of-type(${appIDDateIndex})`).attr("title");
 
-            GM.xmlHttpRequest({
+            GM_xmlhttpRequest({
                 method: "GET",
                 url: this.info.steamDBdepot + appID,
                 headers: {
