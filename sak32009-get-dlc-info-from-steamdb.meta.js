@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB
 // @author           Sak32009
 // @contributor      cs.rin.ru
-// @version          3.6.7
+// @version          3.6.8
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
