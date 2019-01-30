@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB
 // @author           Sak32009
 // @contributor      cs.rin.ru
-// @version          3.6.8
+// @version          3.6.9
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -118,7 +118,7 @@ const GetDLCInfofromSteamDB = {
         // STEAMDB DEPOT
         steamDBdepot: "https://steamdb.info/depot/",
         // IS SEARCH PAGE?
-        isSearchPage: $("#table-sortable .app[data-appid]").length > 1
+        isSearchPage: $("#table-sortable .app[data-appid]").length
     },
 
     // STEAMDB
@@ -137,15 +137,30 @@ const GetDLCInfofromSteamDB = {
     options: {
         globalSaveLastSelectionAndAutoSubmit: {
             title: "Save the last selected format and submit form when you open the page",
-            type: "checkbox"
+            type: "select",
+            options: {
+                "true": "Yes",
+                "false": "No"
+            },
+            default: "false"
         },
         globalAutoDownload: {
             title: "Automatically download file .INI",
-            type: "checkbox"
+            type: "select",
+            options: {
+                "true": "Yes",
+                "false": "No"
+            },
+            default: "false"
         },
         globalIgnoreSteamDBUnknownApp: {
             title: "Ignore DLCs 'SteamDB Unknown App'",
-            type: "checkbox"
+            type: "select",
+            options: {
+                "true": "Yes",
+                "false": "No"
+            },
+            default: "false"
         }
     },
 
@@ -153,9 +168,9 @@ const GetDLCInfofromSteamDB = {
     run() {
 
         // CHECK IF THE APPID HAS DLCs
-        const $check = $(".tab-pane#dlc .app[data-appid], #table-sortable .app[data-appid]").length > 0;
+        const checkHasDLCs = $(".tab-pane#dlc .app[data-appid], #table-sortable .app[data-appid]").length;
 
-        if ($check) {
+        if (checkHasDLCs) {
             // GET DATA
             this.getData();
             // CREATE INTERFACE
@@ -190,40 +205,40 @@ const GetDLCInfofromSteamDB = {
     // GET DATA DLCS
     getDataDLCS() {
 
-        const objthis = this;
+        $(".tab-pane#dlc .app[data-appid], #table-sortable .app[data-appid]").each((_index, _values) => {
 
-        $(".tab-pane#dlc .app[data-appid], #table-sortable .app[data-appid]").each((_index, dom) => {
+            const $this = $(_values);
 
-            const $this = $(dom);
-
+            // WORKAROUND
             if (this.info.isSearchPage && $this.find("td:nth-of-type(2)").text().trim() !== "DLC") {
                 return;
             }
 
             const appID = $this.data("appid");
-            const appIDName = $this.find(`td:nth-of-type(${this.info.isSearchPage ? 3 : 2})`).text().trim();
-            const appIDDateIndex = this.info.isSearchPage ? 4 : 3;
-            const appIDTime = $this.find(`td:nth-of-type(${appIDDateIndex})`).data("sort");
-            const appIDDate = $this.find(`td:nth-of-type(${appIDDateIndex})`).attr("title");
+            const searchPageIndex = this.info.isSearchPage ? [3, 4] : [2, 3];
+            const appIDName = $this.find(`td:nth-of-type(${searchPageIndex[0]})`).text().trim();
+            const appIDTime = $this.find(`td:nth-of-type(${searchPageIndex[1]})`).data("sort");
+            const appIDDate = $this.find(`td:nth-of-type(${searchPageIndex[1]})`).attr("title");
 
+            // GET DEPOT DATA
             GM_xmlhttpRequest({
                 method: "GET",
                 url: this.info.steamDBdepot + appID,
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 },
-                onload(data) {
+                onload({responseText}) {
 
-                    const $manifest = $($.parseHTML(data.responseText)).find("td:contains('Manifest ID')").closest("tr").find("td:nth-child(2)");
+                    const $manifest = $($.parseHTML(responseText)).find("td:contains('Manifest ID')").closest("tr").find("td:nth-child(2)");
 
-                    objthis.steamDB.appIDDLCs[appID] = {
+                    GetDLCInfofromSteamDB.steamDB.appIDDLCs[appID] = {
                         name: appIDName,
                         timestamp: appIDTime,
                         date: appIDDate,
-                        manifestID: $manifest.length > 0 ? $manifest.text().trim() : 0
+                        manifestID: $manifest.length ? $manifest.text().trim() : 0
                     };
 
-                    objthis.steamDB.appIDDLCsCount += 1;
+                    GetDLCInfofromSteamDB.steamDB.appIDDLCsCount += 1;
 
                 }
             });
@@ -236,16 +251,16 @@ const GetDLCInfofromSteamDB = {
     createInterface() {
 
         // ADD OPEN MODAL BUTTON
-        $(`<div id="GetDLCInfofromSteamDB_openModal" style="position:fixed;bottom:0;right:0;margin:20px;margin-bottom:0">
-    <a style="border-radius:10px 10px 0 0;display:block;padding:10px;font-size:14px;text-align:center" class="btn btn-primary" href="#">${GM_info.script.name} <b>v${this.info.version}</b> <small>by ${this.info.author}</small></a>
+        $(`<div id="GetDLCInfofromSteamDB_openModal" style="position:fixed;bottom:0;right:0;margin-right:20px">
+    <button type="button" class="btn btn-primary btn-block">${GM_info.script.name} <b>v${this.info.version}</b> <small>by ${this.info.author}</small></button>
 </div>`).appendTo("body");
 
         // ADD MODAL CONTAINER
-        $(`<div id="GetDLCInfofromSteamDB_modal" class="modal" style="display:none;background-color:rgba(0,0,0,.60);z-index:999999;position:fixed;top:0;left:0;right:0;bottom:0;overflow-x:hidden;overflow-y:auto">
+        $(`<div id="GetDLCInfofromSteamDB_modal" class="modal" style="display:none;background-color:rgba(0,0,0,.60);z-index:999999;position:fixed;top:0;left:0;right:0;bottom:0;overflow:auto">
     <div class="modal-dialog" style="max-width:900px;margin:auto;margin-top:30px;margin-bottom:30px;border-radius:4px;box-shadow:0 3px 9px rgba(0,0,0,.5);background-color:#fff">
-        <div class="modal-header" style="text-align:center;padding:15px;padding-bottom:0">
-            <img src='${GM_info.script.icon64}' alt='${GM_info.script.name}'>
-            <h3 style="color:#006400">${GM_info.script.name} <b>v${this.info.version}</b> <small>by ${this.info.author}</small></h3>
+        <div class="modal-header" style="text-align:center;padding:15px">
+            <img src='${GM_info.script.icon64}' alt='${GM_info.script.name}' title='${GM_info.script.name}'>
+            <h4 style="color:#006400">${GM_info.script.name} <b>v${this.info.version}</b> <small>by ${this.info.author}</small></h4>
         </div>
         <hr>
         <div class="modal-container">
@@ -254,21 +269,26 @@ const GetDLCInfofromSteamDB = {
                     <a href="#" data-target="#GetDLCInfofromSteamDB_getDlcsList" class="tabnav-tab selected GetDLCInfofromSteamDB_tabNav">Get DLCs List</a>
                 </nav>
             </div>
-            <div class="tab-content" style="padding:15px;padding-top:0">
+            <div class="tab-content" style="padding:0 15px">
                 <div id="GetDLCInfofromSteamDB_getDlcsList" class="tab-pane selected">
-                    <div>
-                        <select id='GetDLCInfofromSteamDB_selectInput'></select>
-                        <button type='button' id="GetDLCInfofromSteamDB_submitInput" class='btn btn-primary'><i class='octicon octicon-clippy'></i> Get DLCs List</button>
-                        <div style='float:right'>
-                            <a href='javascript:;' class='btn' id='GetDLCInfofromSteamDB_downloadFile'><i class='octicon octicon-file-symlink-file'></i> Download File</a>
-                            <button type='button' class='btn btn-danger' id='GetDLCInfofromSteamDB_resetOptions'><i class='octicon octicon-trashcan'></i> Reset Options</button>
-                        </div>
-                    </div>
-                    <hr>
-                    <textarea id='GetDLCInfofromSteamDB_textareaOutput' rows='20' style='margin-top:10px;width:100%'></textarea>
+                    <table class="table table-fixed">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <select id='GetDLCInfofromSteamDB_selectInput'></select>
+                                    <button type='button' id="GetDLCInfofromSteamDB_submitInput" class='btn btn-primary'><i class='octicon octicon-clippy'></i> Get DLCs List</button>
+                                </td>
+                                <td style="text-align:right">
+                                    <a href='javascript:;' class='btn' id='GetDLCInfofromSteamDB_downloadFile'><i class='octicon octicon-file-symlink-file'></i> Download File</a>
+                                    <button type='button' class='btn btn-danger' id='GetDLCInfofromSteamDB_resetOptions'><i class='octicon octicon-trashcan'></i> Reset Options</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <textarea id='GetDLCInfofromSteamDB_textareaOutput' rows='20' style='width:100%'></textarea>
                 </div>
             </div>
-            <div style="text-align:center;padding:15px;padding-top:0"><small>To close press ESC!</small></div>
+            <div style="text-align:center;padding:15px"><small>To close press ESC!</small></div>
         </div>
     </div>
 </div>`).appendTo("body");
@@ -279,16 +299,16 @@ const GetDLCInfofromSteamDB = {
     fillSelectFormats() {
 
         // EACH
-        $.each(this.formats, (index, values) => {
+        $.each(this.formats, (_index, _values) => {
 
-            const name = values.name;
-            const options = values.options;
+            const name = _values.name;
+            const options = _values.options;
 
             // ADD OPTION
-            const tag = $("<option>").attr("value", index).text(name);
+            const tag = $("<option>").attr("value", _index).text(name);
 
             // ..... SAVE LAST SELECTION
-            if (Storage.isChecked("globalSaveLastSelectionAndAutoSubmit") && Storage.get("globalSaveLastSelectionValue") === index) {
+            if (Storage.isChecked("globalSaveLastSelectionAndAutoSubmit") && Storage.get("globalSaveLastSelectionValue") === _index) {
                 tag.prop("selected", true);
             }
             // .....
@@ -296,7 +316,7 @@ const GetDLCInfofromSteamDB = {
             tag.appendTo("#GetDLCInfofromSteamDB_selectInput");
 
             // CREATE TAB
-            this.createTab(index, name, options);
+            this.createTab(_index, name, options);
 
         });
 
@@ -310,8 +330,6 @@ const GetDLCInfofromSteamDB = {
 
             e.preventDefault();
 
-            // RESULT
-            let result = "";
             // SELECTED FORMAT
             const selectedFormat = $("#GetDLCInfofromSteamDB_selectInput option:selected").val();
             // GET FORMAT DATA
@@ -319,7 +337,7 @@ const GetDLCInfofromSteamDB = {
             const formatName = formatData.name;
 
             // WRITE INFO
-            result += `; ${this.info.name} by ${this.info.author} v${this.info.version}
+            let result = `; ${this.info.name} by ${this.info.author} v${this.info.version}
 ; Format: ${formatName}
 ; AppID: ${this.steamDB.appID}
 ; AppID Name: ${this.steamDB.appIDName}
@@ -375,17 +393,9 @@ const GetDLCInfofromSteamDB = {
 
             e.preventDefault();
 
-            // EACH
-            $(e.currentTarget).find("input, select").each((_index, dom) => {
-
-                const $this = $(dom);
-                const name = $this.attr("name");
-                const type = $this.attr("type");
-                const value = type === "checkbox" ? $this.prop("checked") : $this.val();
-
-                // SET
+            // STORAGE SET
+            $.each($(e.currentTarget).serializeArray(), (_index, {name, value}) => {
                 Storage.set(name, value);
-
             });
 
             // ALERT
@@ -420,17 +430,17 @@ const GetDLCInfofromSteamDB = {
 
         });
 
-        // EVENT MODAL
+        // ..... MODAL
         const eventModalDom = new RModal(document.getElementById("GetDLCInfofromSteamDB_modal"));
 
         // SHOW
-        $(document).on("click", "#GetDLCInfofromSteamDB_openModal a.btn", (e) => {
+        $(document).on("click", "#GetDLCInfofromSteamDB_openModal button.btn-primary", (e) => {
 
             e.preventDefault();
 
             if (this.info.isSearchPage && $("#GetDLCInfofromSteamDB_alertSearchPage").length < 1) {
 
-                $(`<div style="padding:10px;font-size:14px;text-align:center;background:red;color:white;margin-bottom:10px;border:0;cursor:auto;display:block" id="GetDLCInfofromSteamDB_alertSearchPage" class="btn">Please wait! Extracting data from all pages!</div>`).prependTo("#GetDLCInfofromSteamDB_openModal");
+                $(`<div style="margin-bottom:10px" id="GetDLCInfofromSteamDB_alertSearchPage" class="btn btn-danger btn-block">Please wait! Extracting data from all pages!</div>`).prependTo("#GetDLCInfofromSteamDB_openModal");
 
                 const interval = window.setInterval(() => {
 
@@ -457,6 +467,7 @@ const GetDLCInfofromSteamDB = {
         $(document).on("keydown", (e) => {
             eventModalDom.keydown(e);
         });
+        // .....
 
     },
 
@@ -471,11 +482,10 @@ const GetDLCInfofromSteamDB = {
             const tagName = $this.prop("tagName");
             const item = Storage.get(name);
 
-            if (tagName === "SELECT") {
-                const selected = Storage.isValid(item) ? `value = '${item}'` : "selected";
-                $this.find(`option[${selected}]`).prop("selected", true);
-            } else if (type === "checkbox") {
-                $this.prop("checked", item === "true");
+            if (tagName === "SELECT" && Storage.isValid(item)) {
+                $this.find(`option[value = '${item}']`).prop("selected", true);
+            } else if (type === "checkbox" && item === "true") {
+                $this.prop("checked", true);
             } else {
                 $this.val(item);
             }
@@ -495,11 +505,11 @@ const GetDLCInfofromSteamDB = {
 
             // ADD TAB-PANE
             $(`<div id='GetDLCInfofromSteamDB_${key}' class='tab-pane'>
-    <form id='GetDLCInfofromSteamDB_submitOptions'>
-        <table class='table table-bordered table-fixed' style='margin-bottom:0'>
+    <form id='GetDLCInfofromSteamDB_submitOptions' method='get'>
+        <table class='table table-bordered table-fixed'>
             <tbody>${this.optionsToInput(options)}</tbody>
         </table>
-        <button type='submit' class='btn btn-primary btn-lg btn-block' style='margin:5px 0'>Save Options</button>
+        <button type='submit' class='btn btn-primary btn-block'>Save Options</button>
     </form>
 </div>`).appendTo("#GetDLCInfofromSteamDB_modal .tab-content");
 
@@ -514,33 +524,33 @@ const GetDLCInfofromSteamDB = {
         let result = "";
 
         // EACH
-        $.each(options, (index, values) => {
+        $.each(options, (_index, _values) => {
 
             // COMMON
-            const title = values.title;
-            const type = values.type;
+            const title = _values.title;
+            const type = _values.type;
             // INPUT PLACEHOLDER
-            const placeholder = values.placeholder || "";
+            const placeholder = _values.placeholder || "";
             // SELECT
-            const selectOptions = values.options || {};
-            const selectDefault = values.default || "";
+            const selectOptions = _values.options || {};
+            const selectDefault = _values.default || "";
 
             result += `<tr><td>${title}</td><td>`;
 
             switch (type) {
                 case "text":
                     {
-                        result += `<input type='text' class='input-block' name='${index}' placeholder='${placeholder}'>`;
+                        result += `<input type='text' class='input-block' name='${_index}' placeholder='${placeholder}'>`;
                         break;
                     }
                 case "checkbox":
                     {
-                        result += `<input type='checkbox' name='${index}'>`;
+                        result += `<input type='checkbox' name='${_index}'>`;
                         break;
                     }
                 case "select":
                     {
-                        result += `<select class='input-block' name='${index}'>`;
+                        result += `<select class='input-block' name='${_index}'>`;
                         $.each(selectOptions, (key, value) => {
                             result += `<option value='${key}' ${selectDefault === key ? "selected" : ""}>${value}</option>`;
                         });
@@ -566,12 +576,12 @@ const GetDLCInfofromSteamDB = {
         let index = indexFromZero ? 0 : -1;
 
         // EACH
-        $.each(this.steamDB.appIDDLCs, (key, values) => {
+        $.each(this.steamDB.appIDDLCs, (_index, _values) => {
 
-            const name = values.name;
-            const date = values.date;
-            const timestamp = values.timestamp;
-            const manifestID = values.manifestID;
+            const name = _values.name;
+            const date = _values.date;
+            const timestamp = _values.timestamp;
+            const manifestID = _values.manifestID;
 
             // ..... IGNORE DLCs 'SteamDB Unknown App'
             if (!(Storage.isChecked("globalIgnoreSteamDBUnknownApp") && name.includes("SteamDB Unknown App"))) {
@@ -579,7 +589,7 @@ const GetDLCInfofromSteamDB = {
                 index += 1;
 
                 result += this.dlcInfoReplace(str, {
-                    "dlc_id": key,
+                    "dlc_id": _index,
                     "dlc_name": name,
                     "dlc_index": this.dlcIDPrefix(index.toString(), parseInt(indexPrefix)),
                     "dlc_timestamp": timestamp,
@@ -598,8 +608,8 @@ const GetDLCInfofromSteamDB = {
 
     // DLC INFO REPLACE
     dlcInfoReplace(str, values) {
-        $.each(values, (key, value) => {
-            str = str.replace(new RegExp(`{${key}}`, "g"), value);
+        $.each(values, (_index, _value) => {
+            str = str.replace(new RegExp(`{${_index}}`, "g"), _value);
         });
         return str;
     },
@@ -613,13 +623,13 @@ const GetDLCInfofromSteamDB = {
     // BBCODE
     bbcode(str) {
 
-        let reExec;
+        let data;
         const re = /\[(\w+)(?:=(.*))?]([^[]+)\[\/(\w+)]/g;
 
-        while ((reExec = re.exec(str)) !== null) {
+        while ((data = re.exec(str)) !== null) {
 
             // GET DATA
-            const [bbcode, bbcodeOpen, bbcodeOpt, bbcodeVal, bbcodeClose] = reExec;
+            const [bbcode, bbcodeOpen, bbcodeOpt, bbcodeVal, bbcodeClose] = data;
 
             // CHECK
             if (bbcodeOpen === bbcodeClose) {
@@ -629,17 +639,12 @@ const GetDLCInfofromSteamDB = {
                 switch (bbcodeOpen) {
                     case "steamdb":
                         {
-                            if (bbcodeVal in this.steamDB) {
-                                str = str.replace(bbcode, this.steamDB[bbcodeVal]);
-                            }
+                            str = str.replace(bbcode, this.steamDB[bbcodeVal]);
                             break;
                         }
                     case "option":
                         {
-                            const item = Storage.get(bbcodeVal);
-                            if (Storage.isValid(item)) {
-                                str = str.replace(bbcode, item);
-                            }
+                            str = str.replace(bbcode, Storage.get(bbcodeVal));
                             break;
                         }
                     case "dlcs":
