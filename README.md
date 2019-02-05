@@ -2,6 +2,8 @@
 
 > It is a userscript able to extract all the information of the **DLCs Games** from **[SteamDB](https://steamdb.info "SteamDB")** and are exported in various formats.
 
+*[forum cs.rin.ru support](https://cs.rin.ru/forum/viewtopic.php?f=29&t=71837 "forum cs.rin.ru support")*
+
 ## Documentation
 
 ### Installation
@@ -33,3 +35,10 @@ Userscripts are set up to automatically update. You can check for updates from w
 
 ## Changelog
 
+*The changelog starts with version 3.6.9, the old changelog can be found [here](https://cs.rin.ru/forum/viewtopic.php?f=29&t=71837 "here").*
+
+#### TBA
+
+* fixed
+* added
+* removed
