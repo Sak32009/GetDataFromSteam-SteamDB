@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB Reworked
 // @author           Sak32009
 // @contributor      cs.rin.ru
-// @version          1.0.1
+// @version          1.0.2
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -169,6 +169,8 @@ const GetDLCInfofromSteamDB = {
             this.getDataDLCS();
             // CREATE INTERFACE
             this.createInterface();
+            // WAIT
+            this.waitProcessing();
             // FILL SELECT FORMATS
             this.fillSelectFormats();
             // CREATE GLOBAL OPTIONS TAB
@@ -179,6 +181,26 @@ const GetDLCInfofromSteamDB = {
             this.loadEvents();
         }
 
+    },
+
+    // WAIT
+    waitProcessing(){
+        const self = this;
+        const interval = window.setInterval(() => {
+            const $elm = $("#GetDLCInfofromSteamDB_openModalBlock");
+            const process = Object.keys(self.steamDB.appIDDLCs).length;
+            if(self.steamDB.appIDDLCsCount !== process){
+                const txt = `Wait! I get data from steam... ${process} / ${self.steamDB.appIDDLCsCount}`;
+                if(!$elm.length){
+                    $(`<button type='button' id='GetDLCInfofromSteamDB_openModalBlock' class='btn btn-danger btn-block' style='margin-bottom:5px'>${txt}</button>`).prependTo("#GetDLCInfofromSteamDB_openModal");
+                }else{
+                    $elm.text(txt);
+                }
+            }else{
+                $elm.remove();
+                window.clearInterval(interval);
+            }
+        }, 250);
     },
 
     // GET DATA DLCS
@@ -398,6 +420,11 @@ const GetDLCInfofromSteamDB = {
         // SHOW
         $(document).on("click", "#GetDLCInfofromSteamDB_openModal button.btn-primary", (e) => {
             e.preventDefault();
+            // PREVENT OPEN MODAL
+            if(this.steamDB.appIDDLCsCount !== Object.keys(this.steamDB.appIDDLCs).length){
+                return false;
+            }
+            // OPEN
             eventModalDom.open();
         });
 
