@@ -4,7 +4,7 @@
 // @description      Get DLC Info from SteamDB Reworked
 // @author           Sak32009
 // @contributor      cs.rin.ru
-// @version          1.0.0
+// @version          1.0.1
 // @license          MIT
 // @homepageURL      https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL       http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -15,10 +15,9 @@
 // @resource         icon32 https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-32.png
 // @resource         icon64 https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-64.png
 // @match            *://steamdb.info/app/*
-// @match            *://steamdb.info/search/*
 // @require          https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js
-// @require          https://raw.githubusercontent.com/zewish/rmodal.js/master/dist/rmodal.min.js
 // @require          https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js
+// @require          https://raw.githubusercontent.com/zewish/rmodal.js/master/dist/rmodal.min.js
 // @require          https://steamdb.info/static/js/tabbable.4f8f7fce.js
 // @grant            GM_xmlhttpRequest
 // @grant            GM_getResourceURL
@@ -163,7 +162,7 @@ const GetDLCInfofromSteamDB = {
     run() {
 
         // CHECK IF THE APPID HAS DLCs
-        const checkHasDLCs = $(".tab-pane#dlc .app[data-appid]").length;
+        const checkHasDLCs = $("#dlc").length;
 
         if (checkHasDLCs) {
             // GET DATA DLCS
@@ -185,28 +184,37 @@ const GetDLCInfofromSteamDB = {
     // GET DATA DLCS
     getDataDLCS() {
 
-        var self = this;
-
+        // SELF
+        const self = this;
         // SET APPID
         this.steamDB.appID = $(".scope-app[data-appid]").data("appid");
-        // SET APPID NAME
-        this.steamDB.appIDName = $("td[itemprop='name']").text();
 
         // REQUEST TO STEAMAPI
+        this.getDataHTTPReq(this.steamDB.appID, ({name, dlc}) => {
+            self.steamDB.appIDName = name;
+            $.each(dlc, (_index, dlcID) => {
+                self.getDataHTTPReq(dlcID, ({name}) => {
+                    self.steamDB.appIDDLCs[dlcID] = {
+                        name
+                    };
+                });
+            });
+            self.steamDB.appIDDLCsCount = dlc.length || 0;
+        });
+
+    },
+
+    // GET DATA HTTP REQUEST
+    getDataHTTPReq(dlcID, callback){
+
         GM_xmlhttpRequest({
             method: "GET",
-            url: this.info.steamAPI + this.steamDB.appID,
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
+            url: this.info.steamAPI + dlcID,
+            headers: {"Content-Type":"application/x-www-form-urlencoded"},
             onload({responseText}) {
-                var json = jQuery.parseJSON(responseText);
-                var first = json[self.steamDB.appID];
-                var success = first.success;
-                if(success === true){
-                    var data = first.data;
-                    self.steamDB.appIDDLCs = data.dlc || [];
-                    self.steamDB.appIDDLCsCount = data.dlc.length || 0;
+                const json = jQuery.parseJSON(responseText)[dlcID];
+                if(json.success === true){
+                    callback(json.data);
                 }
             }
         });
@@ -217,7 +225,7 @@ const GetDLCInfofromSteamDB = {
     createInterface() {
 
         // ADD OPEN MODAL BUTTON
-        $(`<div id="GetDLCInfofromSteamDB_openModal" style="position:fixed;bottom:0;right:0;margin-right:20px">
+        $(`<div id="GetDLCInfofromSteamDB_openModal" style="position:fixed;bottom:0;right:0;margin-right:20px;z-index:999">
     <button type="button" class="btn btn-primary btn-block">${GM_info.script.name} <b>v${this.info.version}</b> <small>by ${this.info.author}</small></button>
 </div>`).appendTo("body");
 
@@ -263,8 +271,6 @@ const GetDLCInfofromSteamDB = {
 
     // FILL SELECT FORMATS
     fillSelectFormats() {
-
-        // EACH
         $.each(this.formats, (_index, _values) => {
 
             const name = _values.name;
@@ -285,7 +291,6 @@ const GetDLCInfofromSteamDB = {
             this.createTab(_index, name, options);
 
         });
-
     },
 
     // LOAD EVENTS
@@ -406,7 +411,6 @@ const GetDLCInfofromSteamDB = {
 
     // LOAD OPTIONS
     loadOptions() {
-
         $("form#GetDLCInfofromSteamDB_submitOptions").find("input, select").each((_index, _value) => {
 
             const $this = $(_value);
@@ -415,8 +419,9 @@ const GetDLCInfofromSteamDB = {
             const tagName = $this.prop("tagName");
             const item = Storage.get(name);
 
-            if (tagName === "SELECT" && Storage.isValid(item)) {
-                $this.find(`option[value = '${item}']`).prop("selected", true);
+            if (tagName === "SELECT") {
+                const selected = Storage.isValid(item) ? `value = '${item}'` : "selected";
+                $this.find(`option[value = '${selected}']`).prop("selected", true);
             } else if (type === "checkbox" && item === "true") {
                 $this.prop("checked", true);
             } else {
@@ -424,7 +429,6 @@ const GetDLCInfofromSteamDB = {
             }
 
         });
-
     },
 
     // CREATE TAB
@@ -509,12 +513,13 @@ const GetDLCInfofromSteamDB = {
         let index = indexFromZero ? 0 : -1;
 
         // EACH
-        $.each(this.steamDB.appIDDLCs, (_index, _value) => {
+        $.each(this.steamDB.appIDDLCs, (_index, {name}) => {
 
             index += 1;
 
             result += this.dlcInfoReplace(str, {
-                "dlc_id": _value,
+                "dlc_id": _index,
+                "dlc_name": name,
                 "dlc_index": this.dlcIDPrefix(index.toString(), parseInt(indexPrefix))
             });
 
@@ -534,8 +539,7 @@ const GetDLCInfofromSteamDB = {
 
     // DLC ID PREFIX
     dlcIDPrefix(index, prefix) {
-        const len = index.length;
-        return prefix > len ? "0".repeat(prefix - len) + index : index;
+        return prefix > index.length ? "0".repeat(prefix - index.length) + index : index;
     },
 
     // BBCODE
@@ -688,7 +692,7 @@ achievementscount = 0
 ; e.g. : 247295 = Saints Row IV - GAT V Pack
 ; If the DLC is not specified in this section
 ; then it won't be unlocked
-[dlcs]{dlc_id} = NOT_AVAILABLE\n[/dlcs]
+[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]
 [dlc_installdirs]
 ; Installation path for the specific DLC (dependent from "installdir" option).
 ; This section works only if "dlcasinstalldir" option is set to "false".
@@ -806,7 +810,7 @@ achievementscount = 0
 ; e.g. : 247295 = Saints Row IV - GAT V Pack
 ; If the DLC is not specified in this section
 ; then it won't be unlocked
-[dlcs]{dlc_id} = NOT_AVAILABLE\n[/dlcs]
+[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]
 [dlc_installdirs]
 ; Installation path for the specific DLC (dependent from "installdir" option).
 ; This section works only if "dlcasinstalldir" option is set to "false".
@@ -893,7 +897,7 @@ saveindirectory = false
 ; e.g. : 247295 = Saints Row IV - GAT V Pack
 ; If the DLC is not specified in this section
 ; then it won't be unlocked
-[dlcs]{dlc_id} = NOT_AVAILABLE\n[/dlcs]`
+[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]`
                 };
             },
             options: {}
@@ -986,7 +990,7 @@ wrappercallbacks = false
 ; e.g. : 0 = DLC Name 0
 ;        1 = DLC Name 1
 ;        2 = DLC Name 2
-[dlcs]{dlc_index} = NOT_AVAILABLE\n[/dlcs]
+[dlcs]{dlc_index} = {dlc_name}\n[/dlcs]
 [dlc_timestamp]
 ; Specifies a unique unix timestamp for the purchased DLC (http://www.onlineconversion.com/unix_time.htm).
 ; By default returns the current date timestamp (if nothing was specified).
@@ -1006,30 +1010,27 @@ wrappercallbacks = false
                 const batch = info.replace(/; /g, ":: ") + `@ECHO OFF
 TITLE ${app.steamDB.appIDName} - ${app.info.name} by ${app.info.author} v${app.info.version}
 CLS
-
 :: WINDOWS WORKING DIR BUG WORKAROUND
 CD /D %~dp0
-
 :: CHECK APPLIST DIR
 IF EXIST .\\AppList\\NUL (
     RMDIR /S /Q .\\AppList\\
 )
-
 :: CREATE APPLIST DIR
 MKDIR .\\AppList\\
 :: CREATE DLCS FILES
+:: ${app.steamDB.appIDName}
 ECHO ${app.steamDB.appID}> .\\AppList\\0.txt
-${app.dlcList(`ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}
+${app.dlcList(`:: {dlc_name}
+ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}
 :: OPTION START GREENLUMA AND GAME
 IF EXIST .\\GreenLuma_Reborn.exe GOTO :Q
 GOTO :EXIT
-
 :Q
 SET /P c=Do you want to start GreenLuma Reborn and the game now [Y/N]?
 IF /I "%c%" EQU "Y" GOTO :START
 IF /I "%c%" EQU "N" GOTO :EXIT
 GOTO :Q
-
 :START
 CLS
 ECHO Launching Greenluma Reborn...
@@ -1038,7 +1039,6 @@ ECHO Click 'Yes' when asked to use saved App List
 TASKKILL /F /IM steam.exe >nul 2>&1
 TIMEOUT /T 2 >nul 2>&1
 GreenLuma_Reborn.exe -applaunch ${app.steamDB.appID} -NoHook -AutoExit
-
 :EXIT
 EXIT`;
 
@@ -1057,9 +1057,7 @@ EXIT`;
                 // ACF
                 const acf = `"InstalledDepots"
 {
-
     ..... other data
-
 ${app.dlcList(`    "{dlc_id}"
     {
         "manifest" "0"
@@ -1079,7 +1077,7 @@ ${app.dlcList(`    "{dlc_id}"
             callback({info}, app) {
                 return {
                     name: "LumaEmu_only_dlcs.ini",
-                    data: "[dlcs]DLC_{dlc_id} = 1\n[/dlcs]"
+                    data: "[dlcs]; {dlc_name}\nDLC_{dlc_id} = 1\n[/dlcs]"
                 };
             },
             options: {}
@@ -1091,7 +1089,7 @@ ${app.dlcList(`    "{dlc_id}"
             callback({info}, app) {
                 return {
                     name: "steam_emu.ini",
-                    data: "[dlcs=false:5]DLC{dlc_index} = {dlc_id}\nDLCName{dlc_index} = NOT_AVAILABLE\n[/dlcs]"
+                    data: "[dlcs=false:5]DLC{dlc_index} = {dlc_id}\nDLCName{dlc_index} = {dlc_name}\n[/dlcs]"
                 };
             },
             options: {}
@@ -1103,7 +1101,7 @@ ${app.dlcList(`    "{dlc_id}"
             callback({info}, app) {
                 return {
                     name: "3DMGAME.ini",
-                    data: "[dlcs=true:3]DLC{dlc_index} = {dlc_id}\n[/dlcs]"
+                    data: "[dlcs=true:3]; {dlc_name}\nDLC{dlc_index} = {dlc_id}\n[/dlcs]"
                 };
             },
             options: {}
@@ -1115,7 +1113,7 @@ ${app.dlcList(`    "{dlc_id}"
             callback({info}, app) {
                 return {
                     name: "steam_api.ini",
-                    data: "[dlcs]{dlc_id}\n[/dlcs]"
+                    data: "[dlcs]; {dlc_name}\n{dlc_id}\n[/dlcs]"
                 };
             },
             options: {}
@@ -1127,7 +1125,7 @@ ${app.dlcList(`    "{dlc_id}"
             callback({info}, app) {
                 return {
                     name: "dlcs_id_name.ini",
-                    data: "[dlcs]{dlc_id} = NOT_AVAILABLE\n[/dlcs]"
+                    data: "[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]"
                 };
             },
             options: {}
