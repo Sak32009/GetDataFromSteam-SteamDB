@@ -242,23 +242,23 @@ class Main {
         this.getHttpRequest(this.info.steamAPI + this.steamDB.appID, ({responseText}) => {
             const json = JSON.parse(responseText)[self.steamDB.appID];
             if (json.success === true) {
-				if(typeof json.data.dlc !== "undefined"){
-					self.steamDB.appIDDLCsCountAPI = json.data.dlc.length;
-					$.each(json.data.dlc, (_index_, _values) => {
-						if (!(_values in self.steamDB.appIDDLCs)) {
-							self.getHttpRequest(self.info.steamAPI + _values, ({responseText}) => {
-								const json = JSON.parse(responseText)[_values];
-								if (json.success === true) {
-									self.steamDB.appIDDLCs[_values] = {
-										name: json.data.name,
-										manifestID: 0
-									}
-								}
-							});
-						}
-					});
-				}
-				self.steamDB.appIDDLCsCountAPI = self.steamDB.appIDDLCsCount;
+                if(typeof json.data.dlc !== "undefined"){
+                    self.steamDB.appIDDLCsCountAPI = json.data.dlc.length;
+                    $.each(json.data.dlc, (_index_, _values) => {
+                        if (!(_values in self.steamDB.appIDDLCs)) {
+                            self.getHttpRequest(self.info.steamAPI + _values, ({responseText}) => {
+                                const json = JSON.parse(responseText)[_values];
+                                if (json.success === true) {
+                                    self.steamDB.appIDDLCs[_values] = {
+                                        name: json.data.name,
+                                        manifestID: 0
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+                self.steamDB.appIDDLCsCountAPI = self.steamDB.appIDDLCsCount;
                 // WAIT PROCESSING
                 self.waitProcessing();
                 // RUN
@@ -283,7 +283,7 @@ class Main {
                 }
             } else {
                 $elm.remove();
-				self.steamDB.appIDDLCsCount = process;
+                self.steamDB.appIDDLCsCount = process;
                 window.clearInterval(interval);
             }
         }, 250);
@@ -495,9 +495,9 @@ class Main {
 
     // LOAD OPTIONS
     loadOptions() {
-		// SELF
-		var self = this;
-		// EACH
+        // SELF
+        var self = this;
+        // EACH
         $("form#GetDLCInfofromSteamDB_submitOptions").find("input, select").each((_index, _values) => {
             const $this = $(_values);
             const name = $this.attr("name");
@@ -585,8 +585,8 @@ class Main {
     // DLC LIST
     dlcList(str, indexFromZero, indexPrefix) {
 
-		// SELF
-		var self = this;
+        // SELF
+        var self = this;
         // RESULT
         let result = "";
         // INDEX START FROM ZERO
