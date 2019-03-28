@@ -42,3 +42,7 @@ Userscripts are set up to automatically update. You can check for updates from w
 * fixed
 * added
 * removed
+
+### 3.7.0
+
+https://cs.rin.ru/forum/viewtopic.php?p=1867484#p1867484
