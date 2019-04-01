@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @contributor   cs.rin.ru
-// @version       3.7.0
+// @version       3.7.1
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -15,13 +15,14 @@
 // @resource      icon32 https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-32.png
 // @resource      icon64 https://raw.githubusercontent.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-64.png
 // @match         *://steamdb.info/app/*
+// @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.slim.min.js
 // @require       https://raw.githubusercontent.com/zewish/rmodal.js/master/dist/rmodal.min.js
 // @require       https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js
+// @require       https://steamdb.info/static/js/tabbable.292eb784b544768c0848bed42bd2d37a.js
 // @grant         GM_xmlhttpRequest
 // @grant         GM_getResourceURL
 // @grant         GM.xmlHttpRequest
-// @grant         GM.getResourceURL
-// @grant         unsafeWindow
+// @grant         GM.getResourceUrl
 // @run-at        document-end
 // ==/UserScript==
 
@@ -35,13 +36,6 @@ if (GM_info.scriptHandler !== "Tampermonkey") {
 if (typeof GM_xmlhttpRequest !== "function") {
     GM_xmlhttpRequest = GM.xmlHttpRequest;
 }
-
-if (typeof GM_getResourceURL !== "function") {
-    GM_getResourceURL = GM.getResourceURL;
-}
-
-// JQUERY
-const $ = unsafeWindow.jQuery;
 
 // DOWNLOAD
 class Download {
@@ -195,6 +189,8 @@ class Main {
     run() {
         // CREATE INTERFACE
         this.createInterface();
+        // GET LOGO IMAGE URL
+        this.getLogoImageURL("icon64", GM_info.script.name);
         // FILL SELECT FORMATS
         this.fillSelectFormats();
         // CREATE GLOBAL OPTIONS TAB
@@ -257,8 +253,9 @@ class Main {
                             });
                         }
                     });
+                }else{
+                    self.steamDB.appIDDLCsCountAPI = self.steamDB.appIDDLCsCount;
                 }
-                self.steamDB.appIDDLCsCountAPI = self.steamDB.appIDDLCsCount;
                 // WAIT PROCESSING
                 self.waitProcessing();
                 // RUN
@@ -266,6 +263,21 @@ class Main {
             }
         });
 
+    }
+
+    // GET LOGO IMAGE URL
+    getLogoImageURL(name, title){
+        const img = $("<img>").attr({
+            alt: title,
+            title
+        });
+        if (typeof GM_getResourceURL !== "function") {
+            (async () => {
+                img.attr("src", await GM.getResourceUrl(name)).prependTo("#GetDLCInfofromSteamDB_modal .modal-header");
+            })();
+        }else{
+            img.attr("src", GM_getResourceURL(name)).prependTo("#GetDLCInfofromSteamDB_modal .modal-header");
+        }
     }
 
     // WAIT
@@ -313,7 +325,6 @@ class Main {
         $(`<div id="GetDLCInfofromSteamDB_modal" class="modal" style="display:none;background-color:rgba(0,0,0,.60);z-index:999999;position:fixed;top:0;left:0;right:0;bottom:0;overflow:auto">
     <div class="modal-dialog" style="max-width:900px;margin:30px auto;border-radius:4px;box-shadow:0 3px 9px rgba(0,0,0,.5);background-color:#fff">
         <div class="modal-header" style="text-align:center;padding:15px;padding-bottom:0">
-            <img src="${GM_getResourceURL("icon64")}" alt="${GM_info.script.name}" title="${GM_info.script.name}">
             <h4 style="color:#006400">${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author}</small></h4>
         </div>
         <hr>
@@ -496,7 +507,7 @@ class Main {
     // LOAD OPTIONS
     loadOptions() {
         // SELF
-        var self = this;
+        const self = this;
         // EACH
         $("form#GetDLCInfofromSteamDB_submitOptions").find("input, select").each((_index, _values) => {
             const $this = $(_values);
@@ -586,7 +597,7 @@ class Main {
     dlcList(str, indexFromZero, indexPrefix) {
 
         // SELF
-        var self = this;
+        const self = this;
         // RESULT
         let result = "";
         // INDEX START FROM ZERO
