@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @contributor   cs.rin.ru
-// @version       3.7.1
+// @version       3.7.2
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -191,6 +191,8 @@ class Main {
         this.createInterface();
         // GET LOGO IMAGE URL
         this.getLogoImageURL("icon64", GM_info.script.name);
+        // WAIT PROCESSING
+        this.waitProcessing();
         // FILL SELECT FORMATS
         this.fillSelectFormats();
         // CREATE GLOBAL OPTIONS TAB
@@ -237,30 +239,24 @@ class Main {
         // GET DATA FROM STEAMAPI (BYPASS 64 APPIDS LIMIT)
         this.getHttpRequest(this.info.steamAPI + this.steamDB.appID, ({responseText}) => {
             const json = JSON.parse(responseText)[self.steamDB.appID];
-            if (json.success === true) {
-                if(typeof json.data.dlc !== "undefined"){
-                    self.steamDB.appIDDLCsCountAPI = json.data.dlc.length;
-                    $.each(json.data.dlc, (_index_, _values) => {
-                        if (!(_values in self.steamDB.appIDDLCs)) {
-                            self.getHttpRequest(self.info.steamAPI + _values, ({responseText}) => {
-                                const json = JSON.parse(responseText)[_values];
-                                if (json.success === true) {
-                                    self.steamDB.appIDDLCs[_values] = {
-                                        name: json.data.name,
-                                        manifestID: 0
-                                    }
+            if (json.success === true && "dlc" in json.data) {
+                self.steamDB.appIDDLCsCountAPI = json.data.dlc.length;
+                $.each(json.data.dlc, (_index_, _values) => {
+                    if (!(_values in self.steamDB.appIDDLCs)) {
+                        self.getHttpRequest(self.info.steamAPI + _values, ({responseText}) => {
+                            const json = JSON.parse(responseText)[_values];
+                            if (json.success === true) {
+                                self.steamDB.appIDDLCs[_values] = {
+                                    name: json.data.name,
+                                    manifestID: 0
                                 }
-                            });
-                        }
-                    });
-                }else{
-                    self.steamDB.appIDDLCsCountAPI = self.steamDB.appIDDLCsCount;
-                }
-                // WAIT PROCESSING
-                self.waitProcessing();
-                // RUN
-                self.run();
+                            }
+                        });
+                    }
+                });
             }
+            // RUN
+            self.run();
         });
 
     }

@@ -37,16 +37,8 @@ Userscripts are set up to automatically update. You can check for updates from w
 
 *The changelog starts with version 3.6.9, the old changelog can be found [here](https://cs.rin.ru/forum/viewtopic.php?f=29&t=71837 "here").*
 
-#### TBA
+------------
 
-* fixed
-* added
-* removed
-
-### 3.7.1
-
-https://cs.rin.ru/forum/viewtopic.php?p=1870320#p1870320
-
-### 3.7.0
-
-https://cs.rin.ru/forum/viewtopic.php?p=1867484#p1867484
+- [3.7.2](https://cs.rin.ru/forum/viewtopic.php?p=1871151#p1871151 "3.7.2")
+- [3.7.1](https://cs.rin.ru/forum/viewtopic.php?p=1870320#p1870320 "3.7.1")
+- [3.7.0](https://cs.rin.ru/forum/viewtopic.php?p=1867484#p1867484 "3.7.0")
