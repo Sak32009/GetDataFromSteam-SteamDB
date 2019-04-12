@@ -4,6 +4,10 @@
 
 *[forum cs.rin.ru support](https://cs.rin.ru/forum/viewtopic.php?f=29&t=71837 "forum cs.rin.ru support")*
 
+#### Notice
+
+Check my new project! https://github.com/Sak32009/AntiAdware
+
 ## Documentation
 
 ### Installation
