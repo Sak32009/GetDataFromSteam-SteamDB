@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @contributor   cs.rin.ru
-// @version       3.7.2
+// @version       3.7.3
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -128,8 +128,8 @@ class Main {
         this.info = {
             // STEAMDB URL
             steamDB: "https://steamdb.info/app/",
-            // STEAMAPI URL
-            steamAPI: "https://store.steampowered.com/api/appdetails?appids="
+            // STEAMDB LINKED URL
+            steamDBLinked: "https://steamdb.info/search/?a=linked&q="
         };
 
         // STEAMDB
@@ -141,9 +141,7 @@ class Main {
             // APPID DLCS
             appIDDLCs: {},
             // APPID COUNT
-            appIDDLCsCount: 0,
-            // APPID COUNT STEAMAPI
-            appIDDLCsCountAPI: 0
+            appIDDLCsCount: 0
         };
 
         // OPTIONS
@@ -191,8 +189,8 @@ class Main {
         this.createInterface();
         // GET LOGO IMAGE URL
         this.getLogoImageURL("icon64", GM_info.script.name);
-        // WAIT PROCESSING
-        this.waitProcessing();
+        // WAIT PROCESSING ----- FOR NOW IS DISABLED
+        //this.waitProcessing();
         // FILL SELECT FORMATS
         this.fillSelectFormats();
         // CREATE GLOBAL OPTIONS TAB
@@ -205,64 +203,50 @@ class Main {
 
     // GET DATA
     getData() {
-
         // SELF
         const self = this;
         // SET APPID
         this.steamDB.appID = $(".scope-app[data-appid]").data("appid");
         // SET APPID NAME
         this.steamDB.appIDName = $("td[itemprop='name']").text();
-
-        // GET APPID DLCs
-        $(".tab-pane#dlc .app[data-appid]").each((_index, _values) => {
-            const $this = $(_values);
-            const appID = $this.data("appid");
-            const appIDName = $this.find(`td:nth-of-type(2)`).text().trim();
-            self.steamDB.appIDDLCs[appID] = {
-                name: appIDName,
-                manifestID: 0
-            }
-            self.steamDB.appIDDLCsCount += 1;
-        });
-
-        // GET DEPOT MANIFEST ID
-        this.getHttpRequest(`${self.info.steamDB + this.steamDB.appID}/depots/?branch=public`, ({responseText}) => {
-            const $manifest = $($.parseHTML(responseText)).find("#depots h2:contains('Depots')").next();
-            $.each(self.steamDB.appIDDLCs, (_index, _values) => {
-                const manifestID = $manifest.find(`tr td:first-child a[href='/depot/${_index}/']`).closest("tr").find("td:nth-child(5)").text();
-                if (manifestID.length) {
-                    self.steamDB.appIDDLCs[_index].manifestID = manifestID;
+        // GET APPID DLCS
+        this.getHttpRequest(`${self.info.steamDBLinked + this.steamDB.appID}`, ({
+            responseText
+        }) => {
+            // APPS
+            const $apps = $($.parseHTML(responseText)).find("#table-sortable tbody tr.app");
+            // FETCH APPS
+            $apps.each((_index, _values) => {
+                const $this = $(_values);
+                const appID = $this.attr("data-appid");
+                const appIDName = $this.find("td:nth-of-type(3)").text();
+                // ADD DATA
+                self.steamDB.appIDDLCs[appID] = {
+                    name: appIDName,
+                    manifestID: 0
                 }
             });
-        });
-
-        // GET DATA FROM STEAMAPI (BYPASS 64 APPIDS LIMIT)
-        this.getHttpRequest(this.info.steamAPI + this.steamDB.appID, ({responseText}) => {
-            const json = JSON.parse(responseText)[self.steamDB.appID];
-            if (json.success === true && "dlc" in json.data) {
-                self.steamDB.appIDDLCsCountAPI = json.data.dlc.length;
-                $.each(json.data.dlc, (_index_, _values) => {
-                    if (!(_values in self.steamDB.appIDDLCs)) {
-                        self.getHttpRequest(self.info.steamAPI + _values, ({responseText}) => {
-                            const json = JSON.parse(responseText)[_values];
-                            if (json.success === true) {
-                                self.steamDB.appIDDLCs[_values] = {
-                                    name: json.data.name,
-                                    manifestID: 0
-                                }
-                            }
-                        });
+            // COUNT APPS
+            self.steamDB.appIDDLCsCount += $apps.length;
+            // GET DEPOT MANIFEST ID
+            self.getHttpRequest(`${self.info.steamDB + this.steamDB.appID}/depots/?branch=public`, ({
+                responseText
+            }) => {
+                const $table = $($.parseHTML(responseText)).find("#depots h2:contains('Depots')").next();
+                $.each(self.steamDB.appIDDLCs, (_index, _values) => {
+                    const manifestID = $table.find(`tr td:first-child a[href='/depot/${_index}/']`).closest("tr").find("td:nth-child(5)").text();
+                    if (manifestID.length) {
+                        self.steamDB.appIDDLCs[_index].manifestID = manifestID;
                     }
                 });
-            }
+            });
             // RUN
             self.run();
         });
-
     }
 
     // GET LOGO IMAGE URL
-    getLogoImageURL(name, title){
+    getLogoImageURL(name, title) {
         const img = $("<img>").attr({
             alt: title,
             title
@@ -271,7 +255,7 @@ class Main {
             (async () => {
                 img.attr("src", await GM.getResourceUrl(name)).prependTo("#GetDLCInfofromSteamDB_modal .modal-header");
             })();
-        }else{
+        } else {
             img.attr("src", GM_getResourceURL(name)).prependTo("#GetDLCInfofromSteamDB_modal .modal-header");
         }
     }
@@ -282,8 +266,8 @@ class Main {
         const interval = window.setInterval(() => {
             const $elm = $("#GetDLCInfofromSteamDB_openModalBlock");
             const process = Object.keys(self.steamDB.appIDDLCs).length;
-            if (process < self.steamDB.appIDDLCsCountAPI) {
-                const txt = `Wait! I get data from steam... ${process} / ${self.steamDB.appIDDLCsCountAPI}`;
+            if (process < self.steamDB.appIDDLCsCount) {
+                const txt = `Wait! I get data from steam... ${process} / ${self.steamDB.appIDDLCsCount}`;
                 if (!$elm.length) {
                     $(`<button type='button' id='GetDLCInfofromSteamDB_openModalBlock' class='btn btn-danger btn-block' style='margin-bottom:5px'>${txt}</button>`).prependTo("#GetDLCInfofromSteamDB_openModal");
                 } else {
@@ -291,21 +275,20 @@ class Main {
                 }
             } else {
                 $elm.remove();
-                self.steamDB.appIDDLCsCount = process;
                 window.clearInterval(interval);
             }
         }, 250);
     }
 
     // GET HTTP REQUEST
-    getHttpRequest(url, finish) {
+    getHttpRequest(url, onload) {
         GM_xmlhttpRequest({
             method: "GET",
             url,
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
-            onload: finish
+            onload
         });
     }
 
@@ -409,12 +392,13 @@ class Main {
 ; AppID Name: ${self.steamDB.appIDName}
 ; AppID Total DLCs: ${self.steamDB.appIDDLCsCount}
 ; SteamDB: ${self.info.steamDB}${self.steamDB.appID}
-; SteamAPI: ${self.info.steamAPI}${self.steamDB.appID}
 ; Homepage: ${GM_info.script.homepage}
 ; Support: ${GM_info.script.supportURL}\n\n`;
 
             // CALLBACK
-            const formatCallback = formatData.callback({info:result}, self);
+            const formatCallback = formatData.callback({
+                info: result
+            }, self);
 
             // CALLBACK CHECK TYPE
             if (typeof formatCallback === "object") {
@@ -451,7 +435,10 @@ class Main {
         $(document).on("submit", "form#GetDLCInfofromSteamDB_submitOptions", (e) => {
             e.preventDefault();
             // STORAGE SET
-            $.each($(e.currentTarget).serializeArray(), (_index, {name, value}) => {
+            $.each($(e.currentTarget).serializeArray(), (_index, {
+                name,
+                value
+            }) => {
                 self.classes.storage.set(name, value);
             });
             // ALERT
@@ -484,10 +471,10 @@ class Main {
         // SHOW
         $(document).on("click", "#GetDLCInfofromSteamDB_openModal button.btn-primary", (e) => {
             e.preventDefault();
-            // PREVENT OPEN MODAL
-            if (Object.keys(self.steamDB.appIDDLCs).length < self.steamDB.appIDDLCsCountAPI) {
+            // PREVENT OPEN MODAL ----- FOR NOW IS DISABLED
+            /*if (Object.keys(self.steamDB.appIDDLCs).length < self.steamDB.appIDDLCsCount) {
                 return false;
-            }
+            }*/
             // OPEN
             $modal.open();
         });
@@ -676,7 +663,9 @@ const Formats = {
     // CREAMAPI
     creamAPI: {
         name: "CREAMAPI v3.4.1.0",
-        callback({info}, app) {
+        callback({
+            info
+        }, app) {
             return {
                 name: "cream_api.ini",
                 data: `[steam]
@@ -800,7 +789,9 @@ achievementscount = 0
     // CREAMAPI v3.3.0.0
     creamAPI_3_3_0_0: {
         name: "CREAMAPI v3.3.0.0",
-        callback({info}, app) {
+        callback({
+            info
+        }, app) {
             return {
                 name: "cream_api.ini",
                 data: `[steam]
@@ -918,7 +909,9 @@ achievementscount = 0
     // CREAMAPI v3.0.0.3 Hotfix
     creamAPI_3_0_0_3_h: {
         name: "CREAMAPI v3.0.0.3 Hotfix",
-        callback({info}, app) {
+        callback({
+            info
+        }, app) {
             return {
                 name: "cream_api.ini",
                 data: `[steam]
@@ -993,7 +986,9 @@ saveindirectory = false
     // CREAMAPI v2.0.0.7
     creamAPI_2_0_0_7: {
         name: "CREAMAPI v2.0.0.7",
-        callback({info}, app) {
+        callback({
+            info
+        }, app) {
             return {
                 name: "cream_api.ini",
                 data: `[steam]
@@ -1091,7 +1086,9 @@ wrappercallbacks = false
     // GREENLUMA BATCH MODE
     greenluma_batch_mode: {
         name: "GreenLuma [BATCH MODE]",
-        callback({info}, app) {
+        callback({
+            info
+        }, app) {
 
             // BATCH
             const batch = info.replace(/; /g, ":: ") + `@ECHO OFF
@@ -1145,7 +1142,9 @@ EXIT`;
     // GREENLUMA .ACF GENERATOR
     greenluma_acf_mode: {
         name: "GreenLuma [.ACF GENERATOR]",
-        callback({info}, app) {
+        callback({
+            info
+        }, app) {
 
             // ACF
             const acf = `"InstalledDepots"
@@ -1169,7 +1168,9 @@ ${app.dlcList(`    "{dlc_id}"
     // LUMAEMU (ONLY DLCs LIST)
     lumaemu_only_dlcs: {
         name: "LUMAEMU v1.9.7 (ONLY DLCs LIST)",
-        callback({info}, app) {
+        callback({
+            info
+        }, app) {
             return {
                 name: "LumaEmu_only_dlcs.ini",
                 data: "[dlcs]; {dlc_name}\nDLC_{dlc_id} = 1\n[/dlcs]"
@@ -1181,7 +1182,9 @@ ${app.dlcList(`    "{dlc_id}"
     // CODEX (DLC00000, DLCName)
     codex_t: {
         name: "CODEX (DLC00000, DLCName)",
-        callback({info}, app) {
+        callback({
+            info
+        }, app) {
             return {
                 name: "steam_emu.ini",
                 data: "[dlcs=false:5]DLC{dlc_index} = {dlc_id}\nDLCName{dlc_index} = {dlc_name}\n[/dlcs]"
@@ -1193,7 +1196,9 @@ ${app.dlcList(`    "{dlc_id}"
     // 3DMGAME
     "3dmgame": {
         name: "3DMGAME",
-        callback({info}, app) {
+        callback({
+            info
+        }, app) {
             return {
                 name: "3DMGAME.ini",
                 data: "[dlcs=true:3]; {dlc_name}\nDLC{dlc_index} = {dlc_id}\n[/dlcs]"
@@ -1205,7 +1210,9 @@ ${app.dlcList(`    "{dlc_id}"
     // SKIDROW
     skidrow: {
         name: "SKIDROW",
-        callback({info}, app) {
+        callback({
+            info
+        }, app) {
             return {
                 name: "steam_api.ini",
                 data: "[dlcs]; {dlc_name}\n{dlc_id}\n[/dlcs]"
@@ -1217,7 +1224,9 @@ ${app.dlcList(`    "{dlc_id}"
     // NORMALLY (ID = NAME)
     normally_id_name: {
         name: "ID = NAME",
-        callback({info}, app) {
+        callback({
+            info
+        }, app) {
             return {
                 name: "dlcs_id_name.ini",
                 data: "[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]"

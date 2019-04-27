@@ -43,6 +43,7 @@ Userscripts are set up to automatically update. You can check for updates from w
 
 ------------
 
+- [3.7.3](https://cs.rin.ru/forum/viewtopic.php?p=1887084#p1887084 "3.7.3")
 - [3.7.2](https://cs.rin.ru/forum/viewtopic.php?p=1871151#p1871151 "3.7.2")
 - [3.7.1](https://cs.rin.ru/forum/viewtopic.php?p=1870320#p1870320 "3.7.1")
 - [3.7.0](https://cs.rin.ru/forum/viewtopic.php?p=1867484#p1867484 "3.7.0")
