@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @contributor   cs.rin.ru
-// @version       3.7.3
+// @version       3.7.4
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -209,6 +209,17 @@ class Main {
         this.steamDB.appID = $(".scope-app[data-appid]").data("appid");
         // SET APPID NAME
         this.steamDB.appIDName = $("td[itemprop='name']").text();
+		// GET APPID DLCS FROM TAB
+		$(".tab-pane#dlc .app[data-appid]").each((_index, _values) => {
+            const $this = $(_values);
+            const appID = $this.data("appid");
+            const appIDName = $this.find(`td:nth-of-type(2)`).text().trim();
+            self.steamDB.appIDDLCs[appID] = {
+                name: appIDName,
+                manifestID: 0
+            }
+            self.steamDB.appIDDLCsCount += 1;
+        });
         // GET APPID DLCS
         this.getHttpRequest(`${self.info.steamDBLinked + this.steamDB.appID}`, ({
             responseText
@@ -219,15 +230,19 @@ class Main {
             $apps.each((_index, _values) => {
                 const $this = $(_values);
                 const appID = $this.attr("data-appid");
-                const appIDName = $this.find("td:nth-of-type(3)").text();
-                // ADD DATA
-                self.steamDB.appIDDLCs[appID] = {
-                    name: appIDName,
-                    manifestID: 0
-                }
+                const appIDType = $this.find("td:nth-of-type(2)").text().trim();
+                const appIDName = $this.find("td:nth-of-type(3)").text().trim();
+				// CHECK IF EXISTS
+				if(!(appID in self.steamDB.appIDDLCs) && appIDType === "DLC"){
+					// ADD DATA
+					self.steamDB.appIDDLCs[appID] = {
+						name: appIDName,
+						manifestID: 0
+					}
+					// +1
+					self.steamDB.appIDDLCsCount += 1;
+				}
             });
-            // COUNT APPS
-            self.steamDB.appIDDLCsCount += $apps.length;
             // GET DEPOT MANIFEST ID
             self.getHttpRequest(`${self.info.steamDB + this.steamDB.appID}/depots/?branch=public`, ({
                 responseText
