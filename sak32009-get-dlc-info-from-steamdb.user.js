@@ -209,8 +209,8 @@ class Main {
         this.steamDB.appID = $(".scope-app[data-appid]").data("appid");
         // SET APPID NAME
         this.steamDB.appIDName = $("td[itemprop='name']").text();
-		// GET APPID DLCS FROM TAB
-		$(".tab-pane#dlc .app[data-appid]").each((_index, _values) => {
+        // GET APPID DLCS FROM TAB
+        $(".tab-pane#dlc .app[data-appid]").each((_index, _values) => {
             const $this = $(_values);
             const appID = $this.data("appid");
             const appIDName = $this.find(`td:nth-of-type(2)`).text().trim();
@@ -232,16 +232,16 @@ class Main {
                 const appID = $this.attr("data-appid");
                 const appIDType = $this.find("td:nth-of-type(2)").text().trim();
                 const appIDName = $this.find("td:nth-of-type(3)").text().trim();
-				// CHECK IF EXISTS
-				if(!(appID in self.steamDB.appIDDLCs) && appIDType === "DLC"){
-					// ADD DATA
-					self.steamDB.appIDDLCs[appID] = {
-						name: appIDName,
-						manifestID: 0
-					}
-					// +1
-					self.steamDB.appIDDLCsCount += 1;
-				}
+                // CHECK IF EXISTS
+                if(!(appID in self.steamDB.appIDDLCs) && appIDType === "DLC"){
+                    // ADD DATA
+                    self.steamDB.appIDDLCs[appID] = {
+                        name: appIDName,
+                        manifestID: 0
+                    }
+                    // +1
+                    self.steamDB.appIDDLCsCount += 1;
+                }
             });
             // GET DEPOT MANIFEST ID
             self.getHttpRequest(`${self.info.steamDB + this.steamDB.appID}/depots/?branch=public`, ({
