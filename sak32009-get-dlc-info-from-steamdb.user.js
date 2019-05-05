@@ -40,15 +40,10 @@ if (typeof GM_xmlhttpRequest !== "function") {
 // DOWNLOAD
 class Download {
 
-    // CONSTRUCTOR
-    constructor() {
-        this.type = "application/octet-stream;charset=utf-8";
-    }
-
     // CREATE BLOB
     blob(content) {
         return new Blob([this.winLineBreak(content)], {
-            type: this.type
+            type: "application/octet-stream;charset=utf-8"
         });
     }
 
@@ -214,10 +209,12 @@ class Main {
             const $this = $(_values);
             const appID = $this.data("appid");
             const appIDName = $this.find(`td:nth-of-type(2)`).text().trim();
+            // ADD DATA
             self.steamDB.appIDDLCs[appID] = {
                 name: appIDName,
                 manifestID: 0
             }
+            // +1
             self.steamDB.appIDDLCsCount += 1;
         });
         // GET APPID DLCS
@@ -309,12 +306,10 @@ class Main {
 
     // CREATE INTERFACE
     createInterface() {
-
         // ADD OPEN MODAL BUTTON
         $(`<div id="GetDLCInfofromSteamDB_openModal" style="position:fixed;bottom:0;right:0;margin-right:20px;z-index:999">
     <button type="button" class="btn btn-primary btn-block">${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author}</small></button>
 </div>`).appendTo("body");
-
         // ADD MODAL CONTAINER
         $(`<div id="GetDLCInfofromSteamDB_modal" class="modal" style="display:none;background-color:rgba(0,0,0,.60);z-index:999999;position:fixed;top:0;left:0;right:0;bottom:0;overflow:auto">
     <div class="modal-dialog" style="max-width:900px;margin:30px auto;border-radius:4px;box-shadow:0 3px 9px rgba(0,0,0,.5);background-color:#fff">
@@ -347,40 +342,31 @@ class Main {
                     <textarea id="GetDLCInfofromSteamDB_textareaOutput" rows="20" style="width:100%"></textarea>
                 </div>
             </div>
-            <div style="text-align:center;padding:15px"><small>To close press ESC!</small></div>
+            <div style="text-align:center;padding:15px"><small>To close press ESC or at each tip of the screen!</small></div>
         </div>
     </div>
 </div>`).appendTo("body");
-
     }
 
     // FILL SELECT FORMATS
     fillSelectFormats() {
-
         // SELF
         const self = this;
         // EACH
         $.each(this.formats, (_index, _values) => {
-
             const name = _values.name;
             const options = _values.options;
-
             // ADD OPTION
             const tag = $("<option>").attr("value", _index).text(name);
-
             // ..... SAVE LAST SELECTION
             if (self.classes.storage.isChecked("globalSaveLastSelection") && self.classes.storage.get("globalSaveLastSelectionValue") === _index) {
                 tag.prop("selected", true);
             }
             // .....
-
             tag.appendTo("#GetDLCInfofromSteamDB_selectInput");
-
             // CREATE TAB
             self.createTab(_index, name, options);
-
         });
-
     }
 
     // LOAD EVENTS
@@ -498,6 +484,12 @@ class Main {
         $(document).on("keydown", (e) => {
             $modal.keydown(e);
         });
+        $(document).on("click", "#GetDLCInfofromSteamDB_modal", (e) => {
+            $modal.close();
+        });
+        $(document).on("click", "#GetDLCInfofromSteamDB_modal .modal-dialog", (e) => {
+            e.stopPropagation();
+        });
         // .....
 
     }
@@ -544,12 +536,10 @@ class Main {
 
     // OPTIONS TO INPUT
     optionsToInput(options) {
-
         // RESULT
         let result = "";
         // EACH
         $.each(options, (_index, _values) => {
-
             // COMMON
             const title = _values.title;
             const type = _values.type;
@@ -558,9 +548,8 @@ class Main {
             // SELECT
             const selectOptions = _values.options || {};
             const selectDefault = _values.default || "";
-
+            // RESULT
             result += `<tr><td>${title}</td><td>`;
-
             switch (type) {
                 case "text":
                     {
@@ -582,18 +571,13 @@ class Main {
                         break;
                     }
             }
-
             result += "</td></tr>";
-
         });
-
         return result;
-
     }
 
     // DLC LIST
     dlcList(str, indexFromZero, indexPrefix) {
-
         // SELF
         const self = this;
         // RESULT
@@ -616,9 +600,7 @@ class Main {
             }
             // .....
         });
-
         return result;
-
     }
 
     // DLC INFO REPLACE
@@ -666,9 +648,7 @@ class Main {
                 }
             }
         }
-
         return str;
-
     }
 
 };
@@ -800,7 +780,6 @@ achievementscount = 0
         },
         options: {}
     },
-
     // CREAMAPI v3.3.0.0
     creamAPI_3_3_0_0: {
         name: "CREAMAPI v3.3.0.0",
@@ -920,7 +899,6 @@ achievementscount = 0
         },
         options: {}
     },
-
     // CREAMAPI v3.0.0.3 Hotfix
     creamAPI_3_0_0_3_h: {
         name: "CREAMAPI v3.0.0.3 Hotfix",
@@ -997,7 +975,6 @@ saveindirectory = false
         },
         options: {}
     },
-
     // CREAMAPI v2.0.0.7
     creamAPI_2_0_0_7: {
         name: "CREAMAPI v2.0.0.7",
@@ -1104,7 +1081,6 @@ wrappercallbacks = false
         callback({
             info
         }, app) {
-
             // BATCH
             const batch = info.replace(/; /g, ":: ") + `@ECHO OFF
 TITLE ${app.steamDB.appIDName} - ${app.info.name} by ${app.info.author} v${app.info.version}
@@ -1146,21 +1122,17 @@ GreenLuma_Reborn.exe -applaunch ${app.steamDB.appID} -NoHook -AutoExit
 
 :EXIT
 EXIT`;
-
             // GENERATE
             app.classes.download.as(`${app.steamDB.appIDName}_AppList.bat`, batch);
-
         },
         options: {}
     },
-
     // GREENLUMA .ACF GENERATOR
     greenluma_acf_mode: {
         name: "GreenLuma [.ACF GENERATOR]",
         callback({
             info
         }, app) {
-
             // ACF
             const acf = `"InstalledDepots"
 {
@@ -1172,14 +1144,11 @@ ${app.dlcList(`    "{dlc_id}"
         "manifest" "{dlc_manifest_id}"
         "dlcappid" "{dlc_id}"
     }\n\n`)}}`;
-
             // GENERATE
             app.classes.download.as(`${app.steamDB.appID}_ACF.acf`, acf);
-
         },
         options: {}
     },
-
     // LUMAEMU (ONLY DLCs LIST)
     lumaemu_only_dlcs: {
         name: "LUMAEMU v1.9.7 (ONLY DLCs LIST)",
@@ -1193,7 +1162,6 @@ ${app.dlcList(`    "{dlc_id}"
         },
         options: {}
     },
-
     // CODEX (DLC00000, DLCName)
     codex_t: {
         name: "CODEX (DLC00000, DLCName)",
@@ -1207,7 +1175,6 @@ ${app.dlcList(`    "{dlc_id}"
         },
         options: {}
     },
-
     // 3DMGAME
     "3dmgame": {
         name: "3DMGAME",
@@ -1221,7 +1188,6 @@ ${app.dlcList(`    "{dlc_id}"
         },
         options: {}
     },
-
     // SKIDROW
     skidrow: {
         name: "SKIDROW",
@@ -1235,7 +1201,6 @@ ${app.dlcList(`    "{dlc_id}"
         },
         options: {}
     },
-
     // NORMALLY (ID = NAME)
     normally_id_name: {
         name: "ID = NAME",
