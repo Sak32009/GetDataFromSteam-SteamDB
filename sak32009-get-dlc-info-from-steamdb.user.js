@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @contributor   cs.rin.ru
-// @version       3.7.5
+// @version       3.7.6
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -33,12 +33,14 @@
 // @run-at        document-end
 // ==/UserScript==
 
-// MISSING
+// MISSING - INFO
 if (GM_info.scriptHandler !== "Tampermonkey") {
     GM_info.script.author = "Sak32009";
     GM_info.script.homepage = "https://github.com/Sak32009/GetDLCInfoFromSteamDB/";
     GM_info.script.supportURL = "http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837";
-    // XML HTTP REQUEST
+}
+// MISSING - XML HTTP REQUEST
+if (GM_info.scriptHandler === "Greasemonkey") {
     GM_xmlhttpRequest = GM.xmlHttpRequest;
 }
 
@@ -251,18 +253,37 @@ class Main {
             alt: title,
             title
         });
-        if (GM_info.scriptHandler !== "Tampermonkey") {
+        if (GM_info.scriptHandler === "Greasemonkey") {
             (async () => {
                 img.attr("src", await GM.getResourceUrl(name)).prependTo("#GetDLCInfofromSteamDB_modal .modal-header");
             })();
         } else {
-            img.attr("src", GM_getResourceURL(name)).prependTo("#GetDLCInfofromSteamDB_modal .modal-header");
+            const resourceURL = GM_getResourceURL(name);
+            if(resourceURL.startsWith("blob:")){
+                // VIOLENTMONKEY -_-
+                GM_xmlhttpRequest({
+                    url: resourceURL,
+                    method: "GET",
+                    responseType: "blob",
+                    onload({response}) {
+                        const blob = response;
+                        const reader = new FileReader;
+                        reader.onload = () => {
+                            const blobAsDataUrl = reader.result;
+                            img.attr("src", blobAsDataUrl).prependTo("#GetDLCInfofromSteamDB_modal .modal-header");
+                        };
+                        reader.readAsDataURL(blob);
+                    }
+                });
+            }else{
+                img.attr("src", resourceURL).prependTo("#GetDLCInfofromSteamDB_modal .modal-header");
+            }
         }
     }
 
     // GET CSS URL
     getCSSURL(name) {
-        if (GM_info.scriptHandler !== "Tampermonkey") {
+        if (GM_info.scriptHandler === "Greasemonkey") {
             const link = $("<link>").attr("rel", "stylesheet");
             (async () => {
                 link.attr("href", await GM.getResourceUrl(name)).appendTo("head");
@@ -575,8 +596,61 @@ class Main {
 
 // FORMATS
 const Formats = {
-    // CREAMAPI
-    creamAPI: {
+    // CREAMAPI LEGIT 4.0.0.0
+    creamAPI_legit_4_0_0_0: {
+        name: "CreamAPI - A Legit DLC Unlocker v4.0.0.0",
+        callback({info}, app) {
+            return {
+                name: "cream_api.ini",
+                data: `[steam]
+; Application ID (http://store.steampowered.com/app/%appid%/)
+appid = [steamdb]appID[/steamdb]
+; Current game language.
+; Uncomment this option to turn it on.
+; Default is "english".
+;language = german
+; Enable/disable automatic DLC unlock. Default option is set to "false".
+; Keep in mind that this option is highly experimental and won't
+; work if the game wants to call each DLC by index.
+unlockall = false
+; Original Valve's steam_api.dll.
+; Default is "steam_api_o.dll".
+orgapi = steam_api_o.dll
+; Original Valve's steam_api64.dll.
+; Default is "steam_api64_o.dll".
+orgapi64 = steam_api64_o.dll
+; Enable/disable extra protection bypasser.
+; Default is "false".
+extraprotection = false
+; The game will think that you're offline (supported by some games).
+; Default is "false".
+forceoffline = false
+; Some games are checking for the low violence presence.
+; Default is "false".
+;lowviolence = true
+; Purchase timestamp for the DLC (http://www.onlineconversion.com/unix_time.htm).
+; Default is "0" (1970/01/01).
+;purchasetimestamp = 0
+
+[steam_misc]
+; Disables the internal SteamUser interface handler.
+; Does have an effect on the games that are using the license check for the DLC/application.
+; Default is "false".
+disableuserinterface = false
+
+[dlc]
+; DLC handling.
+; Format: <dlc_id> = <dlc_description>
+; e.g. : 247295 = Saints Row IV - GAT V Pack
+; If the DLC is not specified in this section
+; then it won't be unlocked
+[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]`
+            };
+        },
+        options: {}
+    },
+    // CREAMAPI 3.4.1.0
+    creamAPI_3_4_1_0: {
         name: "CREAMAPI v3.4.1.0",
         callback({info}, app) {
             return {
