@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @contributor   cs.rin.ru
-// @version       3.7.6
+// @version       3.7.7
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -651,7 +651,7 @@ disableuserinterface = false
     },
     // CREAMAPI 3.4.1.0
     creamAPI_3_4_1_0: {
-        name: "CREAMAPI v3.4.1.0",
+        name: "CreamAPI Legacy v3.4.1.0",
         callback({info}, app) {
             return {
                 name: "cream_api.ini",
@@ -774,7 +774,7 @@ achievementscount = 0
     },
     // CREAMAPI v3.3.0.0
     creamAPI_3_3_0_0: {
-        name: "CREAMAPI v3.3.0.0",
+        name: "CreamAPI Legacy v3.3.0.0",
         callback({info}, app) {
             return {
                 name: "cream_api.ini",
@@ -891,7 +891,7 @@ achievementscount = 0
     },
     // CREAMAPI v3.0.0.3 Hotfix
     creamAPI_3_0_0_3_h: {
-        name: "CREAMAPI v3.0.0.3 Hotfix",
+        name: "CreamAPI Legacy v3.0.0.3 Hotfix",
         callback({info}, app) {
             return {
                 name: "cream_api.ini",
@@ -965,7 +965,7 @@ saveindirectory = false
     },
     // CREAMAPI v2.0.0.7
     creamAPI_2_0_0_7: {
-        name: "CREAMAPI v2.0.0.7",
+        name: "CreamAPI Legacy v2.0.0.7",
         callback({info}, app) {
             return {
                 name: "cream_api.ini",
@@ -1063,11 +1063,11 @@ wrappercallbacks = false
 
     // GREENLUMA BATCH MODE
     greenluma_batch_mode: {
-        name: "GreenLuma [BATCH MODE]",
+        name: "GreenLuma Reborn v1.7.3 [BATCH MODE]",
         callback({info}, app) {
             // BATCH
             const batch = info.replace(/; /g, ":: ") + `@ECHO OFF
-TITLE ${app.steamDB.appIDName} - ${app.info.name} by ${app.info.author} v${app.info.version}
+TITLE ${app.steamDB.appIDName} - ${GM_info.script.name} by ${GM_info.script.author} v${GM_info.script.version}
 CLS
 
 :: WINDOWS WORKING DIR BUG WORKAROUND
@@ -1085,49 +1085,27 @@ MKDIR .\\AppList\\
 ECHO ${app.steamDB.appID}> .\\AppList\\0.txt
 ${app.dlcList(`:: {dlc_name}
 ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n`, true)}
-:: OPTION START GREENLUMA AND GAME
-IF EXIST .\\GreenLuma_Reborn.exe GOTO :Q
+:: OPTION START GREENLUMA REBORN
+IF EXIST .\\DLLInjector.exe GOTO :Q
 GOTO :EXIT
 
 :Q
-SET /P c=Do you want to start GreenLuma Reborn and the game now [Y/N]?
+SET /P c=Do you want to start GreenLuma Reborn [Y/N]?
 IF /I "%c%" EQU "Y" GOTO :START
 IF /I "%c%" EQU "N" GOTO :EXIT
 GOTO :Q
 
 :START
 CLS
-ECHO Launching Greenluma Reborn...
-ECHO Launching ${app.steamDB.appIDName}...
-ECHO Click 'Yes' when asked to use saved App List
-TASKKILL /F /IM steam.exe >nul 2>&1
-TIMEOUT /T 2 >nul 2>&1
-GreenLuma_Reborn.exe -applaunch ${app.steamDB.appID} -NoHook -AutoExit
+ECHO Launching Greenluma Reborn | APPID ${app.steamDB.appID} | APPNAME ${app.steamDB.appIDName}
+TASKKILL /F /IM steam.exe
+TIMEOUT /T 2
+DLLInjector.exe -DisablePreferSystem32Images
 
 :EXIT
 EXIT`;
             // GENERATE
             app.classes.download.as(`${app.steamDB.appIDName}_AppList.bat`, batch);
-        },
-        options: {}
-    },
-    // GREENLUMA .ACF GENERATOR
-    greenluma_acf_mode: {
-        name: "GreenLuma [.ACF GENERATOR]",
-        callback({info}, app) {
-            // ACF
-            const acf = `"InstalledDepots"
-{
-
-    ..... other data
-
-${app.dlcList(`    "{dlc_id}"
-    {
-        "manifest" "{dlc_manifest_id}"
-        "dlcappid" "{dlc_id}"
-    }\n\n`)}}`;
-            // GENERATE
-            app.classes.download.as(`${app.steamDB.appID}_ACF.acf`, acf);
         },
         options: {}
     },
@@ -1144,7 +1122,7 @@ ${app.dlcList(`    "{dlc_id}"
     },
     // CODEX (DLC00000, DLCName)
     codex_t: {
-        name: "CODEX (DLC00000, DLCName)",
+        name: "CODEX (DLC00000 = DLCName)",
         callback({info}, app) {
             return {
                 name: "steam_emu.ini",
@@ -1183,6 +1161,26 @@ ${app.dlcList(`    "{dlc_id}"
                 name: "dlcs_id_name.ini",
                 data: "[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]"
             };
+        },
+        options: {}
+    },
+    // .ACF GENERATOR
+    acf_generator: {
+        name: ".ACF GENERATOR",
+        callback({info}, app) {
+            // ACF
+            const acf = `"InstalledDepots"
+{
+
+    ..... other data
+
+${app.dlcList(`    "{dlc_id}"
+    {
+        "manifest" "{dlc_manifest_id}"
+        "dlcappid" "{dlc_id}"
+    }\n\n`)}}`;
+            // GENERATE
+            app.classes.download.as(`${app.steamDB.appID}_ACF_GENERATOR.acf`, acf);
         },
         options: {}
     }
