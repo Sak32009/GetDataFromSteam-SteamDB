@@ -8,41 +8,35 @@
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
-// @updateURL     https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.meta.js
-// @downloadURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.user.js
-// @icon          https://gitcdn.xyz/repo/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-32.png
-// @icon64        https://gitcdn.xyz/repo/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-64.png
+// @icon          https://raw.githack.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-icon.png
 // @match         *://steamdb.info/app/*
 
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.2/jquery.modal.min.js
 // @require       https://cdnjs.cloudflare.com/ajax/libs/tabby/12.0.1/js/tabby.min.js
 // @require       https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js
+// @require       https://raw.githack.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb.compatibility.js
 
-// @resource      icon64 https://gitcdn.xyz/repo/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-64.png
-// @resource      css    https://gitcdn.xyz/repo/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb.css
-// @resource      tabby  https://cdnjs.cloudflare.com/ajax/libs/tabby/12.0.1/css/tabby-ui.css
+// @resource      icon  https://raw.githack.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb-icon.png
+// @resource      gtifs https://raw.githack.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb.css
+// @resource      tabby https://cdnjs.cloudflare.com/ajax/libs/tabby/12.0.1/css/tabby-ui.css
 
+// @run-at        document-end
+
+// TamperMonkey & ViolentMonkey
 // @grant         GM_xmlhttpRequest
 // @grant         GM_getResourceURL
 // @grant         GM_getResourceText
 // @grant         GM_addStyle
 
+// GreaseMonkey
 // @grant         GM.xmlHttpRequest
 // @grant         GM.getResourceUrl
-// @run-at        document-end
+
 // ==/UserScript==
 
-// MISSING - INFO
-if (GM_info.scriptHandler !== "Tampermonkey") {
-    GM_info.script.author = "Sak32009";
-    GM_info.script.homepage = "https://github.com/Sak32009/GetDLCInfoFromSteamDB/";
-    GM_info.script.supportURL = "http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837";
-}
-// MISSING - XML HTTP REQUEST
-if (GM_info.scriptHandler === "Greasemonkey") {
-    GM_xmlhttpRequest = GM.xmlHttpRequest;
-}
+// @updateURL     https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.meta.js
+// @downloadURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.user.js
 
 // MODAL SETTINGS
 $.modal.defaults.closeText = "X";
@@ -67,7 +61,7 @@ class Download {
     as(name, content) {
         saveAs(this.blob(content), name);
     }
-};
+}
 
 // STORAGE
 class Storage {
@@ -99,11 +93,10 @@ class Storage {
     isChecked(key) {
         return this.get(key) === "true";
     }
-};
+}
 
 // MAIN
 class Main {
-
     // CONSTRUCTOR
     constructor(Formats) {
         // FORMATS
@@ -172,14 +165,8 @@ class Main {
 
     // RUN
     run() {
-        // GET CSS URL
-        this.getCSSURL("css");
-        // GET TABBY CSS URL
-        this.getCSSURL("tabby");
         // CREATE INTERFACE
         this.createInterface();
-        // GET LOGO IMAGE URL
-        this.getLogoImageURL("icon64", GM_info.script.name);
         // FILL SELECT FORMATS
         this.fillSelectFormats();
         // CREATE GLOBAL OPTIONS TAB
@@ -207,7 +194,7 @@ class Main {
             self.steamDB.appIDDLCs[appID] = {
                 name: appIDName,
                 manifestID: 0
-            }
+            };
             // +1
             self.steamDB.appIDDLCsCount += 1;
         });
@@ -227,7 +214,7 @@ class Main {
                     self.steamDB.appIDDLCs[appID] = {
                         name: appIDName,
                         manifestID: 0
-                    }
+                    };
                     // +1
                     self.steamDB.appIDDLCsCount += 1;
                 }
@@ -247,52 +234,6 @@ class Main {
         });
     }
 
-    // GET LOGO IMAGE URL
-    getLogoImageURL(name, title) {
-        const img = $("<img>").attr({
-            alt: title,
-            title
-        });
-        if (GM_info.scriptHandler === "Greasemonkey") {
-            (async () => {
-                img.attr("src", await GM.getResourceUrl(name)).prependTo("#GetDLCInfofromSteamDB_modal .modal-header");
-            })();
-        } else {
-            const resourceURL = GM_getResourceURL(name);
-            if(resourceURL.startsWith("blob:")){
-                // VIOLENTMONKEY -_-
-                GM_xmlhttpRequest({
-                    url: resourceURL,
-                    method: "GET",
-                    responseType: "blob",
-                    onload({response}) {
-                        const blob = response;
-                        const reader = new FileReader;
-                        reader.onload = () => {
-                            const blobAsDataUrl = reader.result;
-                            img.attr("src", blobAsDataUrl).prependTo("#GetDLCInfofromSteamDB_modal .modal-header");
-                        };
-                        reader.readAsDataURL(blob);
-                    }
-                });
-            }else{
-                img.attr("src", resourceURL).prependTo("#GetDLCInfofromSteamDB_modal .modal-header");
-            }
-        }
-    }
-
-    // GET CSS URL
-    getCSSURL(name) {
-        if (GM_info.scriptHandler === "Greasemonkey") {
-            const link = $("<link>").attr("rel", "stylesheet");
-            (async () => {
-                link.attr("href", await GM.getResourceUrl(name)).appendTo("head");
-            })();
-        } else {
-            GM_addStyle(GM_getResourceText(name));
-        }
-    }
-
     // GET HTTP REQUEST
     getHttpRequest(url, onload) {
         GM_xmlhttpRequest({
@@ -307,7 +248,10 @@ class Main {
 
     // CREATE INTERFACE
     createInterface() {
-        // ADD OPEN MODAL BUTTON
+		// ADD RESOURCES
+		SK.getResourceText("gtifs", SK.addStyle);
+		SK.getResourceText("tabby", SK.addStyle);
+        // ADD MODAL BUTTON
         $(`<a id="GetDLCInfofromSteamDB_openModal" href="#GetDLCInfofromSteamDB_modal" class="btn btn-primary btn-block" rel="modal:open">${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author}</small></a>`).appendTo("body");
         // ADD MODAL CONTAINER
         $(`<div id="GetDLCInfofromSteamDB_modal" class="modal" style="display:none">
@@ -342,6 +286,14 @@ class Main {
         </div>
     </div>
 </div>`).appendTo("body");
+        // ADD ICON
+		SK.getResourceIMG(name, function(dataURL){
+			return $("<img>").attr({
+				alt: GM_info.script.name,
+				title: GM_info.script.name,
+				src: dataURL
+			}).prependTo("#GetDLCInfofromSteamDB_modal .modal-header");
+		});
     }
 
     // FILL SELECT FORMATS
@@ -1184,7 +1136,7 @@ ${app.dlcList(`    "{dlc_id}"
         },
         options: {}
     }
-};
+}
 
 // RUN
 const m = new Main(Formats);
