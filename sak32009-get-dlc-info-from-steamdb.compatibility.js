@@ -98,3 +98,18 @@ SK.deleteValues = () => window.localStorage.clear();
 SK.isCheckedValue = name => SK.getValue(name) === "true";
 // IS VALID VALUE
 SK.isValidValue = value => typeof value !== "undefined" && value !== null && value.length > 0;
+// DOWNLOAD
+SK.download = (dataURL, fileName) => {
+    const body = document.getElementsByTagName("body")[0];
+    if(body){
+        const link = document.createElement("a");
+        link.setAttribute("download", fileName);
+        link.setAttribute("target", "_blank");
+        link.setAttribute("href", window.URL.createObjectURL(new Blob([dataURL.replace(/\n/g, "\r\n")], {
+            type: "application/octet-stream;charset=utf-8"
+        })));
+        body.appendChild(link);
+        link.click();
+    }
+    return null;
+};
