@@ -9,6 +9,22 @@
 **Making a donation is an act of generosity. Your support, however modest it might be, is necessary. Be it because you love or enjoy *Get DLC Info From SteamDB*. Your donations help to continue to support and improve this project!**
 
 - Paypal: [Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=D7BELQWWYEKLE&source=url "Donate")
+- BTC: 3H4ymRoamozbxgGxYA6g2ufbGK1FL2SuzG
+- BCH: qpsa09t0fhd6s4zmjzch2ncllke3dx4sagnww3ryd9
+- ETH: 0x4Bbe156f2C2958e74A7267081b9CBf8c50CFa4fd
+- ETC: 0xbE55cA29751958cbbE0773613A20f6a4C2Bebbe6
+- LTC: MVcCkF86nSHoz9Dt4vrzht567p56HsLgpQ
+- ZRX: 0xBD4707ED3185c78630C162E57A21336973817b4D
+- BAT: 0xd81b8436cCE7c2cD9DE4d26BC1d2cdeC6a25e42f
+- USDC: 0xF54d52Bf3AC1f624b9Ea78643444AAC38AcBa8c1
+- ZEC: t1J9A5E6aBnc8ro147WauiprCaoA33ANU3R
+- DAI: 0x5A51ffd49Cdd34Cecf7ea4C50544386c19ad42b1
+- LINK: 0xb223Ee2E72a8ba05B885acFcAa60aFF198f33e72
+- XRP: rw2ciyaNshpHe7bCHo4bRWq6pqqynnWKQg | TAG: 1961927126
+- REP: 0xadb199f82D462C2dECb7b56EBf0f4E093ef5c4E9
+- XLM: GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W37 | MEMO ID: 597823869
+- EOS: coinbasebase | MEMO: 3037081371
+- XTZ: tz1Su7o2bEybNKj6ofjV5pbizLK6vFSRBwhd
 
 ## Documentation
 
