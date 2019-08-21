@@ -8,7 +8,7 @@
 
 **Making a donation is an act of generosity. Your support, however modest it might be, is necessary. Be it because you love or enjoy *Get DLC Info From SteamDB*. Your donations help to continue to support and improve this project!**
 
-- Paypal: [Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=D7BELQWWYEKLE&source=url "Donate")
+- Paypal: [Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=U7TLCVMHN9HA2&source=url "Donate")
 - BTC: 3H4ymRoamozbxgGxYA6g2ufbGK1FL2SuzG
 - BCH: qpsa09t0fhd6s4zmjzch2ncllke3dx4sagnww3ryd9
 - ETH: 0x4Bbe156f2C2958e74A7267081b9CBf8c50CFa4fd
