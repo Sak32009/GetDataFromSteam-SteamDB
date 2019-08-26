@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @contributor   https://cs.rin.ru/forum/
-// @version       3.7.9
+// @version       3.8.0
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -17,6 +17,7 @@
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.2/jquery.modal.min.js
 // @require       https://cdnjs.cloudflare.com/ajax/libs/tabby/12.0.1/js/tabby.min.js
+// @require       https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.compatibility.js
 
 // @resource      tabby     https://cdnjs.cloudflare.com/ajax/libs/tabby/12.0.1/css/tabby-ui.css
 // @resource      jModal    https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.2/jquery.modal.min.css
@@ -187,12 +188,12 @@ class Main {
     <hr>
     <div class="modal-container">
         <ul data-tabs>
-            <li><a href="#GetDLCInfofromSteamDB_donations">Donations <span style="color:red">&hearts;</span></a></li>
+            <li><a href="#GetDLCInfofromSteamDB_donations" style="text-transform:uppercase;color:red;font-weight:bold">&#10084; Donations &#10084;</a></li>
             <li><a data-tabby-default href="#GetDLCInfofromSteamDB_getDlcsList">Get DLCs List</a></li>
         </ul>
         <div>
             <div id="GetDLCInfofromSteamDB_donations">
-<div style="text-align:center"><b>Making a donation is an act of generosity. Your support, however modest it might be, is necessary.<br>Be it because you love or enjoy <i>Get DLC Info From SteamDB</i>. Your donations help to continue to support and improve this project!</b></div>
+<div style="text-align:center;font-size:16px"><b>Making a donation is an act of generosity. Your support, however modest it might be, is necessary.<br>Be it because you love or enjoy <i>Get DLC Info From SteamDB</i>. Your donations help to continue to support and improve this project!</b></div>
 <pre>
 Paypal: <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=U7TLCVMHN9HA2&source=url" target="_blank">Donate</a>
 BTC: 3H4ymRoamozbxgGxYA6g2ufbGK1FL2SuzG
