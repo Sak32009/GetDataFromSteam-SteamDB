@@ -2,9 +2,15 @@
 // @name          Sak32009 - Compatibility Library
 // @description   Compatibility library between Greasemonkey, Tampermonkey and Violentmonkey
 // @author        Sak32009
-// @version       1.0.0
+// @version       1.0.1
 // @license       MIT
 // ==/UserLibrary==
+
+/*
+* CHANGELOG
+* 1.0.0: INITIAL RELEASE
+* 1.0.1: ADDED STORAGE CLASS
+*/
 
 // CHECK IF GM EXISTS
 if (typeof GM === "undefined") {
@@ -28,13 +34,11 @@ if (typeof GM_addStyle === "undefined") {
 
 // GM GET RESOURCE TEXT
 if (typeof GM_getResourceText === "undefined") {
-    this.GM_getResourceText = val => {
-        return GM.getResourceUrl(val).then(url => fetch(url)).then(resp => resp.text())
-            .catch(error => {
-                console.log("Request failed", error);
-                return null;
-            });
-    };
+    this.GM_getResourceText = val => GM.getResourceUrl(val).then(url => fetch(url)).then(resp => resp.text())
+        .catch(error => {
+            console.log("Request failed", error);
+            return null;
+        });
 }
 
 // ADD META INFO
@@ -76,3 +80,35 @@ Object.entries({
         };
     }
 });
+
+// STORAGE
+class Storage {
+    // CONSTRUCTOR
+    constructor(prefix) {
+        this.prefix = `${prefix}-`;
+    }
+    // GET
+    get(key) {
+        return window.localStorage.getItem(this.prefix + key);
+    }
+    // SET
+    set(key, value) {
+        window.localStorage.setItem(this.prefix + key, value);
+    }
+    // REMOVE
+    remove(key) {
+        window.localStorage.removeItem(this.prefix + key);
+    }
+    // CLEAR
+    clear() {
+        window.localStorage.clear();
+    }
+    // IS VALID
+    isValid(item) {
+        return typeof item !== "undefined" && item !== null && item.length > 0;
+    }
+    // IS CHECKED
+    isChecked(key) {
+        return this.get(key) === "true";
+    }
+}
