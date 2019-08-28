@@ -1,7 +1,0 @@
-Ciao, sono Jan Biniok, lo sviluppatore di Tampermonkey.
-
-Stai usando questa estensione da un po' di tempo. Ecco perché voglio chiederti se hai riscontrato problemi o problemi. Se è così, per favore segnalali nel bug tracker o nel mio forum. Grazie.
-
-Se sei soddisfatto di Tampermonkey, considera di fare una donazione per sostenere lo sviluppo in corso e anche io e la mia famiglia.
-
-Oltre al mio lavoro regolare e al tempo trascorso con la mia famiglia, sto lavorando a Tampermonkey diverse ore alla settimana per correggere bug, implementare nuove funzionalità e rispondere alle domande.
