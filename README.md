@@ -61,7 +61,7 @@ Userscripts are set up to automatically update. You can check for updates from w
 
 ------------
 
-[3.7.8 (Latest)](https://cs.rin.ru/forum/viewtopic.php?p=1954604#p1954604 "3.7.8 (Latest)") | [3.7.7](https://cs.rin.ru/forum/viewtopic.php?p=1940810#p1940810 "3.7.7") | [3.7.6](https://cs.rin.ru/forum/viewtopic.php?p=1939869#p1939869 "3.7.6") | [3.7.5](https://cs.rin.ru/forum/viewtopic.php?p=1928698#p1928698 "3.7.5") | [3.7.4](https://cs.rin.ru/forum/viewtopic.php?p=1891327#p1891327 "3.7.4") | [3.7.3](https://cs.rin.ru/forum/viewtopic.php?p=1887084#p1887084 "3.7.3") | [3.7.2](https://cs.rin.ru/forum/viewtopic.php?p=1871151#p1871151 "3.7.2") | [3.7.1](https://cs.rin.ru/forum/viewtopic.php?p=1870320#p1870320 "3.7.1") | [3.7.0](https://cs.rin.ru/forum/viewtopic.php?p=1867484#p1867484 "3.7.0")
+3.8.1 | [3.7.8](https://cs.rin.ru/forum/viewtopic.php?p=1954604#p1954604 "3.7.8") | [3.7.7](https://cs.rin.ru/forum/viewtopic.php?p=1940810#p1940810 "3.7.7") | [3.7.6](https://cs.rin.ru/forum/viewtopic.php?p=1939869#p1939869 "3.7.6") | [3.7.5](https://cs.rin.ru/forum/viewtopic.php?p=1928698#p1928698 "3.7.5") | [3.7.4](https://cs.rin.ru/forum/viewtopic.php?p=1891327#p1891327 "3.7.4") | [3.7.3](https://cs.rin.ru/forum/viewtopic.php?p=1887084#p1887084 "3.7.3") | [3.7.2](https://cs.rin.ru/forum/viewtopic.php?p=1871151#p1871151 "3.7.2") | [3.7.1](https://cs.rin.ru/forum/viewtopic.php?p=1870320#p1870320 "3.7.1") | [3.7.0](https://cs.rin.ru/forum/viewtopic.php?p=1867484#p1867484 "3.7.0")
 
 ## License
 
