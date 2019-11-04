@@ -2,7 +2,7 @@
 // @name          Sak32009 - Compatibility Library
 // @description   Compatibility library between Greasemonkey, Tampermonkey and Violentmonkey
 // @author        Sak32009
-// @version       1.0.1
+// @version       1.0.2
 // @license       MIT
 // ==/UserLibrary==
 
@@ -10,6 +10,7 @@
 * CHANGELOG
 * 1.0.0: INITIAL RELEASE
 * 1.0.1: ADDED STORAGE CLASS
+* 1.0.2: -
 */
 
 // CHECK IF GM EXISTS
@@ -20,11 +21,11 @@ if (typeof GM === "undefined") {
 
 // GM ADD STYLE
 if (typeof GM_addStyle === "undefined") {
-    this.GM_addStyle = val => {
+    this.GM_addStyle = cssText => {
         let head = document.getElementsByTagName("head")[0];
         if (head) {
             let style = document.createElement("style");
-            style.textContent = val;
+            style.textContent = cssText;
             head.appendChild(style);
             return style;
         }
@@ -34,11 +35,7 @@ if (typeof GM_addStyle === "undefined") {
 
 // GM GET RESOURCE TEXT
 if (typeof GM_getResourceText === "undefined") {
-    this.GM_getResourceText = val => GM.getResourceUrl(val).then(url => fetch(url)).then(resp => resp.text())
-        .catch(error => {
-            console.log("Request failed", error);
-            return null;
-        });
+    this.GM_getResourceText = val => GM.getResourceUrl(val).then(url => fetch(url)).then(resp => resp.text());
 }
 
 // ADD META INFO

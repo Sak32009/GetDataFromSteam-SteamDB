@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @contributor   https://cs.rin.ru/forum/
-// @version       3.8.0
+// @version       3.8.1
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -16,10 +16,10 @@
 
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.2/jquery.modal.min.js
-// @require       https://cdnjs.cloudflare.com/ajax/libs/tabby/12.0.1/js/tabby.min.js
+// @require       https://cdnjs.cloudflare.com/ajax/libs/tabby/12.0.3/js/tabby.min.js
 // @require       https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.compatibility.js
 
-// @resource      tabby     https://cdnjs.cloudflare.com/ajax/libs/tabby/12.0.1/css/tabby-ui.css
+// @resource      tabby     https://cdnjs.cloudflare.com/ajax/libs/tabby/12.0.3/css/tabby-ui.css
 // @resource      jModal    https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.2/jquery.modal.min.css
 // @resource      mainStyle https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.css
 // @resource      icon      https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb-icon.png

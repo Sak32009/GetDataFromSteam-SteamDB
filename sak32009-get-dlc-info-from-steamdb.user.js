@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @contributor   https://cs.rin.ru/forum/
-// @version       3.8.0
+// @version       3.8.1
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -16,10 +16,10 @@
 
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.2/jquery.modal.min.js
-// @require       https://cdnjs.cloudflare.com/ajax/libs/tabby/12.0.1/js/tabby.min.js
+// @require       https://cdnjs.cloudflare.com/ajax/libs/tabby/12.0.3/js/tabby.min.js
 // @require       https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.compatibility.js
 
-// @resource      tabby     https://cdnjs.cloudflare.com/ajax/libs/tabby/12.0.1/css/tabby-ui.css
+// @resource      tabby     https://cdnjs.cloudflare.com/ajax/libs/tabby/12.0.3/css/tabby-ui.css
 // @resource      jModal    https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.2/jquery.modal.min.css
 // @resource      mainStyle https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.css
 // @resource      icon      https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb-icon.png
@@ -114,9 +114,7 @@ class Main {
             self.steamDB.appIDDLCsCount += 1;
         });
         // GET APPID DLCS FROM REQUEST
-        await this.getHttpRequest(`${self.info.steamDBLinked + this.steamDB.appID}`, ({
-            responseText
-        }) => {
+        await this.getHttpRequest(`${self.info.steamDBLinked + this.steamDB.appID}`, ({responseText}) => {
             // APPS
             const $apps = $($.parseHTML(responseText)).find("tr.app[data-appid]");
             // FETCH APPS
@@ -153,15 +151,10 @@ class Main {
         return await GM.addStyle(await GM.getResourceText(name));
     }
     // GET HTTP REQUEST
-    async getHttpRequest(httpURL, rtn) {
-        return await GM.xmlHttpRequest({
-            method: "GET",
-            url: httpURL,
-            headers: {
+    async getHttpRequest(url, onload) {
+        return await GM.xmlHttpRequest({method: "GET", url, headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
-            },
-            onload: rtn
-        });
+            }, onload});
     }
     // DOWNLOAD ENCODE
     dwlEncode(content) {
@@ -213,7 +206,7 @@ XLM: GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W37 | MEMO ID: 5978238
 EOS: coinbasebase | MEMO: 3037081371
 XTZ: tz1Su7o2bEybNKj6ofjV5pbizLK6vFSRBwhd
 </pre>
-			</div>
+            </div>
             <div id="GetDLCInfofromSteamDB_getDlcsList">
                 <table class="table table-fixed">
                     <tbody>
@@ -309,10 +302,7 @@ XTZ: tz1Su7o2bEybNKj6ofjV5pbizLK6vFSRBwhd
         $(document).on("submit", "form#GetDLCInfofromSteamDB_submitOptions", (e) => {
             e.preventDefault();
             // STORAGE SET
-            $.each($(e.currentTarget).serializeArray(), (_index, {
-                name,
-                value
-            }) => {
+            $.each($(e.currentTarget).serializeArray(), (_index, {name, value}) => {
                 self.storage.set(name, value);
             });
             // ALERT
@@ -483,9 +473,9 @@ XTZ: tz1Su7o2bEybNKj6ofjV5pbizLK6vFSRBwhd
 const main = new Main();
 // ADD FORMATS
 main.formats = {
-    // CREAMAPI 4.1.0.0
-    creamAPI_4_1_0_0: {
-        name: "CreamAPI v4.1.0.0",
+    // CREAMAPI 4.1.0.0 HOTFIX
+    creamAPI_4_1_1_0_hotfix: {
+        name: "CreamAPI v4.1.1.0 Hotfix",
         header: {
             view: false,
             replaceWith: false
@@ -501,8 +491,7 @@ appid = [steamdb]appID[/steamdb]
 ; Default is "english".
 ;language = german
 ; Enable/disable automatic DLC unlock. Default option is set to "false".
-; Keep in mind that this option is highly experimental and won't
-; work if the game wants to call each DLC by index.
+; Keep in mind that this option  WON'T work properly if the "[dlc]" section is NOT empty
 unlockall = false
 ; Original Valve's steam_api.dll.
 ; Default is "steam_api_o.dll".
@@ -975,30 +964,23 @@ wrappercallbacks = false
             view: false,
             replaceWith: ":: "
         },
-        callback({
-            steamDB
-        }) {
+        callback({steamDB}) {
             return {
-                name: `greenluma_batch_mode_${steamDB.appIDName}.bat`,
+                name: `${steamDB.appIDName}_greenluma_batch_mode_.bat`,
                 text: `@ECHO OFF
-TITLE ${steamDB.appIDName} - ${GM_info.script.name} by ${GM_info.script.author} v${GM_info.script.version} | 2016 - 2019
-CLS
 
 :: WINDOWS WORKING DIR BUG WORKAROUND
-CD /D %~dp0
+CD /D "%~dp0"
 
 :: CHECK APPLIST DIR
-IF EXIST .\\AppList\\NUL (
-    RMDIR /S /Q .\\AppList\\
-)
+IF EXIST .\\AppList RMDIR /S /Q .\\AppList
 
 :: CREATE APPLIST DIR
-MKDIR .\\AppList\\
-:: CREATE DLCS FILES
-:: ${steamDB.appIDName}
+MKDIR .\\AppList
+:: CREATE DLCS FILES FOR __${steamDB.appIDName}__
 ECHO ${steamDB.appID}> .\\AppList\\0.txt
 [dlcs=true]::{dlc_name}\nECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n[/dlcs]
-:: OPTION START GREENLUMA REBORN
+:: START GREENLUMA REBORN
 IF EXIST .\\DLLInjector.exe GOTO :Q
 GOTO :EXIT
 
@@ -1010,7 +992,7 @@ GOTO :Q
 
 :START
 CLS
-ECHO Launching Greenluma Reborn | APPID ${steamDB.appID} | APPNAME ${steamDB.appIDName}
+ECHO Launching Greenluma Reborn - APPID ${steamDB.appID} - APPNAME ${steamDB.appIDName}
 TASKKILL /F /IM steam.exe
 TIMEOUT /T 2
 DLLInjector.exe -DisablePreferSystem32Images
