@@ -4,7 +4,8 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @contributor   https://cs.rin.ru/forum/
-// @version       3.8.1
+// @year          2016 - 2020
+// @version       3.8.2
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -19,10 +20,10 @@
 // @require       https://cdnjs.cloudflare.com/ajax/libs/tabby/12.0.3/js/tabby.min.js
 // @require       https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.compatibility.js
 
-// @resource      tabby     https://cdnjs.cloudflare.com/ajax/libs/tabby/12.0.3/css/tabby-ui.css
-// @resource      jModal    https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.2/jquery.modal.min.css
-// @resource      mainStyle https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.css
-// @resource      icon      https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb-icon.png
+// @resource      tabby   https://cdnjs.cloudflare.com/ajax/libs/tabby/12.0.3/css/tabby-ui.min.css
+// @resource      jModal  https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.2/jquery.modal.min.css
+// @resource      main    https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.css
+// @resource      icon    https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb-icon.png
 
 // TamperMonkey & ViolentMonkey
 // @grant         GM_xmlhttpRequest
@@ -91,12 +92,12 @@ class Main {
     }
     // GET DATA
     async getData() {
+        // SELF
+        const self = this;
         // CHECK IF THE APPID HAS DLCs
         if (!$("#dlc").length) {
             return false;
         }
-        // SELF
-        const self = this;
         // SET APPID
         this.steamDB.appID = $(".scope-app[data-appid]").data("appid");
         // SET APPID NAME
@@ -110,8 +111,6 @@ class Main {
             self.steamDB.appIDDLCs[appID] = {
                 name: appIDName
             };
-            // +1
-            self.steamDB.appIDDLCsCount += 1;
         });
         // GET APPID DLCS FROM REQUEST
         await this.getHttpRequest(`${self.info.steamDBLinked + this.steamDB.appID}`, ({responseText}) => {
@@ -129,10 +128,10 @@ class Main {
                     self.steamDB.appIDDLCs[appID] = {
                         name: appIDName
                     };
-                    // +1
-                    self.steamDB.appIDDLCsCount += 1;
                 }
             });
+            // SET APPID DLCS COUNT
+            self.steamDB.appIDDLCsCount = Object.keys(self.steamDB.appIDDLCs).length;
             // RUN
             self.start();
         });
@@ -153,8 +152,8 @@ class Main {
     // GET HTTP REQUEST
     async getHttpRequest(url, onload) {
         return await GM.xmlHttpRequest({method: "GET", url, headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }, onload});
+            "Content-Type": "application/x-www-form-urlencoded"
+        }, onload});
     }
     // DOWNLOAD ENCODE
     dwlEncode(content) {
@@ -169,44 +168,21 @@ class Main {
         // ADD TABBY STYLE
         this.addCssFromUrl("tabby");
         // ADD MAIN CSS STYLE
-        this.addCssFromUrl("mainStyle");
+        this.addCssFromUrl("main");
         // ADD OPEN MODAL BUTTON
-        $(`<a href="#GetDLCInfofromSteamDB_modal" class="btn btn-primary" rel="modal:open">${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | 2016 - 2019</small></a>`).appendTo("body");
+        $(`<a href="#GetDLCInfofromSteamDB_modal" class="btn btn-primary" rel="modal:open">${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small></a>`).appendTo("body");
         // ADD MODAL CONTAINER
         $(`<div id="GetDLCInfofromSteamDB_modal" class="modal" style="display:none">
     <div class="modal-header">
         <img src="${await GM.getResourceUrl("icon")}" alt="${GM_info.script.name}" title="${GM_info.script.name}" crossorigin>
-        <h4>${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | 2016 - 2019</small></h4>
+        <h4>${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small></h4>
     </div>
     <hr>
     <div class="modal-container">
         <ul data-tabs>
-            <li><a href="#GetDLCInfofromSteamDB_donations" style="text-transform:uppercase;color:red;font-weight:bold">&#10084; Donations &#10084;</a></li>
             <li><a data-tabby-default href="#GetDLCInfofromSteamDB_getDlcsList">Get DLCs List</a></li>
         </ul>
         <div>
-            <div id="GetDLCInfofromSteamDB_donations">
-<div style="text-align:center;font-size:16px"><b>Making a donation is an act of generosity. Your support, however modest it might be, is necessary.<br>Be it because you love or enjoy <i>Get DLC Info From SteamDB</i>. Your donations help to continue to support and improve this project!</b></div>
-<pre>
-Paypal: <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=U7TLCVMHN9HA2&source=url" target="_blank">Donate</a>
-BTC: 3H4ymRoamozbxgGxYA6g2ufbGK1FL2SuzG
-BCH: qpsa09t0fhd6s4zmjzch2ncllke3dx4sagnww3ryd9
-ETH: 0x4Bbe156f2C2958e74A7267081b9CBf8c50CFa4fd
-ETC: 0xbE55cA29751958cbbE0773613A20f6a4C2Bebbe6
-LTC: MVcCkF86nSHoz9Dt4vrzht567p56HsLgpQ
-ZRX: 0xBD4707ED3185c78630C162E57A21336973817b4D
-BAT: 0xd81b8436cCE7c2cD9DE4d26BC1d2cdeC6a25e42f
-USDC: 0xF54d52Bf3AC1f624b9Ea78643444AAC38AcBa8c1
-ZEC: t1J9A5E6aBnc8ro147WauiprCaoA33ANU3R
-DAI: 0x5A51ffd49Cdd34Cecf7ea4C50544386c19ad42b1
-LINK: 0xb223Ee2E72a8ba05B885acFcAa60aFF198f33e72
-XRP: rw2ciyaNshpHe7bCHo4bRWq6pqqynnWKQg | TAG: 1961927126
-REP: 0xadb199f82D462C2dECb7b56EBf0f4E093ef5c4E9
-XLM: GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W37 | MEMO ID: 597823869
-EOS: coinbasebase | MEMO: 3037081371
-XTZ: tz1Su7o2bEybNKj6ofjV5pbizLK6vFSRBwhd
-</pre>
-            </div>
             <div id="GetDLCInfofromSteamDB_getDlcsList">
                 <table class="table table-fixed">
                     <tbody>
@@ -271,7 +247,7 @@ XTZ: tz1Su7o2bEybNKj6ofjV5pbizLK6vFSRBwhd
             const getFormatCallback = getFormatData.callback(self);
             // NO HEADER
             if (getFormatHeaderView === false) {
-                result += `; ${GM_info.script.name} by ${GM_info.script.author} v${GM_info.script.version} | 2016 - 2019
+                result += `; ${GM_info.script.name} by ${GM_info.script.author} v${GM_info.script.version} | ${GM_info.script.year}
 ; Format: ${getFormatName}
 ; AppID: ${self.steamDB.appID}
 ; AppID Name: ${self.steamDB.appIDName}
@@ -1063,8 +1039,8 @@ EXIT`
         },
         options: {}
     },
-    // NORMALLY (ID = NAME)
-    normally_id_name: {
+    // ID = NAME
+    id_name: {
         name: "ID = NAME",
         header: {
             view: false,
