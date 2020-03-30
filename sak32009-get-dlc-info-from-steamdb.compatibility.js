@@ -2,16 +2,9 @@
 // @name          Sak32009 - Compatibility Library
 // @description   Compatibility library between Greasemonkey, Tampermonkey and Violentmonkey
 // @author        Sak32009
-// @version       1.0.2
+// @version       1.0.3
 // @license       MIT
 // ==/UserLibrary==
-
-/*
-* CHANGELOG
-* 1.0.0: INITIAL RELEASE
-* 1.0.1: ADDED STORAGE CLASS
-* 1.0.2: -
-*/
 
 // CHECK IF GM EXISTS
 if (typeof GM === "undefined") {
@@ -38,25 +31,6 @@ if (typeof GM_getResourceText === "undefined") {
     this.GM_getResourceText = val => GM.getResourceUrl(val).then(url => fetch(url)).then(resp => resp.text());
 }
 
-// ADD META INFO
-const metaNeed = ["author", "homepageURL", "supportURL"];
-const metaStr = GM_info.scriptMetaStr.replace(/\r\n/g, "\n").split("\n");
-metaStr.forEach(fullMeta => {
-    metaNeed.forEach(valMetaNeed => {
-        const startMeta = `// @${valMetaNeed} `;
-        if (fullMeta.startsWith(startMeta)) {
-            const valueMetaNew = [];
-            const valueMetaSP = fullMeta.replace(startMeta, "").split(" ");
-            valueMetaSP.forEach(_value => {
-                if (_value.length > 0 && _value !== " ") {
-                    valueMetaNew.push(_value);
-                }
-            });
-            GM_info.script[valMetaNeed] = valueMetaNew.join(" ");
-        }
-    });
-});
-
 // TO PROMISE
 Object.entries({
     "GM_xmlhttpRequest": "xmlHttpRequest",
@@ -76,6 +50,25 @@ Object.entries({
             });
         };
     }
+});
+
+// ADD META INFO
+const metaNeed = ["author", "homepageURL", "supportURL", "year"];
+const metaStr = GM_info.scriptMetaStr.replace(/\r\n/g, "\n").split("\n");
+metaStr.forEach(fullMeta => {
+    metaNeed.forEach(valMetaNeed => {
+        const startMeta = `// @${valMetaNeed} `;
+        if (fullMeta.startsWith(startMeta)) {
+            const valueMetaNew = [];
+            const valueMetaSP = fullMeta.replace(startMeta, "").split(" ");
+            valueMetaSP.forEach(_value => {
+                if (_value.length > 0 && _value !== " ") {
+                    valueMetaNew.push(_value);
+                }
+            });
+            GM_info.script[valMetaNeed] = valueMetaNew.join(" ");
+        }
+    });
 });
 
 // STORAGE
