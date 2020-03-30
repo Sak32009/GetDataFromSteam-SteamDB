@@ -1,1 +1,62 @@
-a[href="#GetDLCInfofromSteamDB_modal"]{position:fixed;bottom:0;right:0;margin-right:10px;z-index:999;border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom:0}[role="tablist"] li:first-child{margin-left:10px}#GetDLCInfofromSteamDB_modal .modal-container>div{padding:15px}.blocker{z-index:999999!important}.modal{max-width:900px!important;padding:0!important}.modal-header{padding:10px;text-align:center}[role="tab"]{text-decoration:none;outline:0}
+a[href="#GetDLCInfofromSteamDB_modal"] {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin-right: 10px;
+    z-index: 999;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: 0
+}
+
+/*
+* jquery-modal
+*/
+.jquery-modal.blocker {
+    z-index: 999999!important
+}
+
+.jquery-modal .modal {
+    background-color: rgb(22, 25, 32);
+    max-width: 900px!important;
+    padding: 0!important
+}
+
+.jquery-modal .modal-header {
+    padding: 10px;
+    text-align: center
+}
+
+.jquery-modal .modal-container > div {
+    padding: 15px
+}
+
+/*
+* tabbyjs
+*/
+[role="tablist"] {
+    border-bottom: 1px solid rgb(50, 63, 83);
+}
+
+[role="tablist"] li:first-child {
+    margin-left: 10px;
+}
+
+[role="tab"] {
+    border-color: transparent;
+    background-color: transparent !important;
+    outline: 0;
+    text-decoration: none !important;
+}
+
+@media (min-width: 30em) {
+    [role="tab"][aria-selected="true"] {
+        border-color: rgb(0, 149, 255);
+    }
+}
+
+@media (min-width: 30em) {
+    [role="tab"]:hover:not([aria-selected="true"]) {
+        border-color: rgb(0, 149, 255);
+    }
+}
