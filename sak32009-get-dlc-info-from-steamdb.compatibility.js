@@ -2,7 +2,7 @@
 // @name          Sak32009 - Compatibility Library
 // @description   Compatibility library between Greasemonkey, Tampermonkey and Violentmonkey
 // @author        Sak32009
-// @version       1.0.3
+// @version       1.0.4
 // @license       MIT
 // ==/UserLibrary==
 
@@ -70,35 +70,3 @@ metaStr.forEach(fullMeta => {
         }
     });
 });
-
-// STORAGE
-class Storage {
-    // CONSTRUCTOR
-    constructor(prefix) {
-        this.prefix = `${prefix}-`;
-    }
-    // GET
-    get(key) {
-        return window.localStorage.getItem(this.prefix + key);
-    }
-    // SET
-    set(key, value) {
-        window.localStorage.setItem(this.prefix + key, value);
-    }
-    // REMOVE
-    remove(key) {
-        window.localStorage.removeItem(this.prefix + key);
-    }
-    // CLEAR
-    clear() {
-        window.localStorage.clear();
-    }
-    // IS VALID
-    isValid(item) {
-        return typeof item !== "undefined" && item !== null && item.length > 0;
-    }
-    // IS CHECKED
-    isChecked(key) {
-        return this.get(key) === "true";
-    }
-}
