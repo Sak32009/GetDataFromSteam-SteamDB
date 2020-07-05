@@ -3,12 +3,12 @@
 // @namespace     sak32009-get-dlc-info-from-steamdb
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
-// @contributor   http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
+// @contributor   https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
 // @year          2016 - 2020
-// @version       4.0.0
+// @version       4.0.1
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
-// @supportURL    http://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
+// @supportURL    https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
 // @updateURL     https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.meta.js
 // @downloadURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.user.js
 // @icon          https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb-icon.png
@@ -52,7 +52,9 @@ class Main {
         // INFO
         this.info = {
             // STEAMDB URL
-            steamDB: "https://steamdb.info/app/"
+            steamDB: "https://steamdb.info/app/",
+            // STEAMDB LINKED URL
+            steamDBLinked: "https://steamdb.info/search/?a=linked&q="
         };
         // STEAMDB
         this.steamDB = {
@@ -63,13 +65,15 @@ class Main {
             count: 0
         };
     }
-    // HAS DLCS
-    hasDLCs(){
-        return this.$body.find("a.tabnav-tab[data-target='#dlc']").length > 0;
-    }
     // INJECT CSS
     async injectCSS(name) {
         return await GM.addStyle(await GM.getResourceText(name));
+    }
+    // GET HTTP REQUEST
+    async getHttpRequest(url, onload) {
+        return await GM.xmlHttpRequest({method: "GET", url, headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }, onload});
     }
     // DOWNLOAD ENCODE
     dwlEncode(content) {
@@ -82,38 +86,59 @@ class Main {
         // SELF
         const self = this;
         // CHECK HAS DLCS
-        if(self.hasDLCs()){
+        if(self.$body.find("a.tabnav-tab[data-target='#dlc']").length > 0){
             // GET DATA FROM STEAMDB
             self.getDataSteamDB();
-            // CREATE INTERFACE
-            self.createInterface();
-            // FILL INTERFACE
-            self.fillInterface();
-            // LOAD EVENTS
-            self.loadEvents();
         }
     }
+    // RUN TWO
+    runTwo(){
+        // SELF
+        const self = this;
+        // CREATE INTERFACE
+        self.createInterface();
+        // FILL INTERFACE
+        self.fillInterface();
+        // LOAD EVENTS
+        self.loadEvents();
+    }
     // GET DATA FROM STEAMDB
-    getDataSteamDB(){
+    async getDataSteamDB(){
         // SELF
         const self = this;
         // SET APPID
         self.steamDB.appID = self.$body.find(".scope-app[data-appid]").data("appid");
         // SET NAME
-        self.steamDB.name = self.$body.find("td[itemprop='name']").text();
-        // SET DLCS
-        this.$body.find("#dlc tr.app[data-appid]").each((_index, _dom) => {
-            const $dom = $(_dom);
-            const $appName = $dom.find(`td:nth-of-type(2)`);
-            const where = $appName.hasClass("muted") ? "dlcs_unknown" : "dlcs";
+        self.steamDB.name = self.$body.find(".pagehead > h1").text();
+        // SET DLCS UNKNOWN
+        this.$body.find("#dlc tr.app[data-appid] td.muted:nth-of-type(2)").each((_index, _dom) => {
+            const $dom = $(_dom).closest("tr");
             const appID = $dom.data("appid");
-            const appName = $appName.text().trim();
+            const appName = $dom.find(`td:nth-of-type(2)`).text().trim();
             // SET DATA
-            self.steamDB[where][appID] = {
-                name: appName
-            };
+            self.steamDB["dlcs_unknown"][appID] = appName;
             // ADD TO COUNT
             self.steamDB.count += 1;
+        });
+        // STEAMDB DO YOU IMPROVE THIS?
+        // SET DLCS FROM REQUEST
+        await this.getHttpRequest(`${self.info.steamDBLinked + this.steamDB.appID}`, ({responseText}) => {
+            // EACH
+            $($.parseHTML(responseText)).find("tr.app[data-appid]").each((_index, _dom) => {
+                const $dom = $(_dom);
+                const appID = $dom.attr("data-appid");
+                const appType = $dom.find("td:nth-of-type(2)").text().trim();
+                const appName = $dom.find("td:nth-of-type(3)").text().trim();
+                // CHECK
+                if (!(appID in self.steamDB.dlcs) && appType === "DLC") {
+                    // SET DATA
+                    self.steamDB.dlcs[appID] = appName;
+                    // ADD TO COUNT
+                    self.steamDB.count += 1;
+                }
+            });
+            // RUN TWO
+            self.runTwo();
         });
     }
     // CREATE INTERFACE
@@ -129,18 +154,19 @@ class Main {
 <div id="${self.unique}_modal" class="modal" style="display:none">
     <div class="modal-header">
         <h3>${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small></h4>
-		<h5 style="color:red">Protect development and free things -- because their survival is in our hands.<br>You can donate by clicking on "Paypal Donate".</h5>
+        <h5 style="color:red">Protect development and free things -- because their survival is in our hands.<br>You can donate by clicking on "Paypal Donate".</h5>
     </div>
     <div class="modal-container">
-        <table class="table table-fixed" style="margin-bottom:0">
+        <table class="table" style="margin-bottom:0">
             <tbody>
                 <tr>
                     <td>
                         <select id="${self.unique}_selectInput"></select>
-                        <button type="button" id="${self.unique}_submitInput" class="btn btn-primary">Convert</button>
+                        <button type="button" id="${self.unique}_submitInput" data-without="false" class="btn btn-primary">Convert</button>
+                        <button type="button" id="${self.unique}_submitInput" data-without="true" class="btn btn-primary">Without STEAMDB_UNKNOWN</button>
+                        <a href="javascript:;" class="btn" id="${self.unique}_downloadAsFile">Download as file</a>
                     </td>
                     <td style="text-align:right">
-                        <a href="javascript:;" class="btn" id="${self.unique}_downloadAsFile">Download as file</a>
                         <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=U7TLCVMHN9HA2&source=url" class="btn btn-info">Paypal Donate</a>
                     </td>
                 </tr>
@@ -157,8 +183,7 @@ class Main {
         // EACH
         $.each(self.formats, (_index, _values) => {
             const name = _values.name;
-            const option = $("<option>").attr("value", _index).text(name);
-            option.appendTo(`#${self.unique}_selectInput`);
+            $("<option>").attr("value", _index).text(name).appendTo(`#${self.unique}_selectInput`);
         });
     }
     // LOAD EVENTS
@@ -190,7 +215,7 @@ class Main {
 ; Support: ${GM_info.script.supportURL}\n\n`;
             }
             // BBCODE TO TEXT
-            result += self.bbcode(callback.text);
+            result += self.bbcode(callback.text, $(e.target).data("without"));
             // HEADER REPLACE
             if (headerReplace !== false) {
                 result = result.replace(/; /g, headerReplace);
@@ -205,7 +230,7 @@ class Main {
         });
     }
     // BBCODE DLCs
-    bbcodeDLCS(str, indexFromZero, indexPrefix) {
+    bbcodeDLCS(str, indexFromZero, indexPrefix, withouthUnknown) {
         // SELF
         const self = this;
         // RESULT
@@ -213,26 +238,26 @@ class Main {
         // INDEX START FROM ZERO
         let index = indexFromZero ? 0 : -1;
         // EACH DLCs
-        $.each(self.steamDB.dlcs, (_index, _values) => {
-            const name = _values.name;
+        $.each(self.steamDB.dlcs, (_appid, _name) => {
             index += 1;
             result += self.bbcodeDLCSReplace(str, {
-                "dlc_id": _index,
-                "dlc_name": name,
+                "dlc_id": _appid,
+                "dlc_name": _name,
                 "dlc_index": self.bbcodeDLCSPrefix(index.toString(), parseInt(indexPrefix))
             });
         });
         // EACH UNKNOWN DLCs
-        result += "\n; --------------------------------- UNKNOWN DLCs\n\n";
-        $.each(self.steamDB.dlcs_unknown, (_index, _values) => {
-            const name = _values.name;
-            index += 1;
-            result += self.bbcodeDLCSReplace(str, {
-                "dlc_id": _index,
-                "dlc_name": name,
-                "dlc_index": self.bbcodeDLCSPrefix(index.toString(), parseInt(indexPrefix))
+        if(!withouthUnknown){
+            result += "\n; --------------------------------- UNKNOWN DLCs\n\n";
+            $.each(self.steamDB.dlcs_unknown, (_appid, _name) => {
+                index += 1;
+                result += self.bbcodeDLCSReplace(str, {
+                    "dlc_id": _appid,
+                    "dlc_name": _name,
+                    "dlc_index": self.bbcodeDLCSPrefix(index.toString(), parseInt(indexPrefix))
+                });
             });
-        });
+        }
         return result;
     }
     // BBCODE DLCS INFO REPLACE
@@ -247,7 +272,7 @@ class Main {
         return prefix > index.length ? "0".repeat(prefix - index.length) + index : index;
     }
     // BBCODE
-    bbcode(str) {
+    bbcode(str, withouthUnknown) {
         // SELF
         const self = this;
         // DATA
@@ -267,7 +292,7 @@ class Main {
                         break;
                     }
                     case "dlcs": {
-                        str = str.replace(bbcode, self.bbcodeDLCS(bbcodeVal, bbcodeOpts[0] === "true", bbcodeOpts[1] || 0));
+                        str = str.replace(bbcode, self.bbcodeDLCS(bbcodeVal, bbcodeOpts[0] === "true", bbcodeOpts[1] || 0, withouthUnknown));
                         break;
                     }
                 }
@@ -465,29 +490,38 @@ achievementscount = 0
 
     // GREENLUMA 2020 BATCH MODE
     greenluma_2020_batch_mode: {
-        name: "GreenLuma 2020 [BATCH MODE][ONLY ADD APPIDS]",
+        name: "GreenLuma 2020 [BATCH MODE]",
         header: {
             view: false,
             replaceWith: ":: "
         },
         callback({steamDB}) {
             return {
-                name: `${steamDB.appIDName}_greenluma_batch_mode_.bat`,
+                name: `${steamDB.name}_${steamDB.appID}.bat`,
                 text: `@ECHO OFF
-
 :: WINDOWS WORKING DIR BUG WORKAROUND
 CD /D "%~dp0"
-
 :: CHECK APPLIST DIR
 IF EXIST .\\AppList RMDIR /S /Q .\\AppList
-
 :: CREATE APPLIST DIR
 MKDIR .\\AppList
-:: CREATE DLCS FILES FOR __${steamDB.appIDName}__
+:: CREATE DLCS FILES FOR __${steamDB.name}__
 ECHO ${steamDB.appID}> .\\AppList\\0.txt
 [dlcs=true]::{dlc_name}\nECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n[/dlcs]
+:: START GREENLUMA 2020
+IF EXIST .\\DLLInjector.exe GOTO :Q
 GOTO :EXIT
-
+:Q
+SET /P c=Do you want to start GreenLuma 2020 [Y/N]?
+IF /I "%c%" EQU "Y" GOTO :START
+IF /I "%c%" EQU "N" GOTO :EXIT
+GOTO :Q
+:START
+CLS
+ECHO Launching Greenluma 2020 - APPID ${steamDB.appID} - APPNAME ${steamDB.name}
+TASKKILL /F /IM steam.exe
+TIMEOUT /T 2
+DLLInjector.exe -DisablePreferSystem32Images
 :EXIT
 EXIT`
             };
