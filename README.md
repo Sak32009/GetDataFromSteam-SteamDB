@@ -41,10 +41,6 @@ Install a userscript directly from GitHub by clicking on the "RAW" button of the
 
 Userscripts are set up to automatically update. You can check for updates from within the menu of userscripts manager, or click on the install link again to get the update.
 
-## Changelog
-
-*The changelog starts with version 4.0.2, the old changelog can be found [here](https://cs.rin.ru/forum/viewtopic.php?f=29&t=71837).*
-
 ## License
 
 - [The MIT License](./LICENSE)
