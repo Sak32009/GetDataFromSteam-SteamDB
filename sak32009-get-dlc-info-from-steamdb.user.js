@@ -3,241 +3,216 @@
 // @namespace     sak32009-get-dlc-info-from-steamdb
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
-// @contributor   https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
 // @year          2016 - 2020
-// @version       4.0.1
+// @version       4.0.2
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
-// @updateURL     https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.meta.js
+// @updateURL     https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.user.js
 // @downloadURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.user.js
 // @icon          https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb-icon.png
 // @match         *://steamdb.info/app/*
+// @match         *://cs.rin.ru/forum/viewtopic.php?*
 // @run-at        document-end
-
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.2/jquery.modal.min.js
-// @require       https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.compatibility.js
-
-// @resource      jQueryModal https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.2/jquery.modal.min.css
-// @resource      main https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.css
-
-// TamperMonkey & ViolentMonkey
+// @resource      modal https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.2/jquery.modal.min.css
 // @grant         GM_xmlhttpRequest
-// @grant         GM_getResourceURL
 // @grant         GM_getResourceText
 // @grant         GM_addStyle
-
-// GreaseMonkey
-// @grant         GM.xmlHttpRequest
-// @grant         GM.getResourceUrl
-
-// Violentmonkey
-// @inject-into   content
 // ==/UserScript==
 
-// JQUERY MODAL SETTINGS
-$.modal.defaults.closeText = "X";
+/*
+ * ADD INFO TO GM_INFO
+ */
+GM_info.script.author = "Sak32009";
+GM_info.script.year = "2016 - 2020";
+GM_info.script.homepage = "https://github.com/Sak32009/GetDLCInfoFromSteamDB/";
+GM_info.script.supportURL = "https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837";
 
-// MAIN
+/*
+ * USERSCRIPT MAIN
+ */
 class Main {
-    // CONSTRUCTOR
-    constructor(){
-        // BODY
-        this.$body = $(document);
-        // FORMATS
+    constructor() {
         this.formats = {};
-        // UNIQUE
-        this.unique = "GetDLCInfofromSteamDB";
-        // INFO
-        this.info = {
-            // STEAMDB URL
-            steamDB: "https://steamdb.info/app/",
-            // STEAMDB LINKED URL
-            steamDBLinked: "https://steamdb.info/search/?a=linked&q="
-        };
-        // STEAMDB
         this.steamDB = {
             appID: "",
             name: "",
             dlcs: {},
-            "dlcs_unknown": {},
-            count: 0
+            count: 0,
+            appURL: "https://steamdb.info/app/",
+            linkedURL: "https://steamdb.info/search/?a=linked&q="
         };
+        this.isCSRINRU = new URL(window.location.href).hostname == "cs.rin.ru"; // TODO
     }
-    // INJECT CSS
-    async injectCSS(name) {
-        return await GM.addStyle(await GM.getResourceText(name));
-    }
-    // GET HTTP REQUEST
-    async getHttpRequest(url, onload) {
-        return await GM.xmlHttpRequest({method: "GET", url, headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        }, onload});
-    }
-    // DOWNLOAD ENCODE
-    dwlEncode(content) {
-        return window.URL.createObjectURL(new Blob([content.replace(/\n/g, "\r\n")], {
-            type: "application/octet-stream;charset=utf-8"
-        }));
-    }
-    // RUN
-    run(){
-        // SELF
+    run() {
         const self = this;
-        // CHECK HAS DLCS
-        if(self.$body.find("a.tabnav-tab[data-target='#dlc']").length > 0){
-            // GET DATA FROM STEAMDB
-            self.getDataSteamDB();
+        if (self.steamDB.count > 0) {
+            if (self.isCSRINRU) {
+                self.createInterfaceCSRINRU();
+                self.fillInterfaceCSRINRU();
+                self.loadEventsCSRINRU();
+            } else {
+                self.createInterface();
+                self.fillInterface();
+                self.loadEvents();
+            }
         }
     }
-    // RUN TWO
-    runTwo(){
-        // SELF
+    getDataSteamDB() {
         const self = this;
-        // CREATE INTERFACE
-        self.createInterface();
-        // FILL INTERFACE
-        self.fillInterface();
-        // LOAD EVENTS
-        self.loadEvents();
+        if (self.isCSRINRU) {
+            const $searchIMG = $("img[src^='https://steamcdn']");
+            if ($searchIMG.length > 0) {
+                self.steamDB.appID = new URL($searchIMG.attr("src")).pathname.split("/")[3]; // TODO
+                self.steamDB.name = $("#pageheader a.titles").text(); // TODO
+                self.setDLCSFromRequest();
+            }
+        } else {
+            self.steamDB.appID = $(".scope-app[data-appid]").data("appid");
+            self.steamDB.name = $(".pagehead > h1").text();
+            self.setDLCSFromRequest();
+        }
     }
-    // GET DATA FROM STEAMDB
-    async getDataSteamDB(){
-        // SELF
+    setDLCSFromRequest() {
         const self = this;
-        // SET APPID
-        self.steamDB.appID = self.$body.find(".scope-app[data-appid]").data("appid");
-        // SET NAME
-        self.steamDB.name = self.$body.find(".pagehead > h1").text();
-        // SET DLCS UNKNOWN
-        this.$body.find("#dlc tr.app[data-appid] td.muted:nth-of-type(2)").each((_index, _dom) => {
-            const $dom = $(_dom).closest("tr");
-            const appID = $dom.data("appid");
-            const appName = $dom.find(`td:nth-of-type(2)`).text().trim();
-            // SET DATA
-            self.steamDB["dlcs_unknown"][appID] = appName;
-            // ADD TO COUNT
-            self.steamDB.count += 1;
-        });
-        // STEAMDB DO YOU IMPROVE THIS?
-        // SET DLCS FROM REQUEST
-        await this.getHttpRequest(`${self.info.steamDBLinked + this.steamDB.appID}`, ({responseText}) => {
-            // EACH
-            $($.parseHTML(responseText)).find("tr.app[data-appid]").each((_index, _dom) => {
-                const $dom = $(_dom);
-                const appID = $dom.attr("data-appid");
-                const appType = $dom.find("td:nth-of-type(2)").text().trim();
-                const appName = $dom.find("td:nth-of-type(3)").text().trim();
-                // CHECK
-                if (!(appID in self.steamDB.dlcs) && appType === "DLC") {
-                    // SET DATA
+        GM_xmlhttpRequest({
+            url: `${self.steamDB.linkedURL + self.steamDB.appID}`,
+            method: "GET",
+            onload({
+                responseText
+            }) {
+                $($.parseHTML(responseText)).find("tr.app[data-appid] td:nth-of-type(2):contains('DLC')").each((_index, _dom) => {
+                    const $dom = $(_dom).closest("tr");
+                    const appID = $dom.attr("data-appid");
+                    const appName = $dom.find("td:nth-of-type(3)").text().trim();
                     self.steamDB.dlcs[appID] = appName;
-                    // ADD TO COUNT
                     self.steamDB.count += 1;
-                }
-            });
-            // RUN TWO
-            self.runTwo();
+                });
+                self.run();
+            }
         });
     }
-    // CREATE INTERFACE
-    createInterface(){
-        // SELF
+    /*
+     * CS.RIN.RU
+     */
+    createInterfaceCSRINRU() {
         const self = this;
-        // INJECT JQUERY MODAL STYLE
-        self.injectCSS("jQueryModal");
-        // INJECT MAIN CSS
-        self.injectCSS("main");
-        // INJECT ELEMENTS
-        $(`<a href="#${self.unique}_modal" class="btn btn-primary" rel="modal:open">${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small></a>
-<div id="${self.unique}_modal" class="modal" style="display:none">
-    <div class="modal-header">
-        <h3>${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small></h4>
-        <h5 style="color:red">Protect development and free things -- because their survival is in our hands.<br>You can donate by clicking on "Paypal Donate".</h5>
+        $("#pagecontent table:nth-of-type(3) .postbody").append(`<div id="GetDLCInfofromSteamDB_container" style="margin:20px 0">
+    <div id="GetDLCInfofromSteamDB_spoiler" style="margin-bottom:2px">
+        <input value="Show" style="width:60px" type="button">
+        <span style="color:red"><b>${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small> | Total DLCS: ${self.steamDB.count}</b></span>
     </div>
-    <div class="modal-container">
-        <table class="table" style="margin-bottom:0">
-            <tbody>
-                <tr>
-                    <td>
-                        <select id="${self.unique}_selectInput"></select>
-                        <button type="button" id="${self.unique}_submitInput" data-without="false" class="btn btn-primary">Convert</button>
-                        <button type="button" id="${self.unique}_submitInput" data-without="true" class="btn btn-primary">Without STEAMDB_UNKNOWN</button>
-                        <a href="javascript:;" class="btn" id="${self.unique}_downloadAsFile">Download as file</a>
-                    </td>
-                    <td style="text-align:right">
-                        <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=U7TLCVMHN9HA2&source=url" class="btn btn-info">Paypal Donate</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <textarea id="${self.unique}_textareaOutput" rows="20" placeholder="Select an option and click 'Convert'" style="width:100%;resize:none;border:0"></textarea>
+    <div id="GetDLCInfofromSteamDB_spoilerContainer" style="border:1px inset white;padding:10px">
+        <div style="display:none">
+        </div>
     </div>
-</div>`).appendTo("body");
+</div>`);
     }
-    // FILL INTERFACE
-    fillInterface(){
-        // SELF
+    fillInterfaceCSRINRU() {
         const self = this;
-        // EACH
         $.each(self.formats, (_index, _values) => {
             const name = _values.name;
-            $("<option>").attr("value", _index).text(name).appendTo(`#${self.unique}_selectInput`);
-        });
-    }
-    // LOAD EVENTS
-    loadEvents(){
-        // SELF
-        const self = this;
-        // SUBMIT FORM
-        $(document).on("click", `#${self.unique}_submitInput`, (e) => {
-            e.preventDefault();
-            // RESULT
-            let result = "";
-            // SELECTED
-            const selected = $(`#${self.unique}_selectInput option:selected`).val();
-            // GET FORMAT DATA
-            const data = self.formats[selected];
-            const name = data.name;
-            const headerView = data.header.view;
-            const headerReplace = data.header.replaceWith;
-            const callback = data.callback(self);
-            // NO HEADER
-            if (headerView === false) {
-                result += `; ${GM_info.script.name} by ${GM_info.script.author} v${GM_info.script.version} | ${GM_info.script.year}
+            const headerReplace = _values.headerReplace;
+            const callback = _values.callback(self);
+            let result = `; ${GM_info.script.name} by ${GM_info.script.author} v${GM_info.script.version} | ${GM_info.script.year}
 ; Format: ${name}
 ; AppID: ${self.steamDB.appID}
 ; AppID Name: ${self.steamDB.name}
-; AppID Total DLCs: ${self.steamDB.count}
-; SteamDB: ${self.info.steamDB}${self.steamDB.appID}
-; Homepage: ${GM_info.script.homepageURL}
+; AppID Total DLCS: ${self.steamDB.count}
+; SteamDB: ${self.steamDB.appURL}${self.steamDB.appID}
+; Homepage: ${GM_info.script.homepage}
 ; Support: ${GM_info.script.supportURL}\n\n`;
-            }
-            // BBCODE TO TEXT
-            result += self.bbcode(callback.text, $(e.target).data("without"));
-            // HEADER REPLACE
-            if (headerReplace !== false) {
-                result = result.replace(/; /g, headerReplace);
-            }
-            // WRITE RESULT
-            $(`#${self.unique}_textareaOutput`).text(result).scrollTop(0);
-            // SET DOWNLOAD FILE
-            $(`#${self.unique}_downloadAsFile`).attr({
-                href: self.dwlEncode(result),
+            result += self.bbcode(callback.text);
+            result = headerReplace !== false ? result.replace(/; /g, headerReplace) : result;
+            $("#GetDLCInfofromSteamDB_spoilerContainer > div").append(`<div class="GetDLCInfofromSteamDB_formatContainer" style="margin-bottom:5px">
+    <h4 style="margin-bottom:5px">${name}</h4>
+    <div class="attachcontent" style="margin:0">
+        <span class="genmed">
+            <img src="./styles/rinDark/imageset/icon_topic_attach.gif" alt="" title="" width="10" height="13">
+            <a href="${self.toBlob(result)}" download="${callback.name}">${callback.name}</a>
+        </span>
+    </div>
+</div>`);
+        });
+    }
+    loadEventsCSRINRU() {
+        const self = this;
+        $(document).on("click", `#GetDLCInfofromSteamDB_spoiler > input`, (e) => {
+            e.preventDefault();
+            const container = $("#GetDLCInfofromSteamDB_spoilerContainer > div");
+            $(e.target).val(container.css("display") == "none" ? "Hide" : "Show");
+            container.toggle();
+        });
+    }
+    /*
+     * STEAMDB
+     */
+    createInterface() {
+        const self = this;
+        GM_addStyle(GM_getResourceText("modal"));
+        GM_addStyle(`a[href="#GetDLCInfofromSteamDB_modal"]{position:fixed;bottom:0;right:0;margin-right:10px;z-index:999;border-bottom-left-radius:0;border-bottom-right-radius:0}.jquery-modal.blocker{z-index:999999!important}.dark-mode .jquery-modal .modal{background-color:#161920}.jquery-modal .modal{max-width:900px!important;padding:0!important;display:none}.jquery-modal .modal-header{padding:10px;text-align:center}.jquery-modal .modal-container>div{padding:15px;border-top:1px solid #323f53;border-bottom:1px solid #323f53}.jquery-modal .modal-container>textarea{width:100%;resize:none;border:0}`);
+        $(`<a href="#GetDLCInfofromSteamDB_modal" class="btn btn-primary" rel="modal:open">${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small></a>
+<div id="GetDLCInfofromSteamDB_modal" class="modal">
+    <div class="modal-header">
+        <h3>${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small></h4>
+        <h5 style="color:red">Protect development and free things -- because their survival is in our hands.<br>You can donate by clicking on "Paypal Donate".</h5>
+        <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=U7TLCVMHN9HA2&source=url" class="btn btn-info" target="_blank">Paypal Donate</a>
+    </div>
+    <div class="modal-container">
+        <div>
+            <select id="GetDLCInfofromSteamDB_selectInput"></select>
+            <button type="button" id="GetDLCInfofromSteamDB_submitInput" class="btn btn-primary">Convert</button>
+            <a href="javascript:;" class="btn" id="GetDLCInfofromSteamDB_downloadAsFile">Download as file</a>
+        </div>
+        <textarea id="GetDLCInfofromSteamDB_textareaOutput" rows="20" placeholder="Select an option and click 'Convert'"></textarea>
+    </div>
+</div>`).appendTo("body");
+    }
+    fillInterface() {
+        const self = this;
+        $.each(self.formats, (_index, _values) => {
+            const name = _values.name;
+            $("<option>").attr("value", _index).text(name).appendTo(`#GetDLCInfofromSteamDB_selectInput`);
+        });
+    }
+    loadEvents() {
+        const self = this;
+        $(document).on("click", `#GetDLCInfofromSteamDB_submitInput`, (e) => {
+            e.preventDefault();
+            let result = "";
+            const selected = $(`#GetDLCInfofromSteamDB_selectInput option:selected`).val();
+            const data = self.formats[selected];
+            const name = data.name;
+            const headerReplace = data.headerReplace;
+            const callback = data.callback(self);
+            result += `; ${GM_info.script.name} by ${GM_info.script.author} v${GM_info.script.version} | ${GM_info.script.year}
+; Format: ${name}
+; AppID: ${self.steamDB.appID}
+; AppID Name: ${self.steamDB.name}
+; AppID Total DLCS: ${self.steamDB.count}
+; SteamDB: ${self.steamDB.appURL}${self.steamDB.appID}
+; Homepage: ${GM_info.script.homepage}
+; Support: ${GM_info.script.supportURL}\n\n`;
+            result += self.bbcode(callback.text);
+            result = headerReplace !== false ? result.replace(/; /g, headerReplace) : result;
+            $(`#GetDLCInfofromSteamDB_textareaOutput`).text(result).scrollTop(0);
+            $(`#GetDLCInfofromSteamDB_downloadAsFile`).attr({
+                href: self.toBlob(result),
                 download: callback.name
             });
         });
     }
-    // BBCODE DLCs
-    bbcodeDLCS(str, indexFromZero, indexPrefix, withouthUnknown) {
-        // SELF
+    toBlob(content) {
+        return window.URL.createObjectURL(new Blob([content.replace(/\n/g, "\r\n")], {
+            type: "application/octet-stream;charset=utf-8"
+        }));
+    }
+    bbcodeDLCS(str, indexFromZero, indexPrefix) {
         const self = this;
-        // RESULT
         let result = "";
-        // INDEX START FROM ZERO
         let index = indexFromZero ? 0 : -1;
-        // EACH DLCs
         $.each(self.steamDB.dlcs, (_appid, _name) => {
             index += 1;
             result += self.bbcodeDLCSReplace(str, {
@@ -246,44 +221,23 @@ class Main {
                 "dlc_index": self.bbcodeDLCSPrefix(index.toString(), parseInt(indexPrefix))
             });
         });
-        // EACH UNKNOWN DLCs
-        if(!withouthUnknown){
-            result += "\n; --------------------------------- UNKNOWN DLCs\n\n";
-            $.each(self.steamDB.dlcs_unknown, (_appid, _name) => {
-                index += 1;
-                result += self.bbcodeDLCSReplace(str, {
-                    "dlc_id": _appid,
-                    "dlc_name": _name,
-                    "dlc_index": self.bbcodeDLCSPrefix(index.toString(), parseInt(indexPrefix))
-                });
-            });
-        }
         return result;
     }
-    // BBCODE DLCS INFO REPLACE
     bbcodeDLCSReplace(str, values) {
         $.each(values, (_index, _values) => {
             str = str.replace(new RegExp(`{${_index}}`, "g"), _values);
         });
         return str;
     }
-    // BBCODE DLC ID PREFIX
     bbcodeDLCSPrefix(index, prefix) {
         return prefix > index.length ? "0".repeat(prefix - index.length) + index : index;
     }
-    // BBCODE
-    bbcode(str, withouthUnknown) {
-        // SELF
+    bbcode(str) {
         const self = this;
-        // DATA
         let data = "";
-        // REGEX
         const re = /\[(\w+)(?:=(.*))?]([^[]+)\[\/(\w+)]/g;
-        // EACH
         while ((data = re.exec(str)) !== null) {
-            // GET DATA
             const [bbcode, bbcodeOpen, bbcodeOpt, bbcodeVal, bbcodeClose] = data;
-            // CHECK
             if (bbcodeOpen === bbcodeClose) {
                 const bbcodeOpts = typeof bbcodeOpt !== "undefined" ? bbcodeOpt.split(":") : [];
                 switch (bbcodeOpen) {
@@ -292,7 +246,7 @@ class Main {
                         break;
                     }
                     case "dlcs": {
-                        str = str.replace(bbcode, self.bbcodeDLCS(bbcodeVal, bbcodeOpts[0] === "true", bbcodeOpts[1] || 0, withouthUnknown));
+                        str = str.replace(bbcode, self.bbcodeDLCS(bbcodeVal, bbcodeOpts[0] === "true", bbcodeOpts[1] || 0));
                         break;
                     }
                 }
@@ -302,17 +256,11 @@ class Main {
     }
 }
 
-// MAIN
 const m = new Main();
-// ADD FORMATS
 m.formats = {
-    // CREAMAPI 4.4.0.0
     creamAPI_4_4_0_0: {
         name: "CreamAPI v4.4.0.0",
-        header: {
-            view: false,
-            replaceWith: false
-        },
+        headerReplace: false,
         callback(main) {
             return {
                 name: "cream_api.ini",
@@ -361,13 +309,9 @@ disableuserinterface = false
             };
         }
     },
-    // CREAMAPI 3.4.1.0
     creamAPI_3_4_1_0: {
         name: "CreamAPI v3.4.1.0",
-        header: {
-            view: false,
-            replaceWith: false
-        },
+        headerReplace: false,
         callback(main) {
             return {
                 name: "cream_api.ini",
@@ -487,17 +431,14 @@ achievementscount = 0
             };
         }
     },
-
-    // GREENLUMA 2020 BATCH MODE
     greenluma_2020_batch_mode: {
         name: "GreenLuma 2020 [BATCH MODE]",
-        header: {
-            view: false,
-            replaceWith: ":: "
-        },
-        callback({steamDB}) {
+        headerReplace: ":: ",
+        callback({
+            steamDB
+        }) {
             return {
-                name: `${steamDB.name}_${steamDB.appID}.bat`,
+                name: `${steamDB.name}_${steamDB.appID}_GreenLuma.bat`,
                 text: `@ECHO OFF
 :: WINDOWS WORKING DIR BUG WORKAROUND
 CD /D "%~dp0"
@@ -505,9 +446,9 @@ CD /D "%~dp0"
 IF EXIST .\\AppList RMDIR /S /Q .\\AppList
 :: CREATE APPLIST DIR
 MKDIR .\\AppList
-:: CREATE DLCS FILES FOR __${steamDB.name}__
-ECHO ${steamDB.appID}> .\\AppList\\0.txt
-[dlcs=true]::{dlc_name}\nECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n[/dlcs]
+:: CREATE DLCS FILES FOR __[steamdb]name[/steamdb]__
+ECHO [steamdb]appID[/steamdb]> .\\AppList\\0.txt
+[dlcs=true]:: {dlc_name}\nECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n[/dlcs]
 :: START GREENLUMA 2020
 IF EXIST .\\DLLInjector.exe GOTO :Q
 GOTO :EXIT
@@ -518,7 +459,7 @@ IF /I "%c%" EQU "N" GOTO :EXIT
 GOTO :Q
 :START
 CLS
-ECHO Launching Greenluma 2020 - APPID ${steamDB.appID} - APPNAME ${steamDB.name}
+ECHO Launching Greenluma 2020 - APPID [steamdb]appID[/steamdb] - APPNAME [steamdb]name[/steamdb]
 TASKKILL /F /IM steam.exe
 TIMEOUT /T 2
 DLLInjector.exe -DisablePreferSystem32Images
@@ -527,27 +468,19 @@ EXIT`
             };
         }
     },
-    // LUMAEMU v1.9.7 (ONLY DLCs LIST)
     lumaemu_v1_9_7: {
-        name: "LUMAEMU v1.9.7 (ONLY DLCs LIST)",
-        header: {
-            view: false,
-            replaceWith: false
-        },
+        name: "LUMAEMU v1.9.7 (ONLY DLCS LIST)",
+        headerReplace: false,
         callback(main) {
             return {
-                name: "LumaEmu_only_dlcs.ini",
+                name: "LumaEmu_DLCS.ini",
                 text: "[dlcs]; {dlc_name}\nDLC_{dlc_id} = 1\n[/dlcs]"
             };
         }
     },
-    // CODEX (DLC00000, DLCName)
     codex: {
         name: "CODEX (DLC00000 = DLCName)",
-        header: {
-            view: false,
-            replaceWith: false
-        },
+        headerReplace: false,
         callback(main) {
             return {
                 name: "steam_emu.ini",
@@ -555,13 +488,9 @@ EXIT`
             };
         }
     },
-    // 3DMGAME
     "3dmgame": {
         name: "3DMGAME",
-        header: {
-            view: false,
-            replaceWith: false
-        },
+        headerReplace: false,
         callback(main) {
             return {
                 name: "3DMGAME.ini",
@@ -569,13 +498,9 @@ EXIT`
             };
         }
     },
-    // SKIDROW
     skidrow: {
         name: "SKIDROW",
-        header: {
-            view: false,
-            replaceWith: false
-        },
+        headerReplace: false,
         callback(main) {
             return {
                 name: "steam_api.ini",
@@ -583,20 +508,17 @@ EXIT`
             };
         }
     },
-    // APPID = APPIDNAME
     appid_appidname: {
         name: "APPID = APPIDNAME",
-        header: {
-            view: false,
-            replaceWith: false
-        },
-        callback(main) {
+        headerReplace: false,
+        callback({
+            steamDB
+        }) {
             return {
-                name: "appid_appidname.ini",
+                name: `${steamDB.name}_${steamDB.appID}.ini`,
                 text: "[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]"
             };
         }
     }
 };
-// RUN
-m.run();
+m.getDataSteamDB();
