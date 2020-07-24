@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @year          2016 - 2020
-// @version       4.0.2
+// @version       4.0.3
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -44,7 +44,7 @@ class Main {
             appURL: "https://steamdb.info/app/",
             linkedURL: "https://steamdb.info/search/?a=linked&q="
         };
-        this.isCSRINRU = new URL(window.location.href).hostname == "cs.rin.ru"; // TODO
+        this.isCSRINRU = new URL(window.location.href).hostname == "cs.rin.ru";
     }
     run() {
         const self = this;
@@ -63,10 +63,10 @@ class Main {
     getDataSteamDB() {
         const self = this;
         if (self.isCSRINRU) {
-            const $searchIMG = $("img[src^='https://steamcdn']");
-            if ($searchIMG.length > 0) {
-                self.steamDB.appID = new URL($searchIMG.attr("src")).pathname.split("/")[3]; // TODO
-                self.steamDB.name = $("#pageheader a.titles").text(); // TODO
+            const $searchAppID = $("#pagecontent > .tablebg:nth-of-type(3) .postbody:first-child a.postlink[href^='http://store.steampowered.com/app/']");
+            if ($searchAppID.length > 0) {
+                self.steamDB.appID = new URL($searchAppID.attr("href")).pathname.split("/")[2]; // TODO
+                self.steamDB.name = $("#pageheader a.titles").clone().children().remove().end().text(); // TODO
                 self.setDLCSFromRequest();
             }
         } else {
@@ -99,7 +99,7 @@ class Main {
      */
     createInterfaceCSRINRU() {
         const self = this;
-        $("#pagecontent table:nth-of-type(3) .postbody").append(`<div id="GetDLCInfofromSteamDB_container" style="margin:20px 0">
+        $("#pagecontent table:nth-of-type(3) .postbody:first-child").append(`<div id="GetDLCInfofromSteamDB_container" style="margin:20px 0">
     <div id="GetDLCInfofromSteamDB_spoiler" style="margin-bottom:2px">
         <input value="Show" style="width:60px" type="button">
         <span style="color:red"><b>${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small> | Total DLCS: ${self.steamDB.count}</b></span>
