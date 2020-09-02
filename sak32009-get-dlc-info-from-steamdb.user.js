@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @year          2016 - 2020
-// @version       4.0.3
+// @version       4.0.4
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -116,14 +116,14 @@ class Main {
             const name = _values.name;
             const headerReplace = _values.headerReplace;
             const callback = _values.callback(self);
-            let result = `; ${GM_info.script.name} by ${GM_info.script.author} v${GM_info.script.version} | ${GM_info.script.year}
+            let result = !_values.noHeader ? `; ${GM_info.script.name} by ${GM_info.script.author} v${GM_info.script.version} | ${GM_info.script.year}
 ; Format: ${name}
 ; AppID: ${self.steamDB.appID}
 ; AppID Name: ${self.steamDB.name}
 ; AppID Total DLCS: ${self.steamDB.count}
 ; SteamDB: ${self.steamDB.appURL}${self.steamDB.appID}
 ; Homepage: ${GM_info.script.homepage}
-; Support: ${GM_info.script.supportURL}\n\n`;
+; Support: ${GM_info.script.supportURL}\n\n` : "";
             result += self.bbcode(callback.text);
             result = headerReplace !== false ? result.replace(/; /g, headerReplace) : result;
             $("#GetDLCInfofromSteamDB_spoilerContainer > div").append(`<div class="GetDLCInfofromSteamDB_formatContainer" style="margin-bottom:5px">
@@ -187,14 +187,14 @@ class Main {
             const name = data.name;
             const headerReplace = data.headerReplace;
             const callback = data.callback(self);
-            result += `; ${GM_info.script.name} by ${GM_info.script.author} v${GM_info.script.version} | ${GM_info.script.year}
+            result += !noHeader ? `; ${GM_info.script.name} by ${GM_info.script.author} v${GM_info.script.version} | ${GM_info.script.year}
 ; Format: ${name}
 ; AppID: ${self.steamDB.appID}
 ; AppID Name: ${self.steamDB.name}
 ; AppID Total DLCS: ${self.steamDB.count}
 ; SteamDB: ${self.steamDB.appURL}${self.steamDB.appID}
 ; Homepage: ${GM_info.script.homepage}
-; Support: ${GM_info.script.supportURL}\n\n`;
+; Support: ${GM_info.script.supportURL}\n\n` : "";
             result += self.bbcode(callback.text);
             result = headerReplace !== false ? result.replace(/; /g, headerReplace) : result;
             $(`#GetDLCInfofromSteamDB_textareaOutput`).text(result).scrollTop(0);
@@ -465,6 +465,21 @@ TIMEOUT /T 2
 DLLInjector.exe -DisablePreferSystem32Images
 :EXIT
 EXIT`
+            };
+        }
+    },
+    nemirtingas_steam_emulator: {
+        name: "NEMIRTINGAS STEAM EMULATOR",
+        headerReplace: false,
+        callback(main) {
+            return {
+                name: "dlcs.json",
+                text: `{
+[dlcs]    "{dlc_id}": {
+        "dlc_name": "{dlc_name}",
+        "enabled": true
+    },\n[/dlcs]
+}`
             };
         }
     },
