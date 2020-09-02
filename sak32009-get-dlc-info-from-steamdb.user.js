@@ -114,6 +114,7 @@ class Main {
         const self = this;
         $.each(self.formats, (_index, _values) => {
             const name = _values.name;
+            const noHeader = _values.noHeader;
             const headerReplace = _values.headerReplace;
             const callback = _values.callback(self);
             let result = !_values.noHeader ? `; ${GM_info.script.name} by ${GM_info.script.author} v${GM_info.script.version} | ${GM_info.script.year}
@@ -125,6 +126,7 @@ class Main {
 ; Homepage: ${GM_info.script.homepage}
 ; Support: ${GM_info.script.supportURL}\n\n` : "";
             result += self.bbcode(callback.text);
+            result = _index == "nemirtingas_steam_emulator" ? result.replace(/(},\n\n})/g, "}\n}") : result; // TODO
             result = headerReplace !== false ? result.replace(/; /g, headerReplace) : result;
             $("#GetDLCInfofromSteamDB_spoilerContainer > div").append(`<div class="GetDLCInfofromSteamDB_formatContainer" style="margin-bottom:5px">
     <h4 style="margin-bottom:5px">${name}</h4>
@@ -185,6 +187,7 @@ class Main {
             const selected = $(`#GetDLCInfofromSteamDB_selectInput option:selected`).val();
             const data = self.formats[selected];
             const name = data.name;
+            const noHeader = data.noHeader;
             const headerReplace = data.headerReplace;
             const callback = data.callback(self);
             result += !noHeader ? `; ${GM_info.script.name} by ${GM_info.script.author} v${GM_info.script.version} | ${GM_info.script.year}
@@ -196,6 +199,7 @@ class Main {
 ; Homepage: ${GM_info.script.homepage}
 ; Support: ${GM_info.script.supportURL}\n\n` : "";
             result += self.bbcode(callback.text);
+            result = selected == "nemirtingas_steam_emulator" ? result.replace(/(},\n\n})/g, "}\n}") : result; // TODO
             result = headerReplace !== false ? result.replace(/; /g, headerReplace) : result;
             $(`#GetDLCInfofromSteamDB_textareaOutput`).text(result).scrollTop(0);
             $(`#GetDLCInfofromSteamDB_downloadAsFile`).attr({
@@ -260,6 +264,7 @@ const m = new Main();
 m.formats = {
     creamAPI_4_4_0_0: {
         name: "CreamAPI v4.4.0.0",
+        noHeader: false,
         headerReplace: false,
         callback(main) {
             return {
@@ -311,6 +316,7 @@ disableuserinterface = false
     },
     creamAPI_3_4_1_0: {
         name: "CreamAPI v3.4.1.0",
+        noHeader: false,
         headerReplace: false,
         callback(main) {
             return {
@@ -433,6 +439,7 @@ achievementscount = 0
     },
     greenluma_2020_batch_mode: {
         name: "GreenLuma 2020 [BATCH MODE]",
+        noHeader: false,
         headerReplace: ":: ",
         callback({
             steamDB
@@ -470,6 +477,7 @@ EXIT`
     },
     nemirtingas_steam_emulator: {
         name: "NEMIRTINGAS STEAM EMULATOR",
+        noHeader: true,
         headerReplace: false,
         callback(main) {
             return {
@@ -485,6 +493,7 @@ EXIT`
     },
     lumaemu_v1_9_7: {
         name: "LUMAEMU v1.9.7 (ONLY DLCS LIST)",
+        noHeader: false,
         headerReplace: false,
         callback(main) {
             return {
@@ -495,6 +504,7 @@ EXIT`
     },
     codex: {
         name: "CODEX (DLC00000 = DLCName)",
+        noHeader: false,
         headerReplace: false,
         callback(main) {
             return {
@@ -506,6 +516,7 @@ EXIT`
     "3dmgame": {
         name: "3DMGAME",
         headerReplace: false,
+        noHeader: false,
         callback(main) {
             return {
                 name: "3DMGAME.ini",
@@ -516,6 +527,7 @@ EXIT`
     skidrow: {
         name: "SKIDROW",
         headerReplace: false,
+        noHeader: false,
         callback(main) {
             return {
                 name: "steam_api.ini",
@@ -525,6 +537,7 @@ EXIT`
     },
     appid_appidname: {
         name: "APPID = APPIDNAME",
+        noHeader: false,
         headerReplace: false,
         callback({
             steamDB
