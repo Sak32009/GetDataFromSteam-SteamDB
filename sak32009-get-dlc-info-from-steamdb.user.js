@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @year          2016 - 2020
-// @version       4.0.4
+// @version       4.0.5
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -545,6 +545,19 @@ EXIT`
             return {
                 name: `${steamDB.name}_${steamDB.appID}.ini`,
                 text: "[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]"
+            };
+        }
+    },
+    appidname: {
+        name: "ONLY NAME",
+        noHeader: false,
+        headerReplace: false,
+        callback({
+            steamDB
+        }) {
+            return {
+                name: `${steamDB.name}_${steamDB.appID}.ini`,
+                text: "[dlcs]{dlc_name}\n[/dlcs]"
             };
         }
     }
