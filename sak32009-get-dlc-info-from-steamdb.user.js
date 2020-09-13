@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @year          2016 - 2020
-// @version       4.0.5
+// @version       4.0.6
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -60,29 +60,28 @@ class Main {
             }
         }
     }
-    getDataSteamDB() {
+    getData() {
         const self = this;
         if (self.isCSRINRU) {
             const $searchAppID = $("#pagecontent > .tablebg:nth-of-type(3) .postbody:first-child a.postlink[href^='http://store.steampowered.com/app/']");
             if ($searchAppID.length > 0) {
-                self.steamDB.appID = new URL($searchAppID.attr("href")).pathname.split("/")[2]; // TODO
-                self.steamDB.name = $("#pageheader a.titles").clone().children().remove().end().text(); // TODO
-                self.setDLCSFromRequest();
+                // TODO: ISN'T ACCURATE
+                self.steamDB.appID = new URL($searchAppID.attr("href")).pathname.split("/")[2];
+                // TODO: ISN'T ACCURATE
+                self.steamDB.name = $("#pageheader a.titles").clone().children().remove().end().text();
             }
         } else {
             self.steamDB.appID = $(".scope-app[data-appid]").data("appid");
             self.steamDB.name = $(".pagehead > h1").text();
-            self.setDLCSFromRequest();
         }
+        self.setDLCSFromRequest();
     }
     setDLCSFromRequest() {
         const self = this;
         GM_xmlhttpRequest({
             url: `${self.steamDB.linkedURL + self.steamDB.appID}`,
             method: "GET",
-            onload({
-                responseText
-            }) {
+            onload({responseText}) {
                 $($.parseHTML(responseText)).find("tr.app[data-appid] td:nth-of-type(2):contains('DLC')").each((_index, _dom) => {
                     const $dom = $(_dom).closest("tr");
                     const appID = $dom.attr("data-appid");
@@ -99,44 +98,22 @@ class Main {
      */
     createInterfaceCSRINRU() {
         const self = this;
-        $("#pagecontent table:nth-of-type(3) .postbody:first-child").append(`<div id="GetDLCInfofromSteamDB_container" style="margin:20px 0">
+        $("#pagecontent > .tablebg:nth-of-type(3) .postbody:first-child").append(`<div style="margin:20px 0">
     <div id="GetDLCInfofromSteamDB_spoiler" style="margin-bottom:2px">
-        <input value="Show" style="width:60px" type="button">
-        <span style="color:red"><b>${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small> | Total DLCS: ${self.steamDB.count}</b></span>
+        <input value="Show" style="width:60px;font-size:10px" type="button">
+        <a href="${GM_info.script.supportURL}" style="color:red;font-weight:bold">${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small> | Total DLCS: ${self.steamDB.count} <span style="color:white">| Name: ${self.steamDB.name} | AppID: ${self.steamDB.appID} | PLEASE REPORT IF IS WRONG</span></a>
     </div>
-    <div id="GetDLCInfofromSteamDB_spoilerContainer" style="border:1px inset white;padding:10px">
-        <div style="display:none">
-        </div>
+    <div id="GetDLCInfofromSteamDB_spoilerContainer" style="border:1px inset white;padding:5px">
+        <h5 style="color:red;text-align:center">Protect development and free things -- because their survival is in our hands.<br>You can donate by clicking on <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=U7TLCVMHN9HA2&source=url" class="btn btn-info" target="_blank">Paypal Donate</a>.</h5>
+        <div style="display:none"></div>
     </div>
 </div>`);
     }
     fillInterfaceCSRINRU() {
         const self = this;
         $.each(self.formats, (_index, _values) => {
-            const name = _values.name;
-            const noHeader = _values.noHeader;
-            const headerReplace = _values.headerReplace;
-            const callback = _values.callback(self);
-            let result = !_values.noHeader ? `; ${GM_info.script.name} by ${GM_info.script.author} v${GM_info.script.version} | ${GM_info.script.year}
-; Format: ${name}
-; AppID: ${self.steamDB.appID}
-; AppID Name: ${self.steamDB.name}
-; AppID Total DLCS: ${self.steamDB.count}
-; SteamDB: ${self.steamDB.appURL}${self.steamDB.appID}
-; Homepage: ${GM_info.script.homepage}
-; Support: ${GM_info.script.supportURL}\n\n` : "";
-            result += self.bbcode(callback.text);
-            result = _index == "nemirtingas_steam_emulator" ? result.replace(/(},\n\n})/g, "}\n}") : result; // TODO
-            result = headerReplace !== false ? result.replace(/; /g, headerReplace) : result;
-            $("#GetDLCInfofromSteamDB_spoilerContainer > div").append(`<div class="GetDLCInfofromSteamDB_formatContainer" style="margin-bottom:5px">
-    <h4 style="margin-bottom:5px">${name}</h4>
-    <div class="attachcontent" style="margin:0">
-        <span class="genmed">
-            <img src="./styles/rinDark/imageset/icon_topic_attach.gif" alt="" title="" width="10" height="13">
-            <a href="${self.toBlob(result)}" download="${callback.name}">${callback.name}</a>
-        </span>
-    </div>
-</div>`);
+            const output = self.output(_index);
+            $("#GetDLCInfofromSteamDB_spoilerContainer > div").append(`<div class="attachcontent"><a href="${self.toBlob(output.text)}" download="${output.callback.name}">${output.data.name}</a></div>`);
         });
     }
     loadEventsCSRINRU() {
@@ -183,30 +160,45 @@ class Main {
         const self = this;
         $(document).on("click", `#GetDLCInfofromSteamDB_submitInput`, (e) => {
             e.preventDefault();
-            let result = "";
-            const selected = $(`#GetDLCInfofromSteamDB_selectInput option:selected`).val();
-            const data = self.formats[selected];
-            const name = data.name;
-            const noHeader = data.noHeader;
-            const headerReplace = data.headerReplace;
-            const callback = data.callback(self);
-            result += !noHeader ? `; ${GM_info.script.name} by ${GM_info.script.author} v${GM_info.script.version} | ${GM_info.script.year}
+            const format = $(`#GetDLCInfofromSteamDB_selectInput option:selected`).val();
+            const output = self.output(format);
+            $(`#GetDLCInfofromSteamDB_textareaOutput`).text(output.text).scrollTop(0);
+            $(`#GetDLCInfofromSteamDB_downloadAsFile`).attr({
+                href: self.toBlob(output.text),
+                download: output.callback.name
+            });
+        });
+    }
+    output(format){
+        const self = this;
+        let result = "";
+        const data = self.formats[format];
+        const name = data.name;
+        const noHeader = data.noHeader;
+        const headerReplace = data.headerReplace;
+        const callback = data.callback(self);
+        const callbackName = callback.name;
+        const callbackText = callback.text;
+        if(!noHeader){
+            result += `; ${GM_info.script.name} by ${GM_info.script.author} v${GM_info.script.version} | ${GM_info.script.year}
 ; Format: ${name}
 ; AppID: ${self.steamDB.appID}
 ; AppID Name: ${self.steamDB.name}
 ; AppID Total DLCS: ${self.steamDB.count}
 ; SteamDB: ${self.steamDB.appURL}${self.steamDB.appID}
 ; Homepage: ${GM_info.script.homepage}
-; Support: ${GM_info.script.supportURL}\n\n` : "";
-            result += self.bbcode(callback.text);
-            result = selected == "nemirtingas_steam_emulator" ? result.replace(/(},\n\n})/g, "}\n}") : result; // TODO
-            result = headerReplace !== false ? result.replace(/; /g, headerReplace) : result;
-            $(`#GetDLCInfofromSteamDB_textareaOutput`).text(result).scrollTop(0);
-            $(`#GetDLCInfofromSteamDB_downloadAsFile`).attr({
-                href: self.toBlob(result),
-                download: callback.name
-            });
-        });
+; Support: ${GM_info.script.supportURL}\n\n`;
+        }
+        result += self.bbcode(callbackText);
+        // TODO: TEMPORARY FIX
+        result = format == "nemirtingas_steam_emulator" ? result.replace(/(},\n\n})/g, "}\n}") : result;
+        // ----
+        result = headerReplace !== false ? result.replace(/;\s/g, headerReplace) : result;
+        return {
+            text: result,
+            callback,
+            data
+        };
     }
     toBlob(content) {
         return window.URL.createObjectURL(new Blob([content.replace(/\n/g, "\r\n")], {
@@ -441,9 +433,7 @@ achievementscount = 0
         name: "GreenLuma 2020 [BATCH MODE]",
         noHeader: false,
         headerReplace: ":: ",
-        callback({
-            steamDB
-        }) {
+        callback({steamDB}) {
             return {
                 name: `${steamDB.name}_${steamDB.appID}_GreenLuma.bat`,
                 text: `@ECHO OFF
@@ -539,9 +529,7 @@ EXIT`
         name: "APPID = APPIDNAME",
         noHeader: false,
         headerReplace: false,
-        callback({
-            steamDB
-        }) {
+        callback({steamDB}) {
             return {
                 name: `${steamDB.name}_${steamDB.appID}.ini`,
                 text: "[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]"
@@ -552,9 +540,7 @@ EXIT`
         name: "ONLY NAME",
         noHeader: false,
         headerReplace: false,
-        callback({
-            steamDB
-        }) {
+        callback({steamDB}) {
             return {
                 name: `${steamDB.name}_${steamDB.appID}.ini`,
                 text: "[dlcs]{dlc_name}\n[/dlcs]"
@@ -562,4 +548,4 @@ EXIT`
         }
     }
 };
-m.getDataSteamDB();
+m.getData();
