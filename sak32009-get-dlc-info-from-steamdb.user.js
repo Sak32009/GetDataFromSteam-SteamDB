@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @year          2016 - 2020
-// @version       4.0.6
+// @version       4.0.7
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -12,6 +12,7 @@
 // @downloadURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.user.js
 // @icon          https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb-icon.png
 // @match         *://steamdb.info/app/*
+// @match         *://steamdb.info/depot/*
 // @match         *://cs.rin.ru/forum/viewtopic.php?*
 // @run-at        document-end
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js
@@ -40,11 +41,14 @@ class Main {
             appID: "",
             name: "",
             dlcs: {},
+            unknowns: {},
             count: 0,
             appURL: "https://steamdb.info/app/",
             linkedURL: "https://steamdb.info/search/?a=linked&q="
         };
         this.isCSRINRU = new URL(window.location.href).hostname == "cs.rin.ru";
+        this.isSTEAMDBApp = new URL(window.location.href).pathname.startsWith("/app/");
+        this.isSTEAMDBDepot = new URL(window.location.href).pathname.startsWith("/depot/") && new URL(window.location.href).search == "?show_hashes";
     }
     run() {
         const self = this;
@@ -62,19 +66,39 @@ class Main {
     }
     getData() {
         const self = this;
-        if (self.isCSRINRU) {
-            const $searchAppID = $("#pagecontent > .tablebg:nth-of-type(3) .postbody:first-child a.postlink[href^='http://store.steampowered.com/app/']");
-            if ($searchAppID.length > 0) {
-                // TODO: ISN'T ACCURATE
-                self.steamDB.appID = new URL($searchAppID.attr("href")).pathname.split("/")[2];
-                // TODO: ISN'T ACCURATE
-                self.steamDB.name = $("#pageheader a.titles").clone().children().remove().end().text();
+        if(self.isSTEAMDBApp || self.isCSRINRU){
+            if (self.isCSRINRU) {
+                const $searchAppID = $("#pagecontent > .tablebg:nth-of-type(3) .postbody:first-child a.postlink[href^='http://store.steampowered.com/app/']");
+                if ($searchAppID.length > 0) {
+                    // TODO: ISN'T ACCURATE
+                    self.steamDB.appID = new URL($searchAppID.attr("href")).pathname.split("/")[2];
+                    // TODO: ISN'T ACCURATE
+                    self.steamDB.name = $("#pageheader a.titles").clone().children().remove().end().text().trim();
+                }
+            } else {
+                self.steamDB.appID = $(".scope-app[data-appid]").data("appid");
+                self.steamDB.name = $(".pagehead > h1").text().trim();
             }
-        } else {
-            self.steamDB.appID = $(".scope-app[data-appid]").data("appid");
-            self.steamDB.name = $(".pagehead > h1").text();
+            self.setUNKNOWNSFromRequest();
+            self.setDLCSFromRequest();
+        }else if(self.isSTEAMDBDepot){
+            self.getDepotHashes();
         }
-        self.setDLCSFromRequest();
+    }
+    setUNKNOWNSFromRequest() {
+        const self = this;
+        GM_xmlhttpRequest({
+            url: `${self.steamDB.appURL + self.steamDB.appID}`,
+            method: "GET",
+            onload({responseText}) {
+                $($.parseHTML(responseText)).find("tr.app[data-appid] td.muted:nth-of-type(2)").each((_index, _dom) => {
+                    const $dom = $(_dom).closest("tr");
+                    const appID = $dom.attr("data-appid");
+                    const appName = $dom.find("td:nth-of-type(2)").text().trim();
+                    self.steamDB.unknowns[appID] = appName;
+                });
+            }
+        });
     }
     setDLCSFromRequest() {
         const self = this;
@@ -123,6 +147,30 @@ class Main {
             const container = $("#GetDLCInfofromSteamDB_spoilerContainer > div");
             $(e.target).val(container.css("display") == "none" ? "Hide" : "Show");
             container.toggle();
+        });
+    }
+    /*
+     * STEAMDB DEPOT
+     */
+    getDepotHashes() {
+        const self = this;
+        $(document).on("change", `div#files select[name="DataTables_Table_0_length"]`, (e) => {
+            let output = `; ${GM_info.script.name} v${GM_info.script.version} by ${GM_info.script.author} | ${GM_info.script.year}\n`;
+            const depotID = $(`div[data-depotid]`).data("depotid");
+            const entries = $(`div#files select[name="DataTables_Table_0_length"] option:selected`).val();
+            const check = $("div#files > h2:first-child a").length;
+            if(entries == "-1" && !check.length){
+                $(`div#files #DataTables_Table_0 tbody tr`).each((_index, _value) => {
+                    const $dom = $(_value);
+                    const filename = $dom.find("td:nth-of-type(1)").text().trim();
+                    const filechecksum = $dom.find("td.code").text().trim();
+                    if(filechecksum != "NULL"){
+                        output += filename + " " + filechecksum + "\n";
+                    }
+                });
+                $(`<a href="${self.toBlob(output)}" download="${depotID}.sfv" style="float:right">Download .sfv</a>`).appendTo("div#files > h2:first-child");
+                $(`<textarea rows="20" style="width:100%;resize:none"></textarea>`).text(output).insertAfter("div#files > h2:first-child");
+            }
         });
     }
     /*
@@ -205,11 +253,12 @@ class Main {
             type: "application/octet-stream;charset=utf-8"
         }));
     }
-    bbcodeDLCS(str, indexFromZero, indexPrefix) {
+    bbcodeDLCS(str, indexFromZero, indexPrefix, onlyUnknowns) {
         const self = this;
         let result = "";
         let index = indexFromZero ? 0 : -1;
-        $.each(self.steamDB.dlcs, (_appid, _name) => {
+        let dlcs = onlyUnknowns ? self.steamDB.unknowns : self.steamDB.dlcs;
+        $.each(dlcs, (_appid, _name) => {
             index += 1;
             result += self.bbcodeDLCSReplace(str, {
                 "dlc_id": _appid,
@@ -234,7 +283,7 @@ class Main {
         const re = /\[(\w+)(?:=(.*))?]([^[]+)\[\/(\w+)]/g;
         while ((data = re.exec(str)) !== null) {
             const [bbcode, bbcodeOpen, bbcodeOpt, bbcodeVal, bbcodeClose] = data;
-            if (bbcodeOpen === bbcodeClose) {
+            if (bbcodeOpen == bbcodeClose) {
                 const bbcodeOpts = typeof bbcodeOpt !== "undefined" ? bbcodeOpt.split(":") : [];
                 switch (bbcodeOpen) {
                     case "steamdb": {
@@ -242,7 +291,11 @@ class Main {
                         break;
                     }
                     case "dlcs": {
-                        str = str.replace(bbcode, self.bbcodeDLCS(bbcodeVal, bbcodeOpts[0] === "true", bbcodeOpts[1] || 0));
+                        str = str.replace(bbcode, self.bbcodeDLCS(bbcodeVal, bbcodeOpts[0] == "true", bbcodeOpts[1] || 0, false));
+                        break;
+                    }
+                    case "unknowns": {
+                        str = str.replace(bbcode, self.bbcodeDLCS(bbcodeVal, bbcodeOpts[0] == "true", bbcodeOpts[1] || 0, true));
                         break;
                     }
                 }
@@ -544,6 +597,17 @@ EXIT`
             return {
                 name: `${steamDB.name}_${steamDB.appID}.ini`,
                 text: "[dlcs]{dlc_name}\n[/dlcs]"
+            };
+        }
+    },
+    unknownsDLCS: {
+        name: "ONLY UNKNOWNS DLCS",
+        noHeader: false,
+        headerReplace: false,
+        callback({steamDB}) {
+            return {
+                name: `${steamDB.name}_${steamDB.appID}_unknowns.ini`,
+                text: "[unknowns]{dlc_id} = {dlc_name}\n[/unknowns]"
             };
         }
     }
