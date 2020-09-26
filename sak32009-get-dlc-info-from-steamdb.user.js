@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @year          2016 - 2020
-// @version       4.0.7
+// @version       4.0.8
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -44,11 +44,13 @@ class Main {
             unknowns: {},
             count: 0,
             appURL: "https://steamdb.info/app/",
+			depotURL: "https://steamdb.info/depot/",
             linkedURL: "https://steamdb.info/search/?a=linked&q="
         };
-        this.isCSRINRU = new URL(window.location.href).hostname == "cs.rin.ru";
-        this.isSTEAMDBApp = new URL(window.location.href).pathname.startsWith("/app/");
-        this.isSTEAMDBDepot = new URL(window.location.href).pathname.startsWith("/depot/") && new URL(window.location.href).search == "?show_hashes";
+        const url = new URL(window.location.href);
+        this.isCSRINRU = url.hostname == "cs.rin.ru";
+        this.isSTEAMDBApp = url.pathname.startsWith("/app/");
+        this.isSTEAMDBDepot = url.pathname.startsWith("/depot/") && url.search == "?show_hashes";
     }
     run() {
         const self = this;
@@ -85,6 +87,7 @@ class Main {
             self.getDepotHashes();
         }
     }
+    // TODO: ISN'T PROPERLY A SOLUTION
     setUNKNOWNSFromRequest() {
         const self = this;
         GM_xmlhttpRequest({
@@ -122,7 +125,7 @@ class Main {
      */
     createInterfaceCSRINRU() {
         const self = this;
-        $("#pagecontent > .tablebg:nth-of-type(3) .postbody:first-child").append(`<div style="margin:20px 0">
+        $(`<div style="margin:20px 0">
     <div id="GetDLCInfofromSteamDB_spoiler" style="margin-bottom:2px">
         <input value="Show" style="width:60px;font-size:10px" type="button">
         <a href="${GM_info.script.supportURL}" style="color:red;font-weight:bold">${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small> | Total DLCS: ${self.steamDB.count} <span style="color:white">| Name: ${self.steamDB.name} | AppID: ${self.steamDB.appID} | PLEASE REPORT IF IS WRONG</span></a>
@@ -131,13 +134,13 @@ class Main {
         <h5 style="color:red;text-align:center">Protect development and free things -- because their survival is in our hands.<br>You can donate by clicking on <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=U7TLCVMHN9HA2&source=url" class="btn btn-info" target="_blank">Paypal Donate</a>.</h5>
         <div style="display:none"></div>
     </div>
-</div>`);
+</div>`).append("#pagecontent > .tablebg:nth-of-type(3) .postbody:first-child");
     }
     fillInterfaceCSRINRU() {
         const self = this;
         $.each(self.formats, (_index, _values) => {
             const output = self.output(_index);
-            $("#GetDLCInfofromSteamDB_spoilerContainer > div").append(`<div class="attachcontent"><a href="${self.toBlob(output.text)}" download="${output.callback.name}">${output.data.name}</a></div>`);
+            $(`<div class="attachcontent"><a href="${self.toBlob(output.text)}" download="${output.callback.name}">${output.data.name}</a></div>`).appendTo("#GetDLCInfofromSteamDB_spoilerContainer > div");
         });
     }
     loadEventsCSRINRU() {
@@ -155,20 +158,20 @@ class Main {
     getDepotHashes() {
         const self = this;
         $(document).on("change", `div#files select[name="DataTables_Table_0_length"]`, (e) => {
-            let output = `; ${GM_info.script.name} v${GM_info.script.version} by ${GM_info.script.author} | ${GM_info.script.year}\n`;
             const depotID = $(`div[data-depotid]`).data("depotid");
             const entries = $(`div#files select[name="DataTables_Table_0_length"] option:selected`).val();
             const check = $("div#files > h2:first-child a").length;
+            let output = `; ${GM_info.script.name} v${GM_info.script.version} by ${GM_info.script.author} | ${GM_info.script.year} | DEPOT URL: ${self.steamDB.depotURL + depotID}\n`;
             if(entries == "-1" && !check.length){
                 $(`div#files #DataTables_Table_0 tbody tr`).each((_index, _value) => {
                     const $dom = $(_value);
                     const filename = $dom.find("td:nth-of-type(1)").text().trim();
                     const filechecksum = $dom.find("td.code").text().trim();
                     if(filechecksum != "NULL"){
-                        output += filename + " " + filechecksum + "\n";
+                        output += `${filechecksum} *${filename}\n`;
                     }
                 });
-                $(`<a href="${self.toBlob(output)}" download="${depotID}.sfv" style="float:right">Download .sfv</a>`).appendTo("div#files > h2:first-child");
+                $(`<a href="${self.toBlob(output)}" download="${depotID}.sha1" style="float:right">Download .sha1</a>`).appendTo("div#files > h2:first-child");
                 $(`<textarea rows="20" style="width:100%;resize:none"></textarea>`).text(output).insertAfter("div#files > h2:first-child");
             }
         });
