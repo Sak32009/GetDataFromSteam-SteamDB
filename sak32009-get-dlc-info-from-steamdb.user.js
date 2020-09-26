@@ -44,7 +44,7 @@ class Main {
             unknowns: {},
             count: 0,
             appURL: "https://steamdb.info/app/",
-			depotURL: "https://steamdb.info/depot/",
+            depotURL: "https://steamdb.info/depot/",
             linkedURL: "https://steamdb.info/search/?a=linked&q="
         };
         const url = new URL(window.location.href);
