@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @year          2016 - 2020
-// @version       4.0.8
+// @version       4.0.9
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -35,26 +35,34 @@ GM_info.script.supportURL = "https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837"
  * USERSCRIPT MAIN
  */
 class Main {
+    /*
+     * CONSTRUCTOR
+     */
     constructor() {
         this.formats = {};
         this.steamDB = {
             appID: "",
             name: "",
             dlcs: {},
-            unknowns: {},
+            dlcsUnknowns: {},
             count: 0,
+            countUnknowns: 0,
             appURL: "https://steamdb.info/app/",
             depotURL: "https://steamdb.info/depot/",
             linkedURL: "https://steamdb.info/search/?a=linked&q="
         };
+        this.paypalURL = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=U7TLCVMHN9HA2&source=url";
         const url = new URL(window.location.href);
         this.isCSRINRU = url.hostname == "cs.rin.ru";
         this.isSTEAMDBApp = url.pathname.startsWith("/app/");
         this.isSTEAMDBDepot = url.pathname.startsWith("/depot/") && url.search == "?show_hashes";
     }
+    /*
+     * CHECKS AND GET DATA FUNCTIONS
+     */
     run() {
         const self = this;
-        if (self.steamDB.count > 0) {
+        if (self.steamDB.count > 0 || self.steamDB.countUnknowns > 0) {
             if (self.isCSRINRU) {
                 self.createInterfaceCSRINRU();
                 self.fillInterfaceCSRINRU();
@@ -70,46 +78,48 @@ class Main {
         const self = this;
         if(self.isSTEAMDBApp || self.isCSRINRU){
             if (self.isCSRINRU) {
+                // TODO: APPID ISN'T ACCURATE
                 const $searchAppID = $("#pagecontent > .tablebg:nth-of-type(3) .postbody:first-child a.postlink[href^='http://store.steampowered.com/app/']");
                 if ($searchAppID.length > 0) {
-                    // TODO: ISN'T ACCURATE
                     self.steamDB.appID = new URL($searchAppID.attr("href")).pathname.split("/")[2];
-                    // TODO: ISN'T ACCURATE
-                    self.steamDB.name = $("#pageheader a.titles").clone().children().remove().end().text().trim();
                 }
             } else {
                 self.steamDB.appID = $(".scope-app[data-appid]").data("appid");
-                self.steamDB.name = $(".pagehead > h1").text().trim();
             }
-            self.setUNKNOWNSFromRequest();
-            self.setDLCSFromRequest();
+            if(self.steamDB.appID.toString().length > 0){
+                self.setDLCSRequests();
+            }
         }else if(self.isSTEAMDBDepot){
             self.getDepotHashes();
         }
     }
-    // TODO: ISN'T PROPERLY A SOLUTION
-    setUNKNOWNSFromRequest() {
+    setDLCSRequests() {
         const self = this;
         GM_xmlhttpRequest({
             url: `${self.steamDB.appURL + self.steamDB.appID}`,
             method: "GET",
             onload({responseText}) {
-                $($.parseHTML(responseText)).find("tr.app[data-appid] td.muted:nth-of-type(2)").each((_index, _dom) => {
+                const $dom = $($.parseHTML(responseText));
+                self.steamDB.name = $dom.find(".pagehead > h1").text().trim();
+                $dom.find("tr.app[data-appid] td.muted:nth-of-type(2)").each((_index, _dom) => {
                     const $dom = $(_dom).closest("tr");
                     const appID = $dom.attr("data-appid");
                     const appName = $dom.find("td:nth-of-type(2)").text().trim();
-                    self.steamDB.unknowns[appID] = appName;
+                    self.steamDB.dlcsUnknowns[appID] = appName;
+                    self.steamDB.countUnknowns += 1;
                 });
+                self.setLinkedDLCSRequest();
             }
         });
     }
-    setDLCSFromRequest() {
+    setLinkedDLCSRequest() {
         const self = this;
         GM_xmlhttpRequest({
             url: `${self.steamDB.linkedURL + self.steamDB.appID}`,
             method: "GET",
             onload({responseText}) {
-                $($.parseHTML(responseText)).find("tr.app[data-appid] td:nth-of-type(2):contains('DLC')").each((_index, _dom) => {
+                const $dom = $($.parseHTML(responseText));
+                $dom.find("tr.app[data-appid] td:nth-of-type(2):contains('DLC')").each((_index, _dom) => {
                     const $dom = $(_dom).closest("tr");
                     const appID = $dom.attr("data-appid");
                     const appName = $dom.find("td:nth-of-type(3)").text().trim();
@@ -121,6 +131,52 @@ class Main {
         });
     }
     /*
+     * STEAMDB
+     */
+    createInterface() {
+        const self = this;
+        GM_addStyle(GM_getResourceText("modal"));
+        GM_addStyle(`a[href="#GetDLCInfofromSteamDB_modal"]{position:fixed;bottom:0;right:0;margin-right:10px;z-index:999;border-bottom-left-radius:0;border-bottom-right-radius:0}.jquery-modal.blocker{z-index:999999!important}.dark-mode .jquery-modal .modal{background-color:#161920}.jquery-modal .modal{max-width:900px!important;padding:0!important;display:none}.jquery-modal .modal-header{padding:10px;text-align:center}.jquery-modal .modal-container>div{padding:15px;border-top:1px solid #323f53;border-bottom:1px solid #323f53}.jquery-modal .modal-container>textarea{width:100%;resize:none;border:0}`);
+        $(`<a href="#GetDLCInfofromSteamDB_modal" class="btn btn-primary" rel="modal:open">${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small></a>
+<div id="GetDLCInfofromSteamDB_modal" class="modal">
+    <div class="modal-header">
+        <h3>${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small></h4>
+        <h5 style="color:red">Protect development and free things -- because their survival is in our hands.<br>You can donate by clicking on "Paypal Donate".</h5>
+        <a href="${self.paypalURL}" class="btn btn-info" target="_blank">Paypal Donate</a>
+    </div>
+    <div class="modal-container">
+        <div>
+            <select id="GetDLCInfofromSteamDB_selectInput"></select>
+            <button type="button" id="GetDLCInfofromSteamDB_submitInput" class="btn btn-primary">Convert</button>
+            <label class="btn"><input type="checkbox" id="GetDLCInfofromSteamDB_checkboxDLCSUnknowns"><span>With DLCS Unknowns</span></label>
+            <a href="javascript:;" class="btn" id="GetDLCInfofromSteamDB_downloadAsFile">Download as file</a>
+        </div>
+        <textarea id="GetDLCInfofromSteamDB_textareaOutput" rows="20" placeholder="Select an option and click 'Convert'"></textarea>
+    </div>
+</div>`).appendTo("body");
+    }
+    fillInterface() {
+        const self = this;
+        $.each(self.formats, (_index, _values) => {
+            const name = _values.name;
+            $("<option>").attr("value", _index).text(name).appendTo(`#GetDLCInfofromSteamDB_selectInput`);
+        });
+    }
+    loadEvents() {
+        const self = this;
+        $(document).on("click", `#GetDLCInfofromSteamDB_submitInput`, (e) => {
+            e.preventDefault();
+            const format = $(`#GetDLCInfofromSteamDB_selectInput option:selected`).val();
+            const checkboxDLCSUnknowns = $("input#GetDLCInfofromSteamDB_checkboxDLCSUnknowns").is(":checked");
+            const output = self.output(format, checkboxDLCSUnknowns);
+            $(`#GetDLCInfofromSteamDB_textareaOutput`).text(output.result).scrollTop(0);
+            $(`#GetDLCInfofromSteamDB_downloadAsFile`).attr({
+                href: self.toBlob(output.result),
+                download: output.callback.name
+            });
+        });
+    }
+    /*
      * CS.RIN.RU
      */
     createInterfaceCSRINRU() {
@@ -128,19 +184,20 @@ class Main {
         $(`<div style="margin:20px 0">
     <div id="GetDLCInfofromSteamDB_spoiler" style="margin-bottom:2px">
         <input value="Show" style="width:60px;font-size:10px" type="button">
-        <a href="${GM_info.script.supportURL}" style="color:red;font-weight:bold">${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small> | Total DLCS: ${self.steamDB.count} <span style="color:white">| Name: ${self.steamDB.name} | AppID: ${self.steamDB.appID} | PLEASE REPORT IF IS WRONG</span></a>
+        <a href="${GM_info.script.supportURL}" style="color:red;font-weight:bold">${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small> | Total DLCS: ${self.steamDB.count} | Total DLCS Unknowns: ${self.steamDB.count} <span style="color:white">| Name: ${self.steamDB.name} | AppID: ${self.steamDB.appID} | PLEASE REPORT IF IS WRONG</span></a>
     </div>
     <div id="GetDLCInfofromSteamDB_spoilerContainer" style="border:1px inset white;padding:5px">
-        <h5 style="color:red;text-align:center">Protect development and free things -- because their survival is in our hands.<br>You can donate by clicking on <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=U7TLCVMHN9HA2&source=url" class="btn btn-info" target="_blank">Paypal Donate</a>.</h5>
+        <h5 style="color:red;text-align:center">Protect development and free things -- because their survival is in our hands.<br>You can donate by clicking on <a href="${self.paypalURL}" class="btn btn-info" target="_blank">Paypal Donate</a>.</h5>
         <div style="display:none"></div>
     </div>
-</div>`).append("#pagecontent > .tablebg:nth-of-type(3) .postbody:first-child");
+</div>`).appendTo("#pagecontent > .tablebg:nth-of-type(3) .postbody:first-child");
     }
     fillInterfaceCSRINRU() {
         const self = this;
         $.each(self.formats, (_index, _values) => {
-            const output = self.output(_index);
-            $(`<div class="attachcontent"><a href="${self.toBlob(output.text)}" download="${output.callback.name}">${output.data.name}</a></div>`).appendTo("#GetDLCInfofromSteamDB_spoilerContainer > div");
+            const output = self.output(_index, false);
+            const outputWithUnknowns = self.output(_index, true);
+            $(`<div style="padding:10px"><div class="attachcontent" style="margin:0"><a href="${self.toBlob(output.result)}" download="${output.callback.name}">${output.data.name}</a></div><div class="attachcontent" style="margin:0"><a href="${self.toBlob(outputWithUnknowns.result)}" download="${outputWithUnknowns.callback.name}">${outputWithUnknowns.data.name} - With DLCS Unknowns</a></div></div>`).appendTo("#GetDLCInfofromSteamDB_spoilerContainer > div");
         });
     }
     loadEventsCSRINRU() {
@@ -177,50 +234,9 @@ class Main {
         });
     }
     /*
-     * STEAMDB
+     * COMMON FUNCTIONS
      */
-    createInterface() {
-        const self = this;
-        GM_addStyle(GM_getResourceText("modal"));
-        GM_addStyle(`a[href="#GetDLCInfofromSteamDB_modal"]{position:fixed;bottom:0;right:0;margin-right:10px;z-index:999;border-bottom-left-radius:0;border-bottom-right-radius:0}.jquery-modal.blocker{z-index:999999!important}.dark-mode .jquery-modal .modal{background-color:#161920}.jquery-modal .modal{max-width:900px!important;padding:0!important;display:none}.jquery-modal .modal-header{padding:10px;text-align:center}.jquery-modal .modal-container>div{padding:15px;border-top:1px solid #323f53;border-bottom:1px solid #323f53}.jquery-modal .modal-container>textarea{width:100%;resize:none;border:0}`);
-        $(`<a href="#GetDLCInfofromSteamDB_modal" class="btn btn-primary" rel="modal:open">${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small></a>
-<div id="GetDLCInfofromSteamDB_modal" class="modal">
-    <div class="modal-header">
-        <h3>${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small></h4>
-        <h5 style="color:red">Protect development and free things -- because their survival is in our hands.<br>You can donate by clicking on "Paypal Donate".</h5>
-        <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=U7TLCVMHN9HA2&source=url" class="btn btn-info" target="_blank">Paypal Donate</a>
-    </div>
-    <div class="modal-container">
-        <div>
-            <select id="GetDLCInfofromSteamDB_selectInput"></select>
-            <button type="button" id="GetDLCInfofromSteamDB_submitInput" class="btn btn-primary">Convert</button>
-            <a href="javascript:;" class="btn" id="GetDLCInfofromSteamDB_downloadAsFile">Download as file</a>
-        </div>
-        <textarea id="GetDLCInfofromSteamDB_textareaOutput" rows="20" placeholder="Select an option and click 'Convert'"></textarea>
-    </div>
-</div>`).appendTo("body");
-    }
-    fillInterface() {
-        const self = this;
-        $.each(self.formats, (_index, _values) => {
-            const name = _values.name;
-            $("<option>").attr("value", _index).text(name).appendTo(`#GetDLCInfofromSteamDB_selectInput`);
-        });
-    }
-    loadEvents() {
-        const self = this;
-        $(document).on("click", `#GetDLCInfofromSteamDB_submitInput`, (e) => {
-            e.preventDefault();
-            const format = $(`#GetDLCInfofromSteamDB_selectInput option:selected`).val();
-            const output = self.output(format);
-            $(`#GetDLCInfofromSteamDB_textareaOutput`).text(output.text).scrollTop(0);
-            $(`#GetDLCInfofromSteamDB_downloadAsFile`).attr({
-                href: self.toBlob(output.text),
-                download: output.callback.name
-            });
-        });
-    }
-    output(format){
+    output(format, withDLCSUnknowns){
         const self = this;
         let result = "";
         const data = self.formats[format];
@@ -236,31 +252,40 @@ class Main {
 ; AppID: ${self.steamDB.appID}
 ; AppID Name: ${self.steamDB.name}
 ; AppID Total DLCS: ${self.steamDB.count}
+; AppID Total DLCS Unknowns: ${self.steamDB.countUnknowns}
 ; SteamDB: ${self.steamDB.appURL}${self.steamDB.appID}
 ; Homepage: ${GM_info.script.homepage}
 ; Support: ${GM_info.script.supportURL}\n\n`;
+            result = headerReplace !== false ? result.replace(/;\s/g, headerReplace) : result;
         }
-        result += self.bbcode(callbackText);
-        // TODO: TEMPORARY FIX
+        result += self.bbcode(callbackText, withDLCSUnknowns);
+        // TODO: NEMIRTINGAS TEMPORARY FIX
         result = format == "nemirtingas_steam_emulator" ? result.replace(/(},\n\n})/g, "}\n}") : result;
         // ----
-        result = headerReplace !== false ? result.replace(/;\s/g, headerReplace) : result;
-        return {
-            text: result,
-            callback,
-            data
-        };
+        return {result, callback, data};
     }
     toBlob(content) {
         return window.URL.createObjectURL(new Blob([content.replace(/\n/g, "\r\n")], {
             type: "application/octet-stream;charset=utf-8"
         }));
     }
-    bbcodeDLCS(str, indexFromZero, indexPrefix, onlyUnknowns) {
+    /*
+     * BBCODE FUNCTIONS
+     */
+    bbcodeDLCSReplace(str, values) {
+        $.each(values, (_index, _values) => {
+            str = str.replace(new RegExp(`{${_index}}`, "g"), _values);
+        });
+        return str;
+    }
+    bbcodeDLCSPrefix(index, prefix) {
+        return prefix > index.length ? "0".repeat(prefix - index.length) + index : index;
+    }
+    bbcodeDLCS(str, indexFromZero, indexPrefix, withDLCSUnknowns) {
         const self = this;
         let result = "";
         let index = indexFromZero ? 0 : -1;
-        let dlcs = onlyUnknowns ? self.steamDB.unknowns : self.steamDB.dlcs;
+        const dlcs = withDLCSUnknowns ? {...self.steamDB.dlcs, ...self.steamDB.dlcsUnknowns} : self.steamDB.dlcs;
         $.each(dlcs, (_appid, _name) => {
             index += 1;
             result += self.bbcodeDLCSReplace(str, {
@@ -271,16 +296,7 @@ class Main {
         });
         return result;
     }
-    bbcodeDLCSReplace(str, values) {
-        $.each(values, (_index, _values) => {
-            str = str.replace(new RegExp(`{${_index}}`, "g"), _values);
-        });
-        return str;
-    }
-    bbcodeDLCSPrefix(index, prefix) {
-        return prefix > index.length ? "0".repeat(prefix - index.length) + index : index;
-    }
-    bbcode(str) {
+    bbcode(str, withDLCSUnknowns) {
         const self = this;
         let data = "";
         const re = /\[(\w+)(?:=(.*))?]([^[]+)\[\/(\w+)]/g;
@@ -294,11 +310,7 @@ class Main {
                         break;
                     }
                     case "dlcs": {
-                        str = str.replace(bbcode, self.bbcodeDLCS(bbcodeVal, bbcodeOpts[0] == "true", bbcodeOpts[1] || 0, false));
-                        break;
-                    }
-                    case "unknowns": {
-                        str = str.replace(bbcode, self.bbcodeDLCS(bbcodeVal, bbcodeOpts[0] == "true", bbcodeOpts[1] || 0, true));
+                        str = str.replace(bbcode, self.bbcodeDLCS(bbcodeVal, bbcodeOpts[0] == "true", bbcodeOpts[1] || 0, withDLCSUnknowns));
                         break;
                     }
                 }
@@ -310,8 +322,8 @@ class Main {
 
 const m = new Main();
 m.formats = {
-    creamAPI_4_4_0_0: {
-        name: "CreamAPI v4.4.0.0",
+    creamAPI_4_5_0_0: {
+        name: "CreamAPI v4.5.0.0",
         noHeader: false,
         headerReplace: false,
         callback(main) {
@@ -600,17 +612,6 @@ EXIT`
             return {
                 name: `${steamDB.name}_${steamDB.appID}.ini`,
                 text: "[dlcs]{dlc_name}\n[/dlcs]"
-            };
-        }
-    },
-    unknownsDLCS: {
-        name: "ONLY UNKNOWNS DLCS",
-        noHeader: false,
-        headerReplace: false,
-        callback({steamDB}) {
-            return {
-                name: `${steamDB.name}_${steamDB.appID}_unknowns.ini`,
-                text: "[unknowns]{dlc_id} = {dlc_name}\n[/unknowns]"
             };
         }
     }
