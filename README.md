@@ -25,10 +25,13 @@ Install a userscript directly from GitHub by clicking on the "RAW" button of the
 ### Usage:
 
 - STEAMDB
- - Go to [https://steamdb.info/app/570/dlc/](https://steamdb.info/app/570/dlc/) for example and click on the button at bottom-right screen, select format and click "Convert".
+  - Go to [https://steamdb.info/app/570/dlc/](https://steamdb.info/app/570/dlc/) for example and click on the button at bottom-right screen, select format and click "Convert".
+
+- STEAMDB DEPOT to .sha1
+  - Go to [https://steamdb.info/depot/373303/](https://steamdb.info/depot/373303/) for example, click on "Click to view file hashes", select "All" to show all entries and all entries are showed on textarea in .sha1 format.
 
 - CS.RIN.RU
- - Go to [https://cs.rin.ru/forum/viewtopic.php?f=10&t=81396](https://cs.rin.ru/forum/viewtopic.php?f=10&t=81396) for example and in the first topic at the bottom you will find download links of all formats.
+  - Go to [https://cs.rin.ru/forum/viewtopic.php?f=10&t=81396](https://cs.rin.ru/forum/viewtopic.php?f=10&t=81396) for example and in the first topic at the bottom you will find download links of all formats.
 
 ### Features:
 
