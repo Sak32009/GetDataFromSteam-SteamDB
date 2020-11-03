@@ -184,7 +184,7 @@ class Main {
         $(`<div style="margin:20px 0">
     <div id="GetDLCInfofromSteamDB_spoiler" style="margin-bottom:2px">
         <input value="Show" style="width:60px;font-size:10px" type="button">
-        <a href="${GM_info.script.supportURL}" style="color:red;font-weight:bold">${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small> | Total DLCS: ${self.steamDB.count} | Total DLCS Unknowns: ${self.steamDB.count} <span style="color:white">| Name: ${self.steamDB.name} | AppID: ${self.steamDB.appID} | PLEASE REPORT IF IS WRONG</span></a>
+        <a href="${GM_info.script.supportURL}" style="color:red;font-weight:bold">${GM_info.script.name} <b>v${GM_info.script.version}</b> <small>by ${GM_info.script.author} | ${GM_info.script.year}</small> | Total DLCS: ${self.steamDB.count} | Total DLCS Unknowns: ${self.steamDB.countUnknowns} <span style="color:white">| Name: ${self.steamDB.name} | AppID: ${self.steamDB.appID} | PLEASE REPORT IF IS WRONG</span></a>
     </div>
     <div id="GetDLCInfofromSteamDB_spoilerContainer" style="border:1px inset white;padding:5px">
         <h5 style="color:red;text-align:center">Protect development and free things -- because their survival is in our hands.<br>You can donate by clicking on <a href="${self.paypalURL}" class="btn btn-info" target="_blank">Paypal Donate</a>.</h5>
