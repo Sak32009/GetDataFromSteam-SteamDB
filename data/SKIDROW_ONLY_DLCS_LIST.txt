@@ -1,0 +1,1 @@
+[dlcs]; {dlc_name}\n{dlc_id}\n[/dlcs]
