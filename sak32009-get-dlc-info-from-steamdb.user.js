@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @year          2016 - 2020
-// @version       4.1.2
+// @version       4.1.3
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -167,7 +167,7 @@ class m {
         this.isCSRINRU = url.hostname == "cs.rin.ru";
         this.isSTEAMDBApp = url.pathname.startsWith("/app/");
         this.isSTEAMDBDepot = url.pathname.startsWith("/depot/") && this.$_GET.has("show_hashes");
-        this.isLocal = url.hostname == "sak32009.github.io" && url.pathname = "/getdlcinfofromsteamdb/" && this.$_GET.has("appid");
+        this.isLocal = url.hostname == "sak32009.github.io" && url.pathname == "/getdlcinfofromsteamdb/" && this.$_GET.has("appid");
     }
     getData() {
         const self = this;
