@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @year          2016 - 2020
-// @version       4.1.0
+// @version       4.1.1
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -160,7 +160,7 @@ class m {
             depotURL: "https://steamdb.info/depot/",
             linkedURL: "https://steamdb.info/search/?a=linked&q="
         };
-        this.localURL = "http://127.0.0.1:8887/";
+        this.localURL = "https://sak32009.github.io/getdlcinfofromsteamdb/";
         this.localIMG = "https://sak32009.github.io/sak32009.svg";
         const url = new URL(window.location.href);
         this.$_GET = new URLSearchParams(url.search);
