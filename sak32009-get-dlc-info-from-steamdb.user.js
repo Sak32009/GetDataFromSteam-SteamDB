@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @year          2016 - 2020
-// @version       4.1.3
+// @version       4.1.4
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -187,7 +187,9 @@ class m {
             } else {
                 self.steamDB.appID = $(".scope-app[data-appid]").data("appid");
             }
-            self.createInterfaceButtons();
+            if(self.steamDB.appID.toString().length){
+                self.createInterfaceButtons();
+            }
         } else if (self.isSTEAMDBDepot) {
             self.createInterfaceDepots();
         }
