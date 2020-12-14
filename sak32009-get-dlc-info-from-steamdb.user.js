@@ -4,7 +4,7 @@
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
 // @year          2016 - 2020
-// @version       4.1.4
+// @version       4.1.5
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -17,7 +17,7 @@
 // @match         *://sak32009.github.io/getdlcinfofromsteamdb/*
 // @run-at        document-end
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js
-// @resource      localIMG https://sak32009.github.io/sak32009.svg
+// @resource      localIMG https://rawcdn.githack.com/Sak32009/sak32009.github.io/5760c3bc107c72654bdd2575f1f071c895c20e96/sak32009.svg
 // @resource      f1 https://rawcdn.githack.com/Sak32009/GetDLCInfoFromSteamDB/767f614f2b834aa497eb39d35e2359ab3e72f7fb/data/CreamAPI/V3.4.1.0.txt
 // @resource      f2 https://rawcdn.githack.com/Sak32009/GetDLCInfoFromSteamDB/767f614f2b834aa497eb39d35e2359ab3e72f7fb/data/CreamAPI/V4.5.0.0.txt
 // @resource      f3 https://rawcdn.githack.com/Sak32009/GetDLCInfoFromSteamDB/767f614f2b834aa497eb39d35e2359ab3e72f7fb/data/Only_DLCS_List/3DMGAME.txt
@@ -161,7 +161,7 @@ class m {
             linkedURL: "https://steamdb.info/search/?a=linked&q="
         };
         this.localURL = "https://sak32009.github.io/getdlcinfofromsteamdb/";
-        this.localIMG = "https://sak32009.github.io/sak32009.svg";
+        this.localIMG = "https://rawcdn.githack.com/Sak32009/sak32009.github.io/5760c3bc107c72654bdd2575f1f071c895c20e96/sak32009.svg";
         const url = new URL(window.location.href);
         this.$_GET = new URLSearchParams(url.search);
         this.isCSRINRU = url.hostname == "cs.rin.ru";
