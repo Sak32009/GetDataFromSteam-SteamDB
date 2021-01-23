@@ -3,8 +3,8 @@
 // @namespace     sak32009-get-dlc-info-from-steamdb
 // @description   Get DLC Info from SteamDB
 // @author        Sak32009
-// @year          2016 - 2020
-// @version       4.1.5
+// @year          2016 - 2021
+// @version       4.1.6
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837
@@ -34,7 +34,7 @@
 // ==/UserScript==
 
 GM_info.script.author = "Sak32009";
-GM_info.script.year = "2016 - 2020";
+GM_info.script.year = "2016 - 2021";
 GM_info.script.homepage = "https://github.com/Sak32009/GetDLCInfoFromSteamDB/";
 GM_info.script.supportURL = "https://cs.rin.ru/forum/viewtopic.php?f=10&t=71837";
 
@@ -266,8 +266,8 @@ class m {
                     }
                 });
                 const toBlob = self.toBlob(depotID, output, "sha1");
-                $(`<a href="${toBlob.blob}" download="${toBlob.name}" style="float:right">Download .sha1</a>`).appendTo("div#files > h2:first-child");
-                $(`<textarea rows="20" style="width:100%;resize:none"></textarea>`).text(output).insertAfter("div#files > h2:first-child");
+                $(`<h2><a href="${toBlob.blob}" download="${toBlob.name}" style="display:block;text-align:center;">Download .sha1</a></h2>
+<textarea rows="20" style="width:100%;resize:none">${output}</textarea>`).insertAfter("div#files > .d-flex:first-child");
             }
         });
     }
