@@ -1,6 +1,6 @@
 [steam]
 ; Application ID (http://store.steampowered.com/app/%appid%/)
-appid = [steamdb]appID[/steamdb]
+appid = [steam]appID[/steam]
 ; Current game language.
 ; Uncomment this option to turn it on.
 ; Default is "english".
