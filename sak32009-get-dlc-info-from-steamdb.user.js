@@ -10,7 +10,7 @@
 // @supportURL    https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/
 // @updateURL     https://raw.githack.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb.user.js
 // @downloadURL   https://raw.githack.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb.user.js
-// @icon          https://rawcdn.githack.com/Sak32009/GetDLCInfoFromSteamDB/3a284d0cf1a3d257a5a00770a5d8696ee6537c5a/sak32009-get-dlc-info-from-steamdb-icon.png
+// @icon          https://rawcdn.githack.com/Sak32009/GetDLCInfoFromSteamDB/33433ac6e0910e980fa8e14a0a8c785736134c41/sak32009-get-dlc-info-from-steamdb-icon.png
 // @match         *://steamdb.info/app/*
 // @match         *://steamdb.info/depot/*
 // @match         *://store.steampowered.com/app/*
