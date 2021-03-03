@@ -4,7 +4,7 @@
 // @description   Get Data from Steam / SteamDB / EpicDB
 // @author        Sak32009
 // @year          2016 - 2021
-// @version       4.1.7
+// @version       4.1.8
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/
@@ -137,37 +137,42 @@ class m {
         if (isLocal) {
             $("*[data-userscript='version']").text(GM_info.script.version);
             $("*[data-userscript='year']").text(GM_info.script.year);
-            if ($_GET.has("appid") && $_GET.has("from")) {
-                const $GET_appID = $_GET.get("appid").toString();
-                const $GET_from = $_GET.get("from").toString();
-                const allowedFrom = ["steam", "steamdb", "epicdb"];
-                if ($GET_appID.length && !isNaN($GET_appID) && $.inArray($GET_from, allowedFrom) != -1) {
-                    switch ($GET_from) {
-                        case "steam":
-                            $("#steamOfficialSelected > h4 > span").removeClass("d-none");
-                            $("#steamOfficialSelected > form > input[name='appid']").val($GET_appID);
-                            self.steam.appID = $GET_appID;
-                            self.steam_setDLCSRequests();
-                            break;
-                        case "steamdb":
-                            $("#steamDBSelected > h4 > span").removeClass("d-none");
-                            $("#steamDBSelected > form > input[name='appid']").val($GET_appID);
-                            self.steam.appID = $GET_appID;
-                            self.steamDB_setDLCSRequests();
-                            break;
-                        case "epicdb":
-                            $("#epicDBSelected > h4 > span").removeClass("d-none");
-                            $("#epicDBSelected > form > input[name='appid']").val($GET_appID);
-                            $("#alert > h4").text("Its disabled for now! Sorry!");
-                            break;
-                        default:
-                            $("#alert > h4").text("Isn't a valid choice!");
+            const checkVersion = $("div[data-check]").data("check");
+            if (checkVersion == GM_info.script.version) {
+                if ($_GET.has("appid")) {
+                    const $GET_appID = $_GET.get("appid").toString();
+                    const $GET_from = ($_GET.has("from") && $_GET.get("from").toString()) || "steamdb";
+                    const allowedFrom = ["steam", "steamdb", "epicdb"];
+                    if ($GET_appID.length && !isNaN($GET_appID) && $.inArray($GET_from, allowedFrom) != -1) {
+                        switch ($GET_from) {
+                            case "steam":
+                                $("#steamOfficialSelected > h4 > span").removeClass("d-none");
+                                $("#steamOfficialSelected > form > input[name='appid']").val($GET_appID);
+                                self.steam.appID = $GET_appID;
+                                self.steam_setDLCSRequests();
+                                break;
+                            case "steamdb":
+                                $("#steamDBSelected > h4 > span").removeClass("d-none");
+                                $("#steamDBSelected > form > input[name='appid']").val($GET_appID);
+                                self.steam.appID = $GET_appID;
+                                self.steamDB_setDLCSRequests();
+                                break;
+                            case "epicdb":
+                                $("#epicDBSelected > h4 > span").removeClass("d-none");
+                                $("#epicDBSelected > form > input[name='appid']").val($GET_appID);
+                                $("#alert > h4").text("Its disabled for now! Sorry!");
+                                break;
+                            default:
+                                $("#alert > h4").text("Isn't a valid choice!");
+                        }
+                    } else {
+                        $("#alert > h4").text("Invalid _appID_ or _from_ data!");
                     }
                 } else {
-                    $("#alert > h4").text("Invalid _appID_ or _from_ data!");
+                    $("#alert > h4").text("Unknown _appID_ or _from_ data!");
                 }
             } else {
-                $("#alert > h4").text("Unknown _appID_ or _from_ data!");
+                $("#alert > h4").text(`Please update the userscript! Your version: ${GM_info.script.version}`);
             }
         } else if (isSteamDBApp || isSteamPoweredApp) {
             self.steam.appID = $("div[data-appid]").data("appid").toString();
@@ -311,23 +316,76 @@ class steam {
         const self = this;
         $.each(self.formats, (_index, _values) => {
             const name = _values.name;
-            $("<option>").attr("value", _index).text(name).appendTo(`select#select`);
+            $("<option>").attr("value", _index).text(name).appendTo(`select#steam_select`);
         });
     }
     loadEvents() {
         const self = this;
-        $(document).on("click", `button#convert`, (e) => {
+        $(document).on("click", `button#steam_convert`, (e) => {
             e.preventDefault();
-            const selected = $(`select#select option:selected`).val();
-            const withDLCSUnknowns = $("input#unknowns").is(":checked");
+            const selected = $(`select#steam_select option:selected`).val();
+            const withDLCSUnknowns = $("input#steam_unknowns").is(":checked");
             const data = self.formats[selected];
             const result = self.bbcode(data.file.text, withDLCSUnknowns);
             const file = self.main.toBlob(self.bbcode(data.file.name, false), result, data.file.ext);
-            $(`textarea#textarea`).html(result).scrollTop(0);
-            $(`a#download`).attr({
+            $(`textarea#steam_textarea`).html(result).scrollTop(0);
+            $(`a#steam_download`).attr({
                 href: file.blob,
                 download: file.name,
             });
+        });
+        $(document).on("change", "#steam_interfaces_file", ({target}) => {
+            const files = target.files;
+            if (files.length > 0) {
+                const file = files[0];
+                const reader = new FileReader();
+                const search = [
+                    "SteamClient",
+                    "SteamGameServer",
+                    "SteamGameServerStats",
+                    "SteamUser",
+                    "SteamFriends",
+                    "SteamUtils",
+                    "SteamMatchMaking",
+                    "SteamMatchMakingServers",
+                    "STEAMUSERSTATS_INTERFACE_VERSION",
+                    "STEAMAPPS_INTERFACE_VERSION",
+                    "SteamNetworking",
+                    "STEAMREMOTESTORAGE_INTERFACE_VERSION",
+                    "STEAMSCREENSHOTS_INTERFACE_VERSION",
+                    "STEAMHTTP_INTERFACE_VERSION",
+                    "STEAMUNIFIEDMESSAGES_INTERFACE_VERSION",
+                    "STEAMUGC_INTERFACE_VERSION",
+                    "STEAMAPPLIST_INTERFACE_VERSION",
+                    "STEAMMUSIC_INTERFACE_VERSION",
+                    "STEAMMUSICREMOTE_INTERFACE_VERSION",
+                    "STEAMHTMLSURFACE_INTERFACE_VERSION_",
+                    "STEAMINVENTORY_INTERFACE_V",
+                    "SteamController",
+                    "SteamMasterServerUpdater",
+                    "STEAMVIDEO_INTERFACE_V",
+                    "STEAMCONTROLLER_INTERFACE_VERSION"
+                ];
+                reader.onload = (the => ({target}) => {
+                    const content = target.result;
+                    let result = [];
+                    $.each(search, (_index, _value) => {
+                        const data = "";
+                        const re = new RegExp(`${_value}\\d{3}`, "g");
+                        $.each(content.match(re), (__index, __value) => {
+                            result.push(__value);
+                        });
+                    });
+                    result = result.join("\n");
+                    const file = self.main.toBlob("steam_interfaces", result, "txt");
+                    $(`textarea#steam_interfaces_textarea`).html(result).scrollTop(0);
+                    $(`a#steam_interfaces_download`).attr({
+                        href: file.blob,
+                        download: file.name,
+                    });
+                })(file);
+                reader.readAsText(file);
+            }
         });
     }
     bbcodeDLCSReplace(str, values) {
