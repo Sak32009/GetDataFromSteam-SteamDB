@@ -1,14 +1,14 @@
 
 ![Get DLC Info from SteamDB Logo](./sak32009-get-dlc-info-from-steamdb-logo.png)
 
-> It is a userscript able to extract all the information of the **DLCs Games** from **[SteamDB](https://steamdb.info)** and are exported in various formats.
+> Get Data from Steam / SteamDB / EpicDB (**ex Get DLC Info from SteamDB**) it's a userscript able to extract all the information of the **DLCs Games** from **[Steam](https://store.steampowered.com/)** / **[SteamDB](https://steamdb.info)** / **EpicDB** and are exported in various formats. **It also has small tools** :)
 
 *[forum cs.rin.ru support](https://cs.rin.ru/forum/viewtopic.php?f=29&t=71837)*
 
 ## Donate
 
 >**Protect development and free things -- because their survival is in our hands.**
->**You can donate by clicking on "[Paypal Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=U7TLCVMHN9HA2&source=url)".**
+>**You can donate by clicking on "[PayPal Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=U7TLCVMHN9HA2&source=url)".**
 
 ## Documentation
 
@@ -24,14 +24,14 @@ Install a userscript directly from GitHub by clicking on the "RAW" button of the
 
 ### Usage:
 
-- STEAMDB
+- STEAM / STEAMDB
   - Go to [https://steamdb.info/app/570/dlc/](https://steamdb.info/app/570/dlc/) for example and click on the button at bottom-right screen, select format and click "Convert".
 
 - STEAMDB DEPOT to .sha1
   - Go to [https://steamdb.info/depot/373303/](https://steamdb.info/depot/373303/) for example, click on "Click to view file hashes", select "All" to show all entries and all entries are showed on textarea in .sha1 format.
 
-- CS.RIN.RU
-  - Go to [https://cs.rin.ru/forum/viewtopic.php?f=10&t=81396](https://cs.rin.ru/forum/viewtopic.php?f=10&t=81396) for example and in the first topic at the bottom you will find download links of all formats.
+- STORE.STEAMPOWERED.COM
+  - Go to [https://store.steampowered.com/app/1325200/Nioh_2__The_Complete_Edition/](https://store.steampowered.com/app/1325200/Nioh_2__The_Complete_Edition/) for example and click on the button at bottom-right screen, select format and click "Convert".
 
 ### Features:
 
