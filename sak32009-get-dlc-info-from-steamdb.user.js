@@ -4,7 +4,7 @@
 // @description   Get Data from Steam / SteamDB / EpicDB
 // @author        Sak32009
 // @year          2016 - 2021
-// @version       4.1.8
+// @version       4.1.9
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/
@@ -281,13 +281,14 @@ class m {
     }
     createInterfaceDepots() {
         const self = this;
-        $(document).on("change", `div#files select[name="DataTables_Table_0_length"]`, (e) => {
+        $(document).on("change", `div#files > .table-responsive:nth-of-type(2) .dataTable_display .span6:first-child select`, ({currentTarget}) => {
+            const $e = $(currentTarget);
             const depotID = $(`div[data-depotid]`).data("depotid");
-            const entries = $(`div#files select[name="DataTables_Table_0_length"] option:selected`).val();
-            const check = $("div#files > h2:first-child a").length;
+            const entries = $e.find(`option:selected`).val();
+            const check = $("#noDuplicate").length;
             let output = `; ${GM_info.script.name} v${GM_info.script.version} by ${GM_info.script.author} | ${GM_info.script.year} | DEPOT URL: ${self.steam.depotURL + depotID}\n`;
-            if (entries == "-1" && !check.length) {
-                $(`div#files #DataTables_Table_0 tbody tr`).each((_index, _value) => {
+            if (entries == "-1" && !check) {
+                $(`div#files > .table-responsive:nth-of-type(2) table.dataTable tbody tr`).each((_index, _value) => {
                     const $dom = $(_value);
                     const filename = $dom.find("td:nth-of-type(1)").text().trim();
                     const filechecksum = $dom.find("td.code").text().trim();
@@ -296,8 +297,8 @@ class m {
                     }
                 });
                 const toBlob = self.toBlob(depotID, output, "sha1");
-                $(`<h2><a href="${toBlob.blob}" download="${toBlob.name}" style="display:block;text-align:center;">Download .sha1</a></h2>
-<textarea rows="20" style="width:100%;resize:none">${output}</textarea>`).insertAfter("div#files > .d-flex:first-child");
+                $(`<div id="noDuplicate"><h2><a href="${toBlob.blob}" download="${toBlob.name}" style="display:block;text-align:center;">Download .sha1</a></h2>
+<textarea rows="20" style="width:100%;resize:none">${output}</textarea></div>`).insertBefore("div#files > .table-responsive:nth-of-type(2)");
             }
         });
     }
