@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name          Get Data from Steam / SteamDB / EpicDB
-// @namespace     sak32009-get-dlc-info-from-steamdb
+// @namespace     sak32009-get-data-from-steam-steamdb-epicdb
 // @description   Get Data from Steam / SteamDB / EpicDB
 // @author        Sak32009
 // @year          2016 - 2021
-// @version       4.1.9
+// @version       4.2.0
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/
@@ -16,101 +16,17 @@
 // @match         *://store.steampowered.com/app/*
 // @match         *://sak32009.github.io/app/*
 // @run-at        document-end
-// @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js
-// @resource      f1 https://rawcdn.githack.com/Sak32009/GetDLCInfoFromSteamDB/39c6612c348c212b9e1d00a883e7b18bfc532ba1/data/CreamAPI/V3.4.1.0.txt
-// @resource      f2 https://rawcdn.githack.com/Sak32009/GetDLCInfoFromSteamDB/39c6612c348c212b9e1d00a883e7b18bfc532ba1/data/CreamAPI/V4.5.0.0.txt
-// @resource      f3 https://rawcdn.githack.com/Sak32009/GetDLCInfoFromSteamDB/767f614f2b834aa497eb39d35e2359ab3e72f7fb/data/Only_DLCS_List/3DMGAME.txt
-// @resource      f4 https://rawcdn.githack.com/Sak32009/GetDLCInfoFromSteamDB/767f614f2b834aa497eb39d35e2359ab3e72f7fb/data/Only_DLCS_List/CODEX_(DLC00000_=_DLCName).txt
-// @resource      f5 https://rawcdn.githack.com/Sak32009/GetDLCInfoFromSteamDB/767f614f2b834aa497eb39d35e2359ab3e72f7fb/data/Only_DLCS_List/LUMAEMU.txt
-// @resource      f6 https://rawcdn.githack.com/Sak32009/GetDLCInfoFromSteamDB/767f614f2b834aa497eb39d35e2359ab3e72f7fb/data/Only_DLCS_List/SKIDROW.txt
-// @resource      f7 https://rawcdn.githack.com/Sak32009/GetDLCInfoFromSteamDB/767f614f2b834aa497eb39d35e2359ab3e72f7fb/data/APPID_APPIDNAME.txt
-// @resource      f8 https://rawcdn.githack.com/Sak32009/GetDLCInfoFromSteamDB/767f614f2b834aa497eb39d35e2359ab3e72f7fb/data/APPIDNAME.txt
-// @resource      f9 https://rawcdn.githack.com/Sak32009/GetDLCInfoFromSteamDB/39c6612c348c212b9e1d00a883e7b18bfc532ba1/data/GreenLuma_2020_BATCH_MODE.txt
+// @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js
 // @grant         GM_xmlhttpRequest
-// @grant         GM_getResourceText
 // @grant         GM_addStyle
 // ==/UserScript==
 
 GM_info.script.year = "2016 - 2021";
 GM_info.script.homepageURL = "https://github.com/Sak32009/GetDLCInfoFromSteamDB/";
 
-class m {
-    constructor() {
-        this.formats = {
-            steam: [{
-                    name: "CreamAPI v4.5.0.0",
-                    file: {
-                        name: "cream_api",
-                        ext: "ini",
-                        text: GM_getResourceText("f1")
-                    }
-                },
-                {
-                    name: "CreamAPI v3.4.1.0",
-                    file: {
-                        name: "cream_api",
-                        ext: "ini",
-                        text: GM_getResourceText("f2")
-                    }
-                },
-                {
-                    name: "GreenLuma 2020 [BATCH MODE]",
-                    file: {
-                        name: "[steamdb]appID[/steamdb]_GreenLuma",
-                        ext: "bat",
-                        text: GM_getResourceText("f9")
-                    }
-                },
-                {
-                    name: "LUMAEMU (ONLY DLCS LIST)",
-                    file: {
-                        name: "",
-                        ext: "ini",
-                        text: GM_getResourceText("f5")
-                    }
-                },
-                {
-                    name: "CODEX (DLC00000 = DLCName)",
-                    file: {
-                        name: "",
-                        ext: "ini",
-                        text: GM_getResourceText("f4")
-                    }
-                },
-                {
-                    name: "3DMGAME (ONLY DLCS LIST)",
-                    file: {
-                        name: "",
-                        ext: "ini",
-                        text: GM_getResourceText("f3")
-                    }
-                },
-                {
-                    name: "SKIDROW (ONLY DLCS LIST)",
-                    file: {
-                        name: "",
-                        ext: "ini",
-                        text: GM_getResourceText("f6")
-                    }
-                },
-                {
-                    name: "APPID = APPIDNAME",
-                    file: {
-                        name: "",
-                        ext: "ini",
-                        text: GM_getResourceText("f7")
-                    }
-                },
-                {
-                    name: "APPIDNAME",
-                    file: {
-                        name: "",
-                        ext: "ini",
-                        text: GM_getResourceText("f8")
-                    }
-                }
-            ]
-        };
+class SK {
+    constructor(dataFormats) {
+        this.formats = dataFormats;
         this.steam = {
             appID: "",
             name: "",
@@ -126,7 +42,7 @@ class m {
         };
         this.localURL = "https://sak32009.github.io/app/";
     }
-    run() {
+    run(strLocalIndex) {
         const self = this;
         const url = new URL(window.location.href);
         const $_GET = new URLSearchParams(url.search);
@@ -135,44 +51,40 @@ class m {
         const isSteamDBDepot = url.hostname == "steamdb.info" && url.pathname.startsWith("/depot/") && $_GET.has("show_hashes");
         const isLocal = url.hostname == "sak32009.github.io" && url.pathname == "/app/";
         if (isLocal) {
+            $("div#userscript").html(strLocalIndex);
             $("*[data-userscript='version']").text(GM_info.script.version);
             $("*[data-userscript='year']").text(GM_info.script.year);
-            const checkVersion = $("div[data-check]").data("check");
-            if (checkVersion == GM_info.script.version) {
-                if ($_GET.has("appid")) {
-                    const $GET_appID = $_GET.get("appid").toString();
-                    const $GET_from = ($_GET.has("from") && $_GET.get("from").toString()) || "steamdb";
-                    const allowedFrom = ["steam", "steamdb", "epicdb"];
-                    if ($GET_appID.length && !isNaN($GET_appID) && $.inArray($GET_from, allowedFrom) != -1) {
-                        switch ($GET_from) {
-                            case "steam":
-                                $("#steamOfficialSelected > h4 > span").removeClass("d-none");
-                                $("#steamOfficialSelected > form > input[name='appid']").val($GET_appID);
-                                self.steam.appID = $GET_appID;
-                                self.steam_setDLCSRequests();
-                                break;
-                            case "steamdb":
-                                $("#steamDBSelected > h4 > span").removeClass("d-none");
-                                $("#steamDBSelected > form > input[name='appid']").val($GET_appID);
-                                self.steam.appID = $GET_appID;
-                                self.steamDB_setDLCSRequests();
-                                break;
-                            case "epicdb":
-                                $("#epicDBSelected > h4 > span").removeClass("d-none");
-                                $("#epicDBSelected > form > input[name='appid']").val($GET_appID);
-                                $("#alert > h4").text("Its disabled for now! Sorry!");
-                                break;
-                            default:
-                                $("#alert > h4").text("Isn't a valid choice!");
-                        }
-                    } else {
-                        $("#alert > h4").text("Invalid _appID_ or _from_ data!");
+            if ($_GET.has("appid")) {
+                const $GET_appID = $_GET.get("appid").toString();
+                const $GET_from = ($_GET.has("from") && $_GET.get("from").toString()) || "steamdb";
+                const allowedFrom = ["steam", "steamdb", "epicdb"];
+                if ($GET_appID.length && !isNaN($GET_appID) && $.inArray($GET_from, allowedFrom) != -1) {
+                    switch ($GET_from) {
+                        case "steam":
+                            $("div#steamOfficialSelected > h4 > span").removeClass("d-none");
+                            $("div#steamOfficialSelected > form > input[name='appid']").val($GET_appID);
+                            self.steam.appID = $GET_appID;
+                            self.steam_setDLCSRequests();
+                            break;
+                        case "steamdb":
+                            $("div#steamDBSelected > h4 > span").removeClass("d-none");
+                            $("div#steamDBSelected > form > input[name='appid']").val($GET_appID);
+                            self.steam.appID = $GET_appID;
+                            self.steamDB_setDLCSRequests();
+                            break;
+                        case "epicdb":
+                            $("div#epicDBSelected > h4 > span").removeClass("d-none");
+                            $("div#epicDBSelected > form > input[name='appid']").val($GET_appID);
+                            $("div#alert").show().text("Its disabled for now! Sorry!");
+                            break;
+                        default:
+                            $("div#alert").show().text("Isn't a valid choice!");
                     }
                 } else {
-                    $("#alert > h4").text("Unknown _appID_ or _from_ data!");
+                    $("div#alert").show().text("Invalid _appID_ or _from_ data!");
                 }
             } else {
-                $("#alert > h4").text(`Please update the userscript! Your version: ${GM_info.script.version}`);
+                $("div#alert").show().text("Unknown _appID_ or _from_ data!");
             }
         } else if (isSteamDBApp || isSteamPoweredApp) {
             self.steam.appID = $("div[data-appid]").data("appid").toString();
@@ -210,10 +122,10 @@ class m {
                         }
                         self.steam_afterDLCSRequests();
                     } else {
-                        $("#alert > h4").text("Unknown error from steam!");
+                        $("div#alert").show().text("Unknown error from steam!");
                     }
                 } else {
-                    $("#alert > h4").text("Unknown error from steam!");
+                    $("div#alert").show().text("Unknown error from steam!");
                 }
             }
         });
@@ -223,9 +135,7 @@ class m {
         GM_xmlhttpRequest({
             url: `${self.steam.appURL + self.steam.appID}`,
             method: "GET",
-            onload({
-                responseText
-            }) {
+            onload({responseText}) {
                 const $dom = $($.parseHTML(responseText));
                 self.steam.name = $dom.find(".pagehead > h1").text().trim();
                 self.steam.header = $dom.find("img.app-logo[itemprop='image']").attr("src");
@@ -245,9 +155,7 @@ class m {
         GM_xmlhttpRequest({
             url: `${self.steam.linkedURL + self.steam.appID}`,
             method: "GET",
-            onload({
-                responseText
-            }) {
+            onload({responseText}) {
                 const $dom = $($.parseHTML(responseText));
                 $dom.find("tr.app[data-appid] td:nth-of-type(2):contains('DLC')").each((_index, _dom) => {
                     const $dom = $(_dom).closest("tr");
@@ -267,8 +175,8 @@ class m {
         $("*[data-app='count']").text(self.steam.count);
         $("*[data-app='countUnknowns']").text(self.steam.countUnknowns);
         $("*[data-app='header']").attr("src", self.steam.header);
-        $("#alert").hide();
-        $("#container").show();
+        $("div#alert").hide();
+        $("div#container").show();
         return new steam().run(self);
     }
     toBlob(name, content, extension) {
@@ -285,7 +193,7 @@ class m {
             const $e = $(currentTarget);
             const depotID = $(`div[data-depotid]`).data("depotid");
             const entries = $e.find(`option:selected`).val();
-            const check = $("#noDuplicate").length;
+            const check = $("div#noDuplicate").length;
             let output = `; ${GM_info.script.name} v${GM_info.script.version} by ${GM_info.script.author} | ${GM_info.script.year} | DEPOT URL: ${self.steam.depotURL + depotID}\n`;
             if (entries == "-1" && !check) {
                 $(`div#files > .table-responsive:nth-of-type(2) table.dataTable tbody tr`).each((_index, _value) => {
@@ -335,7 +243,7 @@ class steam {
                 download: file.name,
             });
         });
-        $(document).on("change", "#steam_interfaces_file", ({target}) => {
+        $(document).on("change", "input#steam_interfaces_file", ({target}) => {
             const files = target.files;
             if (files.length > 0) {
                 const file = files[0];
@@ -440,4 +348,433 @@ class steam {
     }
 }
 
-new m().run();
+const a = new SK({
+    steam: [{
+            name: "CreamAPI v4.5.0.0",
+            file: {
+                name: "cream_api",
+                ext: "ini",
+                text: `[steam]
+; Application ID (http://store.steampowered.com/app/%appid%/)
+appid = [steam]appID[/steam]
+; Current game language.
+; Uncomment this option to turn it on.
+; Default is "english".
+;language = german
+; Enable/disable automatic DLC unlock. Default option is set to "false".
+; Keep in mind that this option  WON'T work properly if the "[dlc]" section is NOT empty
+unlockall = false
+; Original Valve's steam_api.dll.
+; Default is "steam_api_o.dll".
+orgapi = steam_api_o.dll
+; Original Valve's steam_api64.dll.
+; Default is "steam_api64_o.dll".
+orgapi64 = steam_api64_o.dll
+; Enable/disable extra protection bypasser.
+; Default is "false".
+extraprotection = false
+; The game will think that you're offline (supported by some games).
+; Default is "false".
+forceoffline = false
+; Some games are checking for the low violence presence.
+; Default is "false".
+;lowviolence = true
+; Purchase timestamp for the DLC (http://www.onlineconversion.com/unix_time.htm).
+; Default is "0" (1970/01/01).
+;purchasetimestamp = 0
+
+[steam_misc]
+; Disables the internal SteamUser interface handler.
+; Does have an effect on the games that are using the license check for the DLC/application.
+; Default is "false".
+disableuserinterface = false
+
+[dlc]
+; DLC handling.
+; Format: <dlc_id> = <dlc_description>
+; e.g. : 247295 = Saints Row IV - GAT V Pack
+; If the DLC is not specified in this section
+; then it won't be unlocked
+[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]`
+            }
+        },
+        {
+            name: "CreamAPI v3.4.1.0",
+            file: {
+                name: "cream_api",
+                ext: "ini",
+                text: `[steam]
+; Application ID (http://store.steampowered.com/app/%appid%/)
+appid = [steam]appID[/steam]
+; Current game language.
+; Uncomment this option to turn it on.
+; Default is "english".
+;language = german
+; Enable/disable automatic DLC unlock. Default option is set to "false".
+; Keep in mind that this option is highly experimental and won't
+; work if the game wants to call each DLC by index.
+unlockall = false
+; Original Valve's steam_api.dll.
+; Default is "steam_api_o.dll".
+orgapi = steam_api_o.dll
+; Original Valve's steam_api64.dll.
+; Default is "steam_api64_o.dll".
+orgapi64 = steam_api64_o.dll
+; Enable/disable extra protection bypasser.
+; Default is "false".
+extraprotection = false
+; The game will think that you're offline (supported by some games).
+; Default is "false".
+forceoffline = false
+; Some games are checking for the low violence presence.
+; Default is "false".
+;lowviolence = true
+; Installation path for the game.
+; Note, that you can use ..\\ to set the parent directory (from where executable file is located).
+; Maximum number of parent directories: 5 (..\\..\\..\\..\\..\\)
+; Default is the path to current working directory.
+;installdir = ..\\
+; Use DLC id as the appended installation directory.
+; e.g. <install_directory>\\480
+; Default is "true".
+;dlcasinstalldir = false
+; Purchase timestamp for the DLC (http://www.onlineconversion.com/unix_time.htm).
+; Default is "0" (1970/01/01).
+;purchasetimestamp = 0
+; Turn on the wrapper mode.
+; Default is "false".
+wrappermode = false
+
+[steam_misc]
+; Disables the internal SteamUser interface handler.
+; Does have an effect on the games that are using the license check for the DLC/application.
+; Default is "false".
+disableuserinterface = false
+; Disables the internal SteamUtils interface handler.
+; Does have an effect on the games that are checking for the actual AppId (only matters when "wrappermode" is set to "true").
+; Default is "false".
+disableutilsinterface = false
+; Disable the internal reserve hook of the "Steam_RegisterInterfaceFuncs" function.
+; Default is "false".
+disableregisterinterfacefuncs = false
+; Unlock/Lock Steam parental restrictions.
+; Default is "true".
+;unlockparentalrestrictions = false
+; SteamId64 to override. Note that this action could be risky !
+; This option can only work if "disableuserinterface = false".
+;steamid = 0
+; Bypass VAC signature check. Note that this action could be risky !
+; Default is "false".
+;signaturebypass = true
+
+[steam_wrapper]
+; Application ID to override (used when the wrapper mode is on)
+newappid = 0
+; Use the internal storage system.
+; Default is "false".
+wrapperremotestorage = false
+; Use the internal stats/achievements system.
+; Default is "false".
+wrapperuserstats = false
+; Use the internal workshop (UGC) system.
+; Default is "false".
+wrapperugc = false
+; Store the data in the current directory (incl. stats)
+; By default the data is stored at: %appdata%/CreamAPI/%appid%/
+; Default is "false".
+saveindirectory = false
+; Force the usage of a full save path instead of the relative one.
+; Default is "false".
+forcefullsavepath = false
+; Disable internal callbacks system.
+; Default is "false".
+;disablecallbacks = true
+; Disable/Enable a StoreStats callback. Takes effect only if "wrapperuserstats" is set to "true".
+; Default is "true".
+;storestatscallback = false
+; Fixed achievements count.
+; Some games can only work if this option is configured properly (e.g. Wolfenstein II).
+; Default is "0".
+achievementscount = 0
+
+[dlc]
+; DLC handling.
+; Format: <dlc_id> = <dlc_description>
+; e.g. : 247295 = Saints Row IV - GAT V Pack
+; If the DLC is not specified in this section
+; then it won't be unlocked
+[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]
+[dlc_installdirs]
+; Installation path for the specific DLC (dependent from "installdir" option).
+; This section works only if "dlcasinstalldir" option is set to "false".
+; Format: <dlc_id> = <install_dir>
+; e.g. : 556760 = DLCRoot0
+
+[steam_ugc]
+; Subscribed workshop items.
+; This section works only if "wrappermode" and "wrapperugc" options are set to "true".
+; Format: <dlc_id> = <true/false>
+; e.g. : 812713531 = true
+; Please refer to __README_WORKSHOP_EN__.txt for more details.`
+            }
+        },
+        {
+            name: "GreenLuma 2020 [BATCH MODE]",
+            file: {
+                name: "[steamdb]appID[/steamdb]_GreenLuma",
+                ext: "bat",
+                text: `@ECHO OFF
+:: WINDOWS WORKING DIR BUG WORKAROUND
+CD /D "%~dp0"
+:: CHECK APPLIST DIR
+IF EXIST .\\AppList RMDIR /S /Q .\\AppList
+:: CREATE APPLIST DIR
+MKDIR .\\AppList
+:: CREATE DLCS FILES FOR __[steam]name[/steam]__
+ECHO [steam]appID[/steam]> .\\AppList\\0.txt
+[dlcs=true]:: {dlc_name}\nECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n[/dlcs]
+:: START GREENLUMA 2020
+IF EXIST .\\DLLInjector.exe GOTO :Q
+GOTO :EXIT
+:Q
+SET /P c=Do you want to start GreenLuma 2020 [Y/N]?
+IF /I "%c%" EQU "Y" GOTO :START
+IF /I "%c%" EQU "N" GOTO :EXIT
+GOTO :Q
+:START
+CLS
+ECHO Launching Greenluma 2020 - APPID [steam]appID[/steam] - APPNAME [steam]name[/steam]
+TASKKILL /F /IM steam.exe
+TIMEOUT /T 2
+DLLInjector.exe -DisablePreferSystem32Images
+:EXIT
+EXIT`
+            }
+        },
+        {
+            name: "LUMAEMU (ONLY DLCS LIST)",
+            file: {
+                name: "",
+                ext: "ini",
+                text: "[dlcs]; {dlc_name}\nDLC_{dlc_id} = 1\n[/dlcs]"
+            }
+        },
+        {
+            name: "CODEX (DLC00000 = DLCName)",
+            file: {
+                name: "",
+                ext: "ini",
+                text: "[dlcs=false:5]DLC{dlc_index} = {dlc_id}\nDLCName{dlc_index} = {dlc_name}\n[/dlcs]"
+            }
+        },
+        {
+            name: "3DMGAME (ONLY DLCS LIST)",
+            file: {
+                name: "",
+                ext: "ini",
+                text: "[dlcs=true:3]; {dlc_name}\nDLC{dlc_index} = {dlc_id}\n[/dlcs]"
+            }
+        },
+        {
+            name: "SKIDROW (ONLY DLCS LIST)",
+            file: {
+                name: "",
+                ext: "ini",
+                text: "[dlcs]; {dlc_name}\n{dlc_id}\n[/dlcs]"
+            }
+        },
+        {
+            name: "APPID = APPIDNAME",
+            file: {
+                name: "",
+                ext: "ini",
+                text: "[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]"
+            }
+        },
+        {
+            name: "APPIDNAME",
+            file: {
+                name: "",
+                ext: "ini",
+                text: "[dlcs]{dlc_name}\n[/dlcs]"
+            }
+        }
+    ]
+});
+a.run(`
+<div class="row text-center">
+    <div class="col-sm-4">
+        <div id="steamOfficialSelected" class="m-3">
+            <h4 class="text-danger pb-2">
+                Steam Official appID<span class="d-none">&nbsp;<i class="fas fa-arrow-circle-down"></i></span>
+            </h4>
+            <form action="" method="get">
+                <input type="hidden" name="from" value="steam" />
+                <input type="text" class="form-control" name="appid" placeholder="Example: 550" />
+            </form>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div id="steamDBSelected" class="m-3">
+            <h4 class="text-danger pb-2">
+                SteamDB appID<span class="d-none">&nbsp;<i class="fas fa-arrow-circle-down"></i></span>
+            </h4>
+            <form action="" method="get">
+                <input type="hidden" name="from" value="steamdb" />
+                <input type="text" class="form-control" name="appid" placeholder="Example: 550" />
+            </form>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div id="epicDBSelected" class="m-3">
+            <h4 class="text-danger pb-2">
+                EpicDB appID<span class="d-none">&nbsp;<i class="fas fa-arrow-circle-down"></i></span>
+            </h4>
+            <form action="" method="get">
+                <input type="hidden" name="from" value="epicdb" />
+                <span tabindex="0" data-bs-toggle="tooltip" title="It's disabled for now! Sorry!">
+                    <input type="text" class="form-control" name="appid" placeholder="Example: ?" disabled />
+                </span>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="alert" class="alert alert-danger text-center" style="display: none;"></div>
+<div id="container" style="display: none;">
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="card text-white bg-custom-dark">
+                <table class="table table-dark table-bordered table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <td colspan="2" class="text-center">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Info</span>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <i class="fas fa-fingerprint"></i>
+                                <span>App ID:</span>
+                            </td>
+                            <td data-app="appid">?</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <i class="fas fa-signature"></i>
+                                <span>App Name:</span>
+                            </td>
+                            <td data-app="name">?</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <i class="fas fa-signature"></i>
+                                <span>Total DLCs without Unknowns:</span>
+                            </td>
+                            <td data-app="count">?</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <i class="fas fa-signature"></i>
+                                <span>Total DLCs Unknowns:</span>
+                            </td>
+                            <td data-app="countUnknowns">?</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <img src="https://via.placeholder.com/460x215?text=App%20Header" data-app="header" class="img-fluid rounded" alt="Header" />
+        </div>
+    </div>
+    <div class="card mt-2 text-white bg-custom-dark">
+        <div class="card-header">
+            <ul id="steam_tabs" class="nav nav-tabs card-header-tabs justify-content-center">
+                <li class="nav-item">
+                    <button type="button" class="nav-link text-white active" data-bs-toggle="tab" data-bs-target="#steam_converter">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Converter</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <span data-bs-toggle="tooltip" title="It's disabled for now! Sorry!">
+                        <button type="button" class="nav-link text-white" disabled>
+                            <i class="fas fa-file-import"></i>
+                            <span>Drag'n'Drop (Autocomplete)</span>
+                        </button>
+                    </span>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="nav-link text-white" data-bs-toggle="tab" data-bs-target="#steam_interfaces">
+                        <i class="fab fa-steam"></i>
+                        <span>Interfaces</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <span data-bs-toggle="tooltip" title="It's disabled for now! Sorry!">
+                        <button type="button" class="nav-link text-white" disabled>
+                            <i class="fab fa-steam"></i>
+                            <span>Depots</span>
+                        </button>
+                    </span>
+                </li>
+                <li class="nav-item">
+                    <span data-bs-toggle="tooltip" title="It's disabled for now! Sorry!">
+                        <button type="button" class="nav-link text-white" disabled>
+                            <i class="fab fa-steam"></i>
+                            <span>Items</span>
+                        </button>
+                    </span>
+                </li>
+                <li class="nav-item">
+                    <span data-bs-toggle="tooltip" title="It's disabled for now! Sorry!">
+                        <button type="button" class="nav-link text-white" disabled>
+                            <i class="fab fa-steam"></i>
+                            <span>Achievements</span>
+                        </button>
+                    </span>
+                </li>
+                <li class="nav-item">
+                    <span data-bs-toggle="tooltip" title="It's disabled for now! Sorry!">
+                        <button type="button" class="nav-link text-white" disabled>
+                            <i class="fas fa-cogs"></i>
+                            <span>Configurator</span>
+                        </button>
+                    </span>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="steam_converter">
+                    <div class="input-group">
+                        <select id="steam_select" class="form-select text-white bg-custom-dark1"></select>
+                        <button id="steam_convert" class="btn btn-dark" type="button">
+                            <i class="fas fa-sync-alt"></i>
+                            <span>Convert</span>
+                        </button>
+                        <label class="btn btn-dark" for="steam_unknowns"><input class="form-check-input" type="checkbox" id="steam_unknowns" /> With DLCS Unknowns</label>
+                        <a id="steam_download" href="javascript:;" class="btn btn-dark">
+                            <i class="fas fa-file-download"></i>
+                            <span>Download as file</span>
+                        </a>
+                    </div>
+                    <textarea id="steam_textarea" class="form-control text-white bg-custom-dark1 mt-2" rows="20" placeholder="Select an option and click 'Convert'" style="resize: none;"></textarea>
+                </div>
+                <div class="tab-pane fade" id="steam_interfaces">
+                    <div class="input-group">
+                        <input id="steam_interfaces_file" class="form-control" type="file" accept=".dll" />
+                        <a id="steam_interfaces_download" href="javascript:;" class="btn btn-dark">
+                            <i class="fas fa-file-download"></i>
+                            <span>Download as file</span>
+                        </a>
+                    </div>
+                    <textarea id="steam_interfaces_textarea" class="form-control text-white bg-custom-dark1 mt-2" rows="20" placeholder="Select from the input steam_api(64).dll" style="resize: none;"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>`);

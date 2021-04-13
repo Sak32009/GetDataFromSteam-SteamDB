@@ -1,1 +1,0 @@
-[dlcs]{dlc_name}\n[/dlcs]
