@@ -4,7 +4,7 @@
 // @description   Get Data from Steam / SteamDB / EpicDB
 // @author        Sak32009
 // @year          2016 - 2021
-// @version       4.2.0
+// @version       4.2.1
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/
@@ -75,16 +75,16 @@ class SK {
                         case "epicdb":
                             $("div#epicDBSelected > h4 > span").removeClass("d-none");
                             $("div#epicDBSelected > form > input[name='appid']").val($GET_appID);
-                            $("div#alert").show().text("Its disabled for now! Sorry!");
+                            $("div#alert").text("Its disabled for now! Sorry!");
                             break;
                         default:
-                            $("div#alert").show().text("Isn't a valid choice!");
+                            $("div#alert").text("Isn't a valid choice!");
                     }
                 } else {
-                    $("div#alert").show().text("Invalid _appID_ or _from_ data!");
+                    $("div#alert").text("Invalid _appID_ or _from_ data!");
                 }
             } else {
-                $("div#alert").show().text("Unknown _appID_ or _from_ data!");
+                $("div#alert").text("Unknown _appID_ or _from_ data!");
             }
         } else if (isSteamDBApp || isSteamPoweredApp) {
             self.steam.appID = $("div[data-appid]").data("appid").toString();
@@ -122,10 +122,10 @@ class SK {
                         }
                         self.steam_afterDLCSRequests();
                     } else {
-                        $("div#alert").show().text("Unknown error from steam!");
+                        $("div#alert").text("Unknown error from steam!");
                     }
                 } else {
-                    $("div#alert").show().text("Unknown error from steam!");
+                    $("div#alert").text("Unknown error from steam!");
                 }
             }
         });
@@ -639,7 +639,7 @@ a.run(`
         </div>
     </div>
 </div>
-<div id="alert" class="alert alert-danger text-center" style="display: none;"></div>
+<div id="alert" class="alert alert-danger text-center">If it takes too long, check the console log of browser and open issue on <a href="https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues" target="_blank">GitHub</a>.</div>
 <div id="container" style="display: none;">
     <div class="row">
         <div class="col-sm-8">
