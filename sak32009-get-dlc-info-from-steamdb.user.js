@@ -4,7 +4,7 @@
 // @description   Get Data from Steam / SteamDB / EpicDB
 // @author        Sak32009
 // @year          2016 - 2021
-// @version       4.2.1
+// @version       4.2.2
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/
@@ -25,40 +25,39 @@ GM_info.script.year = "2016 - 2021";
 GM_info.script.homepageURL = "https://github.com/Sak32009/GetDLCInfoFromSteamDB/";
 
 class SK {
-    constructor(dataFormats) {
-        this.formats = dataFormats;
+    constructor(data) {
+        this.formats = data;
         this.steam = {
             appID: "",
             name: "",
             header: "",
-            count: 0,
             dlcs: {},
-            countUnknowns: 0,
+            count: 0,
             dlcsUnknowns: {},
+            countUnknowns: 0,
             appURL: "https://steamdb.info/app/",
             depotURL: "https://steamdb.info/depot/",
-            linkedURL: "https://steamdb.info/search/?a=linked&q=",
             steamAPI: "https://store.steampowered.com/api/appdetails?appids="
         };
         this.localURL = "https://sak32009.github.io/app/";
     }
-    run(strLocalIndex) {
+    run(document) {
         const self = this;
         const url = new URL(window.location.href);
         const $_GET = new URLSearchParams(url.search);
-        const isSteamDBApp = url.hostname == "steamdb.info" && url.pathname.startsWith("/app/");
-        const isSteamPoweredApp = url.hostname == "store.steampowered.com" && url.pathname.startsWith("/app/");
-        const isSteamDBDepot = url.hostname == "steamdb.info" && url.pathname.startsWith("/depot/") && $_GET.has("show_hashes");
-        const isLocal = url.hostname == "sak32009.github.io" && url.pathname == "/app/";
+        const isSteamDBApp = url.hostname === "steamdb.info" && url.pathname.startsWith("/app/");
+        const isSteamPoweredApp = url.hostname === "store.steampowered.com" && url.pathname.startsWith("/app/");
+        const isSteamDBDepot = url.hostname === "steamdb.info" && url.pathname.startsWith("/depot/") && $_GET.has("show_hashes");
+        const isLocal = url.hostname === "sak32009.github.io" && url.pathname === "/app/";
         if (isLocal) {
-            $("div#userscript").html(strLocalIndex);
+            $("div#userscript").html(document);
             $("*[data-userscript='version']").text(GM_info.script.version);
             $("*[data-userscript='year']").text(GM_info.script.year);
             if ($_GET.has("appid")) {
                 const $GET_appID = $_GET.get("appid").toString();
                 const $GET_from = ($_GET.has("from") && $_GET.get("from").toString()) || "steamdb";
                 const allowedFrom = ["steam", "steamdb", "epicdb"];
-                if ($GET_appID.length && !isNaN($GET_appID) && $.inArray($GET_from, allowedFrom) != -1) {
+                if ($GET_appID.length && !isNaN($GET_appID) && $.inArray($GET_from, allowedFrom) !== -1) {
                     switch ($GET_from) {
                         case "steam":
                             $("div#steamOfficialSelected > h4 > span").removeClass("d-none");
@@ -105,17 +104,15 @@ class SK {
         GM_xmlhttpRequest({
             url: `${self.steam.steamAPI + self.steam.appID}`,
             method: "GET",
-            onload({
-                responseText
-            }) {
+            onload({responseText}) {
                 const json = JSON.parse(responseText);
                 if (typeof json !== "undefined") {
-                    const appJSON = json[self.steam.appID];
-                    if (appJSON.success == true) {
-                        self.steam.name = appJSON.data.name;
-                        self.steam.header = appJSON.data.header_image;
-                        if (typeof appJSON.data.dlc !== "undefined" && appJSON.data.dlc.length) {
-                            $.each(appJSON.data.dlc, (_index, appID) => {
+                    const app = json[self.steam.appID];
+                    if (app.success === true) {
+                        self.steam.name = app.data.name;
+                        self.steam.header = app.data.header_image;
+                        if (typeof app.data.dlc !== "undefined" && app.data.dlc.length) {
+                            $.each(app.data.dlc, (_index, appID) => {
                                 self.steam.dlcs[appID] = "NO NAME (For now..)";
                                 self.steam.count += 1;
                             });
@@ -139,30 +136,17 @@ class SK {
                 const $dom = $($.parseHTML(responseText));
                 self.steam.name = $dom.find(".pagehead > h1").text().trim();
                 self.steam.header = $dom.find("img.app-logo[itemprop='image']").attr("src");
-                $dom.find("tr.app[data-appid] td.muted:nth-of-type(2)").each((_index, _dom) => {
-                    const $dom = $(_dom).closest("tr");
+                $dom.find("#dlc.tab-pane tr.app[data-appid]").each((_index, _dom) => {
+                    const $dom = $(_dom);
                     const appID = $dom.attr("data-appid");
                     const appName = $dom.find("td:nth-of-type(2)").text().trim();
-                    self.steam.dlcsUnknowns[appID] = appName;
-                    self.steam.countUnknowns += 1;
-                });
-                self.steamDB_setLinkedDLCSRequest();
-            }
-        });
-    }
-    steamDB_setLinkedDLCSRequest() {
-        const self = this;
-        GM_xmlhttpRequest({
-            url: `${self.steam.linkedURL + self.steam.appID}`,
-            method: "GET",
-            onload({responseText}) {
-                const $dom = $($.parseHTML(responseText));
-                $dom.find("tr.app[data-appid] td:nth-of-type(2):contains('DLC')").each((_index, _dom) => {
-                    const $dom = $(_dom).closest("tr");
-                    const appID = $dom.attr("data-appid");
-                    const appName = $dom.find("td:nth-of-type(3)").text().trim();
-                    self.steam.dlcs[appID] = appName;
-                    self.steam.count += 1;
+                    if ($dom.find("td:nth-of-type(2)").hasClass("muted")) {
+                        self.steam.dlcsUnknowns[appID] = appName;
+                        self.steam.countUnknowns += 1;
+                    } else {
+                        self.steam.dlcs[appID] = appName;
+                        self.steam.count += 1;
+                    }
                 });
                 self.steam_afterDLCSRequests();
             }
@@ -195,12 +179,12 @@ class SK {
             const entries = $e.find(`option:selected`).val();
             const check = $("div#noDuplicate").length;
             let output = `; ${GM_info.script.name} v${GM_info.script.version} by ${GM_info.script.author} | ${GM_info.script.year} | DEPOT URL: ${self.steam.depotURL + depotID}\n`;
-            if (entries == "-1" && !check) {
+            if (entries === "-1" && !check) {
                 $(`div#files > .table-responsive:nth-of-type(2) table.dataTable tbody tr`).each((_index, _value) => {
                     const $dom = $(_value);
                     const filename = $dom.find("td:nth-of-type(1)").text().trim();
                     const filechecksum = $dom.find("td.code").text().trim();
-                    if (filechecksum != "NULL") {
+                    if (filechecksum !== "NULL") {
                         output += `${filechecksum} *${filename}\n`;
                     }
                 });
@@ -275,11 +259,10 @@ class steam {
                     "STEAMVIDEO_INTERFACE_V",
                     "STEAMCONTROLLER_INTERFACE_VERSION"
                 ];
-                reader.onload = (the => ({target}) => {
+                reader.onload = (() => ({target}) => {
                     const content = target.result;
                     let result = [];
                     $.each(search, (_index, _value) => {
-                        const data = "";
                         const re = new RegExp(`${_value}\\d{3}`, "g");
                         $.each(content.match(re), (__index, __value) => {
                             result.push(__value);
@@ -330,7 +313,7 @@ class steam {
         const re = /\[(\w+)(?:=(.*))?]([^[]+)\[\/(\w+)]/g;
         while ((data = re.exec(str)) !== null) {
             const [bbcode, bbcodeOpen, bbcodeOpt, bbcodeVal, bbcodeClose] = data;
-            if (bbcodeOpen == bbcodeClose) {
+            if (bbcodeOpen === bbcodeClose) {
                 const bbcodeOpts = typeof bbcodeOpt !== "undefined" ? bbcodeOpt.split(":") : [];
                 switch (bbcodeOpen) {
                     case "steam": {
@@ -338,7 +321,7 @@ class steam {
                         break;
                     }
                     case "dlcs": {
-                        str = str.replace(bbcode, self.bbcodeDLCS(bbcodeVal.replace(/\\n/g, "\n"), bbcodeOpts[0] == "true", bbcodeOpts[1] || 0, withDLCSUnknowns));
+                        str = str.replace(bbcode, self.bbcodeDLCS(bbcodeVal.replace(/\\n/g, "\n"), bbcodeOpts[0] === "true", bbcodeOpts[1] || 0, withDLCSUnknowns));
                         break;
                     }
                 }
