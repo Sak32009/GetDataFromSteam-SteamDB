@@ -54,8 +54,8 @@ class SK {
       url.pathname.startsWith("/app/");
     const isSteamDBDepot =
       url.hostname === "steamdb.info" &&
-      url.pathname.startsWith("/depot/"); /* &&
-      $_GET.has("show_hashes")*/
+      url.pathname.startsWith("/depot/") &&
+      $_GET.has("show_hashes");
     const isLocal =
       url.hostname === "sak32009.github.io" && url.pathname === "/app/";
     if (isLocal) {
