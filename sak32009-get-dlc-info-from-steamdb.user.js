@@ -4,7 +4,7 @@
 // @description   Get Data from Steam / SteamDB / EpicDB
 // @author        Sak32009
 // @year          2016 - 2021
-// @version       4.2.5
+// @version       4.2.6
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/
@@ -54,8 +54,8 @@ class SK {
         const isLocal = url.hostname === 'sak32009.github.io' && url.pathname === '/app/';
         if (isLocal) {
             $('div#userscript').html(document);
-            $('*[data-userscript=\'version\']').text(GM_info.script.version);
-            $('*[data-userscript=\'year\']').text(GM_info.script.year);
+            $('*[data-userscript="version"]').text(GM_info.script.version);
+            $('*[data-userscript="year"]').text(GM_info.script.year);
             const $GET_appID = $_GET.has('appid') ? $_GET.get('appid').toString() : null;
             const $GET_from = $_GET.has('from') ? $_GET.get('from').toString() : 'steamdb';
             const allowedFrom = {
@@ -67,7 +67,7 @@ class SK {
             if (!isNaN($GET_appID) && Object.keys(allowedFrom).includes($GET_from)) {
                 const $selected = $('div#' + allowedFrom[$GET_from]);
                 $selected.find('h4 > span').removeClass('d-none');
-                $selected.find('form > input[name=\'appid\']').val($GET_appID);
+                $selected.find('form > input[name="appid"]').val($GET_appID);
                 if ($GET_from === 'epicdb') {
                     $alert.text('Its disabled for now! Sorry!');
                 } else {
@@ -143,8 +143,8 @@ class SK {
             method: 'GET',
             onload({ responseText }) {
                 const $dom = $($.parseHTML(responseText));
-                self.steam.name = $dom.find('.pagehead > h1').text().trim();
-                self.steam.header = $dom.find('img.app-logo[itemprop=\'image\']').attr('src');
+                self.steam.name = $dom.find('h1[itemprop="name"]').text().trim();
+                self.steam.header = $dom.find('img.app-logo[itemprop="image"]').attr('src');
                 $dom.find('#dlc.tab-pane tr.app[data-appid]').each((_index, _dom) => {
                     const $dom = $(_dom);
                     const appID = $dom.attr('data-appid');
@@ -164,11 +164,11 @@ class SK {
 
     steam_afterDLCSRequests() {
         const self = this;
-        $('*[data-app=\'appid\']').text(self.steam.appID);
-        $('*[data-app=\'name\']').text(self.steam.name);
-        $('*[data-app=\'count\']').text(self.steam.count);
-        $('*[data-app=\'countUnknowns\']').text(self.steam.countUnknowns);
-        $('*[data-app=\'header\']').attr('src', self.steam.header);
+        $('*[data-app="appid"]').text(self.steam.appID);
+        $('*[data-app="name"]').text(self.steam.name);
+        $('*[data-app="count"]').text(self.steam.count);
+        $('*[data-app="countUnknowns"]').text(self.steam.countUnknowns);
+        $('*[data-app="header"]').attr('src', self.steam.header);
         $('div#alert').hide();
         $('div#container').show();
         return new steam().run(self);
