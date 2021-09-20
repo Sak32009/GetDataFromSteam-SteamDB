@@ -4,7 +4,7 @@
 // @description   Get Data from Steam / SteamDB / EpicDB
 // @author        Sak32009
 // @year          2016 - 2021
-// @version       4.2.6
+// @version       4.2.7
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/
