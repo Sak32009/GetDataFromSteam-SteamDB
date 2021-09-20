@@ -38,7 +38,7 @@ class SK {
             countUnknowns: 0,
             appURL: 'https://steamdb.info/app/',
             depotURL: 'https://steamdb.info/depot/',
-            steamAPI: 'https://store.steampowered.com/api/appdetails?appids=',
+            steamAPI: 'https://store.steampowered.com/app/',
         };
         this.localURL = 'https://sak32009.github.io/app/';
     }
@@ -110,28 +110,21 @@ class SK {
         const self = this;
         const $alert = $('div#alert');
         GM_xmlhttpRequest({
-            url: `${self.steam.steamAPI + self.steam.appID}`,
+            url: `${self.steam.steamAPI + self.steam.appID}/`,
             method: 'GET',
             onload({ responseText }) {
-                const json = JSON.parse(responseText);
-                if (typeof json !== 'undefined') {
-                    const app = json[self.steam.appID];
-                    if (app.success === true) {
-                        self.steam.name = app.data.name;
-                        self.steam.header = app.data.header_image;
-                        if (typeof app.data.dlc !== 'undefined' && app.data.dlc.length) {
-                            $.each(app.data.dlc, (_index, appID) => {
-                                self.steam.dlcs[appID] = 'NO NAME (For now..)';
-                                self.steam.count += 1;
-                            });
-                        }
-                        self.steam_afterDLCSRequests();
-                    } else {
-                        $alert.text('Unknown error from steam!');
-                    }
-                } else {
-                    $alert.text('Unknown error from steam!');
-                }
+                const $dom = $($.parseHTML(responseText));
+                self.steam.name = $dom.find('div#appHubAppName').text().trim();
+                self.steam.header = $dom.find('img[class="game_header_image_full"]').attr('src')
+                $dom.find('a.game_area_dlc_row').each((i, _dom) => {
+                    const $dom = $(_dom)
+                    const $appID = $dom.attr('data-ds-appid')
+                    const $appName = $dom.children('div').first().text().trim()
+
+                    self.steam.dlcs[$appID] = $appName;
+                    self.steam.count += 1;
+                });
+                self.steam_afterDLCSRequests();
             },
         });
     }
@@ -141,6 +134,9 @@ class SK {
         GM_xmlhttpRequest({
             url: `${self.steam.appURL + self.steam.appID}`,
             method: 'GET',
+            headers: {
+                "Accept": "text/html,application/xhtml+xml,application/xml;"
+            },
             onload({ responseText }) {
                 const $dom = $($.parseHTML(responseText));
                 self.steam.name = $dom.find('h1[itemprop="name"]').text().trim();
@@ -415,13 +411,11 @@ forceoffline = false
 ; Purchase timestamp for the DLC (http://www.onlineconversion.com/unix_time.htm).
 ; Default is "0" (1970/01/01).
 ;purchasetimestamp = 0
-
 [steam_misc]
 ; Disables the internal SteamUser interface handler.
 ; Does have an effect on the games that are using the license check for the DLC/application.
 ; Default is "false".
 disableuserinterface = false
-
 [dlc]
 ; DLC handling.
 ; Format: <dlc_id> = <dlc_description>
@@ -477,7 +471,6 @@ forceoffline = false
 ; Turn on the wrapper mode.
 ; Default is "false".
 wrappermode = false
-
 [steam_misc]
 ; Disables the internal SteamUser interface handler.
 ; Does have an effect on the games that are using the license check for the DLC/application.
@@ -499,7 +492,6 @@ disableregisterinterfacefuncs = false
 ; Bypass VAC signature check. Note that this action could be risky !
 ; Default is "false".
 ;signaturebypass = true
-
 [steam_wrapper]
 ; Application ID to override (used when the wrapper mode is on)
 newappid = 0
@@ -529,7 +521,6 @@ forcefullsavepath = false
 ; Some games can only work if this option is configured properly (e.g. Wolfenstein II).
 ; Default is "0".
 achievementscount = 0
-
 [dlc]
 ; DLC handling.
 ; Format: <dlc_id> = <dlc_description>
@@ -542,7 +533,6 @@ achievementscount = 0
 ; This section works only if "dlcasinstalldir" option is set to "false".
 ; Format: <dlc_id> = <install_dir>
 ; e.g. : 556760 = DLCRoot0
-
 [steam_ugc]
 ; Subscribed workshop items.
 ; This section works only if "wrappermode" and "wrapperugc" options are set to "true".
