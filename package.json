@@ -1,0 +1,49 @@
+{
+  "name": "getdlcinfofromsteam_steamdb_epicdb",
+  "version": "4.2.8",
+  "description": "Get Data from Steam / SteamDB / EpicDB (ex Get DLC Info from SteamDB) it's a userscript able to extract all the information of the DLCs Games from Steam / SteamDB / EpicDB and are exported in various formats. It also has small tools :)",
+  "author": {
+    "name": "Sak32009"
+  },
+  "homepage": "https://github.com/Sak32009/GetDLCInfoFromSteamDB/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sak32009/GetDLCInfoFromSteamDB.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/"
+  },
+  "copyright": "Copyright © 2016 - 2021 Sak32009",
+  "license": "MIT",
+  "private": true,
+  "metablock": {
+    "name": "Get Data from Steam / SteamDB / EpicDB",
+    "namespace": "sak32009-get-data-from-steam-steamdb-epicdb",
+    "year": "2016 - 2021"
+  },
+  "scripts": {
+    "dev": "yarn vite build --mode development -w",
+    "prod": "yarn vite build && yarn del ./style.css",
+    "editor": "yarn http-server -c-1"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.15.5",
+    "@babel/eslint-parser": "^7.15.4",
+    "@popperjs/core": "^2.10.1",
+    "@types/jquery": "^3.5.6",
+    "@types/node": "^16.9.6",
+    "@types/tampermonkey": "^4.0.5",
+    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/parser": "^4.31.1",
+    "bootstrap": "^5.1.1",
+    "del-cli": "^4.0.1",
+    "eslint": "^7.32.0",
+    "eslint-config-alloy": "^4.3.0",
+    "http-server": "^13.0.2",
+    "jquery": "^3.6.0",
+    "prettier": "^2.4.1",
+    "typescript": "^4.4.3",
+    "vite": "^2.5.8"
+  }
+}

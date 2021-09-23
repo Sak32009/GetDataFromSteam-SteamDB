@@ -1,0 +1,32 @@
+.sak32009 button[data-bs-toggle='modal'] {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+
+.sak32009 .modal {
+  z-index: 10003;
+}
+
+.sak32009 .modal-backdrop {
+  z-index: 10002;
+}
+
+.sak32009 .modal-header-logo img {
+  width: 96px;
+  height: 96px;
+}
+
+.sak32009 .resize-none {
+  resize: none;
+}
+
+.sak32009 .relative {
+  position: relative;
+}
+
+.sak32009 .fixed-to-textarea {
+  position: absolute;
+  bottom: 0;
+  right: 15px;
+}

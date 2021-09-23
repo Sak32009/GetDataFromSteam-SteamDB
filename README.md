@@ -6,7 +6,7 @@ _[forum cs.rin.ru support](https://cs.rin.ru/forum/viewtopic.php?f=29&t=71837)_
 
 ## Donate
 
-> **Protect development and free things -- because their survival is in our hands.** >**You can donate by clicking on "[PayPal Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=U7TLCVMHN9HA2&source=url)".**
+> **Protect development and free things -- because their survival is in our hands.** > **You can donate by clicking on "[PayPal Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=U7TLCVMHN9HA2&source=url)".**
 
 ## Documentation
 
@@ -22,16 +22,25 @@ Install a userscript directly from GitHub by clicking on the "RAW" button of the
 
 ### Usage:
 
-- STEAM / STEAMDB
+- **STEAM**
 
-  - Go to [https://steamdb.info/app/570/dlc/](https://steamdb.info/app/570/dlc/) for example and click on the button at bottom-right screen, select format and click "Convert".
+  - Go to [https://store.steampowered.com/app/24010/Train_Simulator_2021/](https://store.steampowered.com/app/24010/Train_Simulator_2021/) for example, click on the button at bottom-right screen, select format and click "Convert".
 
-- STEAMDB DEPOT to .sha1
+- **STEAMDB**
 
-  - Go to [https://steamdb.info/depot/373303/](https://steamdb.info/depot/373303/) for example, click on "Click to view file hashes" and all entries are showed on textarea in .sha1 format.
+  - Go to [https://steamdb.info/app/570/dlc/](https://steamdb.info/app/570/dlc/) for example, click on the button at bottom-right screen, select format and click "Convert".
 
-- STORE.STEAMPOWERED.COM
-  - Go to [https://store.steampowered.com/app/1325200/Nioh_2\_\_The_Complete_Edition/](https://store.steampowered.com/app/1325200/Nioh_2__The_Complete_Edition/) for example and click on the button at bottom-right screen, select format and click "Convert".
+- **STEAMDB DEPOT to .sha1**
+
+  - Go to [https://steamdb.info/depot/373303/](https://steamdb.info/depot/373303/) for example, click on "Click to view file hashes", click on the button at bottom-right screen and all entries are showed on textarea in .sha1 format.
+
+- **STORE.STEAMPOWERED.COM**
+
+  - Go to [https://store.steampowered.com/app/1325200/Nioh_2\_\_The_Complete_Edition/](https://store.steampowered.com/app/1325200/Nioh_2__The_Complete_Edition/) for example, click on the button at bottom-right screen, select format and click "Convert".
+
+- **EPICGAMES.COM**
+
+  - Not ready.
 
 ### Features:
 
