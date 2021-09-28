@@ -28,7 +28,7 @@ const formats = {
   greenluma_2020_batch_mode: {
     name: 'GreenLuma 2020 [BATCH MODE]',
     file: {
-      name: '[steamdb]appID[/steamdb]_GreenLuma',
+      name: '[steam]appID[/steam]_GreenLuma',
       ext: 'bat',
       text: greenluma_2020_batch_mode,
     },

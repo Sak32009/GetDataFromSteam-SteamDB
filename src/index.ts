@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import FileSaver from 'file-saver';
 import 'bootstrap/dist/js/bootstrap.esm.min';
 
 import skBootstrap from './css/bootstrap.css';
@@ -50,14 +51,14 @@ $(() => {
       } else if (href.startsWith(this.urls.steamPowered)) {
         this.is.steamPowered = true;
         this.steamPowered();
-      } else if (/https:\/\/www.epicgames.com\/store\/(.+)\/p\/(.+)/.test(href)) {
+      } else if (/https:\/\/www.epicgames.com\/store\/(.+)\/p\/(.+)/gm.test(href)) {
         this.is.epicGames = true;
         this.epicGames();
       }
     }
 
     public steamDBApp() {
-      this.data.appID = $('div[data-appid]').data('appid').toString().trim();
+      this.data.appID = $('div[data-appid]').data('appid');
       this.data.name = $('h1[itemprop="name"]').text().trim();
       $('#dlc.tab-pane tr.app[data-appid]').each((_index, element) => {
         const $dom = $(element);
@@ -67,12 +68,11 @@ $(() => {
           if ($dom.find('td:nth-of-type(2)').hasClass('muted')) {
             this.data.dlcsUnknowns[appID] = appName;
             this.data.countDlcsUnknowns += 1;
-            this.data.countAll += 1;
           } else {
             this.data.dlcs[appID] = appName;
             this.data.countDlcs += 1;
-            this.data.countAll += 1;
           }
+          this.data.countAll += 1;
         }
       });
       if (this.data.countAll > 0) {
@@ -81,12 +81,11 @@ $(() => {
     }
 
     public steamPowered() {
-      this.data.appID = $('div[data-appid]').data('appid').toString().trim();
+      this.data.appID = $('div[data-appid]').data('appid');
       this.data.name = $('div#appHubAppName').text().trim();
-      console.log($('a.game_area_dlc_row'));
-      $('a.game_area_dlc_row').each((index, element) => {
+      $('a.game_area_dlc_row').each((_index, element) => {
         const $dom = $(element);
-        const appID = $dom.data('ds-appid').toString().trim();
+        const appID = $dom.data('ds-appid');
         const appName = $dom.find('.game_area_dlc_name').text().trim();
         if (typeof appID !== 'undefined' && typeof appName !== 'undefined') {
           this.data.dlcs[appID] = appName;
@@ -102,9 +101,9 @@ $(() => {
     public steamDBDepot() {
       let output: string[] = [];
       // eslint-disable-next-line no-undef
-      const depotTable = unsafeWindow.jQuery('div#files .table.file-tree').DataTable().data();
-      const depotID = $(`div[data-depotid]`).data('depotid').toString().trim();
-      $.each(depotTable, (index: string, values: string) => {
+      const dataTable = unsafeWindow.jQuery('div#files .table.file-tree').DataTable().data();
+      const depotID = $(`div[data-depotid]`).data('depotid');
+      $.each(dataTable, (_index: string, values: string) => {
         const fileName = values[0];
         const sha1 = values[1];
         if (this.isValidSHA1(sha1)) {
@@ -131,7 +130,6 @@ $(() => {
     public setModal() {
       this.setStyles();
       this.setModalContainer();
-      this.fillModalInterface();
       this.setModalEvents();
       if (!this.is.epicGames) {
         this.setCommonEvents();
@@ -186,8 +184,13 @@ $(() => {
             <textarea id="sake_textarea" class="form-control resize-none bg-dark text-white border-secondary" readonly rows="14"></textarea>
           </div>`;
       } else {
+        let sakeSelect = '';
+        $.each(this.formats, (index, values) => {
+          const name = values.name;
+          sakeSelect += `<option value='${index}'>${name}</option>`;
+        });
         modalContainer = `<div class="input-group p-2 border-bottom border-secondary">
-          <select id="sake_select" class="form-select bg-dark text-white border-secondary"></select>
+          <select id="sake_select" class="form-select bg-dark text-white border-secondary">${sakeSelect}</select>
           <button id="sake_convert" type="button" class="btn btn-dark border border-secondary">Convert</button>
           <label class="btn btn-dark border border-secondary${
             !this.is.steamdbApp ? ' d-none' : ''
@@ -212,25 +215,14 @@ $(() => {
 
     public setModalEvents() {
       const $modal = document.getElementById(packageName);
-      $modal!.addEventListener('shown.bs.modal', () => {
-        $('.modal-backdrop').wrap('<div class="sak32009"></div>');
-      });
-      $modal!.addEventListener('hidden.bs.modal', () => {
-        $('.sak32009').each((index, element) => {
-          const $dom = $(element);
-          const isEmpty = $dom.is(':empty');
-          if (isEmpty) {
-            $dom.remove();
-          }
+      if ($modal !== null) {
+        $modal.addEventListener('shown.bs.modal', () => {
+          $('.modal-backdrop').wrap('<div class="sak32009"></div>');
         });
-      });
-    }
-
-    public fillModalInterface() {
-      $.each(this.formats, (index, values) => {
-        const name = values.name;
-        $('<option>').attr('value', index).text(name).appendTo(`select#sake_select`);
-      });
+        $modal.addEventListener('hidden.bs.modal', () => {
+          $('.sak32009:empty').remove();
+        });
+      }
     }
 
     public setEvents() {
@@ -239,12 +231,12 @@ $(() => {
         const selected = $(`select#sake_select option:selected`).val()?.toString();
         const withDLCSUnknowns = $('input#sake_unknowns').is(':checked');
         if (typeof selected !== 'undefined') {
-          const data = this.formats[selected];
-          const result = this.bbcode(data.file.text, withDLCSUnknowns);
-          $(`textarea#sake_textarea`).html(result).scrollTop(0);
+          const dataFormat = this.formats[selected];
+          const rtn = this.bbcode(dataFormat.file.text, withDLCSUnknowns);
+          $(`textarea#sake_textarea`).html(rtn).scrollTop(0);
           $(`button#sake_download`).attr({
-            'data-filename': this.bbcode(data.file.name, false),
-            'data-extension': data.file.ext,
+            'data-filename': this.bbcode(dataFormat.file.name, false),
+            'data-extension': dataFormat.file.ext,
           });
         }
       });
@@ -254,55 +246,36 @@ $(() => {
       $(document).on('click', 'button#sake_download', (event) => {
         event.preventDefault();
         const $dom = $(event.currentTarget);
-        const fileName = $dom.data('filename');
-        const content = $('textarea#sake_textarea').val();
-        const extension = $dom.data('extension');
+        const fileName = $dom.attr('data-filename');
+        const content = ($('textarea#sake_textarea').get(0) as HTMLInputElement).value;
+        const extension = $dom.attr('data-extension');
         if (typeof fileName !== 'undefined' && typeof content !== 'undefined' && typeof extension !== 'undefined') {
-          const randomFileName = Math.random().toString(36).substring(2);
-          const newFileName = `${fileName.toString().length > 0 ? fileName : randomFileName}.${extension}`;
-          const sanitizedContent = this.decodeEntities(content.toString().trim().replace(/\n/g, '\r\n'));
-          const blob = new Blob([sanitizedContent], { type: 'application/octet-stream;charset=utf-8' });
-          const url = window.URL.createObjectURL(blob);
-          this.saveAs(url, newFileName);
-          window.URL.revokeObjectURL(url);
+          const newFileName = `${fileName.length > 0 ? fileName : this.data.appID}.${extension}`;
+          const file = new File([content], newFileName, { type: 'text/plain;charset=utf-8' });
+          FileSaver.saveAs(file);
         }
       });
     }
 
-    public saveAs(url: string, filename: string) {
-      let a = document.createElement('a');
-      document.body.appendChild(a);
-      a.style.cssText = 'display: none';
-      a.href = url;
-      a.download = filename;
-      a.click();
+    public isValidSHA1(string: string) {
+      return /^[a-fA-F0-9]{40}$/gm.test(string);
     }
 
-    public decodeEntities(encodedString: string) {
-      const textarea = document.createElement('textarea');
-      textarea.innerHTML = encodedString;
-      return textarea.value;
-    }
-
-    public isValidSHA1(s: string) {
-      return /^[a-fA-F0-9]{40}$/gm.test(s);
-    }
-
-    public bbcodeDLCSReplace(str: string, values: {}) {
-      let strng = str;
-      $.each(values, (_index, _values) => {
-        strng = strng.replace(new RegExp(`{${_index}}`, 'g'), _values);
+    public bbcodeDLCSReplace(string: string, values: {}) {
+      let rtn = string;
+      $.each(values, (index, value) => {
+        rtn = rtn.replace(new RegExp(`{${index}}`, 'gm'), value);
       });
-      return strng;
+      return rtn;
     }
 
     public bbcodeDLCSPrefix(index: string, prefix: string | number) {
       const prefixInt = Number(prefix);
-      return prefix > index.length ? '0'.repeat(prefixInt - index.length) + index : index;
+      return prefixInt > index.length ? '0'.repeat(prefixInt - index.length) + index : index;
     }
 
     // eslint-disable-next-line max-params
-    public bbcodeDLCS(str: string, indexFromZero: boolean, indexPrefix: string | number, withDLCSUnknowns: boolean) {
+    public bbcodeDLCS(string: string, indexFromZero: boolean, indexPrefix: string | number, withDLCSUnknowns: boolean) {
       let rtn = '';
       let index = indexFromZero ? 0 : -1;
       const dlcs = withDLCSUnknowns
@@ -313,7 +286,7 @@ $(() => {
         : this.data.dlcs;
       $.each(dlcs, (appid, name) => {
         index += 1;
-        rtn += this.bbcodeDLCSReplace(str, {
+        rtn += this.bbcodeDLCSReplace(string, {
           dlc_id: appid,
           dlc_name: name,
           dlc_index: this.bbcodeDLCSPrefix(index.toString(), indexPrefix),
@@ -322,11 +295,11 @@ $(() => {
       return rtn;
     }
 
-    public bbcode(str: string, withDLCSUnknowns: boolean) {
+    public bbcode(string: string, withDLCSUnknowns: boolean) {
       let data: RegExpExecArray | null;
-      let rtn = str;
+      let rtn = string;
       const re = /\[(\w+)(?:=(.*))?]([^[]+)\[\/(\w+)]/g;
-      while ((data = re.exec(str)) !== null) {
+      while ((data = re.exec(rtn)) !== null) {
         const [bbcode, bbcodeOpen, bbcodeOpt, bbcodeVal, bbcodeClose] = data;
         if (bbcodeOpen === bbcodeClose) {
           const bbcodeOpts = typeof bbcodeOpt !== 'undefined' ? bbcodeOpt.split(':') : [];
@@ -339,7 +312,7 @@ $(() => {
               rtn = rtn.replace(
                 bbcode,
                 this.bbcodeDLCS(
-                  bbcodeVal.replace(/\\n/g, '\n'),
+                  bbcodeVal.replace(/\\n/gm, '\n'),
                   bbcodeOpts[0] === 'true',
                   bbcodeOpts[1] || 0,
                   withDLCSUnknowns,

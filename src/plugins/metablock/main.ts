@@ -15,13 +15,15 @@ const metablock = (comment: string): any => {
         const outDir = config.build.outDir || 'dist';
         const fileName = file[0];
         const filePath = resolve(root, outDir, fileName);
-        try {
-          let data = readFileSync(filePath, {
-            encoding: 'utf8',
-          });
-          writeFileSync(filePath, `${comment}\n${data}`);
-        } catch (e) {
-          console.log(e);
+        if (fileName.endsWith('.js')) {
+          try {
+            let data = readFileSync(filePath, {
+              encoding: 'utf8',
+            });
+            writeFileSync(filePath, `${comment}\n${data}`);
+          } catch (e) {
+            console.log(e);
+          }
         }
       }
     },

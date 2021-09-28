@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { defineConfig } from 'vite';
-import viteMetablockPlugins from './src/plugins/metablock/main';
+import viteMetablockPlugin from './src/plugins/metablock/main';
 import metablock from './src/metablock';
 import { name as packageName } from './package.json';
 
@@ -11,10 +11,10 @@ export default defineConfig(({ command, mode }) => {
   const viteEntry = join(viteRoot, 'index.ts');
   return {
     root: viteRoot,
-    plugins: [viteMetablockPlugins(metablock)],
+    plugins: [viteMetablockPlugin(metablock)],
     build: {
       outDir: rootPath,
-      minify: isDev ? false : 'terser',
+      minify: isDev ? false : 'esbuild',
       lib: {
         entry: viteEntry,
         name: packageName,
