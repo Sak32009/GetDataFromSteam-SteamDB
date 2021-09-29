@@ -20,7 +20,6 @@ const out = `// ==UserScript==
 // @run-at        document-end
 // @grant         GM_addStyle
 // @grant         unsafeWindow
-// @grant         GM_download
 // ==/UserScript==`;
 
 export default out;

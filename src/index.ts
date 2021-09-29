@@ -113,9 +113,10 @@ $(() => {
       });
       if (content.length > 0) {
         this.setModal();
-        $('button#sake_download')
-          .attr('data-filename', depotID + '.sha1')
-          .prop('disabled', false);
+        $('a#sake_download').attr({
+          href: this.encodeToDataURI(content),
+          download: depotID + '.sha1',
+        });
         $('textarea#sake_textarea').val(content);
       }
     }
@@ -181,7 +182,7 @@ $(() => {
         modalContainer = `<h5 class="text-center m-3">Patience is the virtue of the strong!</h5>`;
       } else if (this.is.steamdbDepot) {
         modalContainer = `<div class="d-flex flex-row justify-content-end m-2">
-              <button id="sake_download" type="button" class="btn btn-dark border border-secondary" disabled>Download as file</button>
+            <a id="sake_download" href="#" class="btn btn-dark border border-secondary">Download as file</a>
           </div>
           <div class="m-2">
             <textarea id="sake_textarea" class="form-control resize-none bg-dark text-white border-secondary" readonly rows="14"></textarea>
@@ -201,7 +202,7 @@ $(() => {
             <input class="form-check-input" type="checkbox" id="sake_unknowns">
             <span>With DLCS Unknowns</span>
           </label>
-          <button id="sake_download" type="button" class="btn btn-dark border border-secondary" disabled>Download as file</button>
+          <a id="sake_download" href="#" class="btn btn-dark border border-secondary disabled">Download as file</a>
         </div>
         <div class="m-2 relative">
           <textarea id="sake_textarea" class="form-control resize-none bg-dark text-white border-secondary" rows="14"
@@ -235,14 +236,15 @@ $(() => {
         if (typeof selected === 'string') {
           const dataFormat = this.formats[selected];
           const fileText = dataFormat.file.text;
-          const fileName = dataFormat.file.name;
+          const fileName = this.parse(dataFormat.file.name);
           const content = this.parse(fileText);
           $(`textarea#sake_textarea`).html(content).scrollTop(0);
-          $(`button#sake_download`)
+          $(`a#sake_download`)
             .attr({
-              'data-filename': this.parse(fileName),
+              href: this.encodeToDataURI(content),
+              download: fileName,
             })
-            .prop('disabled', false);
+            .removeClass('disabled');
         }
       });
       $(document).on('change', 'input#sake_unknowns', (event) => {
@@ -250,27 +252,14 @@ $(() => {
       });
     }
 
-    public setCommonEvents() {
-      $(document).on('click', 'button#sake_download', (event) => {
-        event.preventDefault();
-        const $dom = $(event.currentTarget);
-        const fileName = $dom.attr('data-filename');
-        // fix special html chars
-        const content = ($('textarea#sake_textarea').get(0) as HTMLInputElement).value;
-        if (typeof fileName !== 'undefined' && typeof content !== 'undefined') {
-          this.saveAs(content, fileName);
-        }
-      });
-    }
+    public setCommonEvents() {}
 
-    public saveAs(content: string, fileName: string) {
-      const base64 = cryptoJS.enc.Base64.stringify(cryptoJS.enc.Utf8.parse(content));
+    public encodeToDataURI(content: string) {
+      const strip = ($('<textarea>').html(content).get(0) as HTMLInputElement).value;
+      const wordArray = cryptoJS.enc.Utf8.parse(strip);
+      const base64 = cryptoJS.enc.Base64.stringify(wordArray);
       const dataURI = 'data:text/plain;charset=utf-8;base64,' + base64;
-      // fix for https://poperblocker.com/
-      window.setTimeout(() => {
-        // eslint-disable-next-line no-undef
-        GM_download(dataURI, fileName);
-      }, 0);
+      return dataURI;
     }
 
     public isValidSHA1(string: string) {
