@@ -12,72 +12,63 @@ const formats = {
   cream_api_4_5_0_0: {
     name: 'CreamAPI v4.5.0.0',
     file: {
-      name: 'cream_api',
-      ext: 'ini',
+      name: 'cream_api.ini',
       text: cream_api_4_5_0_0,
     },
   },
   cream_api_3_4_1_0: {
     name: 'CreamAPI v3.4.1.0',
     file: {
-      name: 'cream_api',
-      ext: 'ini',
+      name: 'cream_api.ini',
       text: cream_api_3_4_1_0,
     },
   },
   greenluma_2020_batch_mode: {
     name: 'GreenLuma 2020 [BATCH MODE]',
     file: {
-      name: '[steam]appID[/steam]_GreenLuma',
-      ext: 'bat',
+      name: '[data]appID[/data]_GreenLuma.bat',
       text: greenluma_2020_batch_mode,
     },
   },
   lumaemu_only_dlcs_list: {
     name: 'LUMAEMU (ONLY DLCS LIST)',
     file: {
-      name: '',
-      ext: 'ini',
+      name: '[data]appID[/data]_lumaemu.ini',
       text: lumaemu_only_dlcs_list,
     },
   },
   codex_dlc00000_dlcname: {
     name: 'CODEX (DLC00000 = DLCName)',
     file: {
-      name: '',
-      ext: 'ini',
+      name: '[data]appID[/data]_codex.ini',
       text: codex_dlc00000_dlcname,
     },
   },
   threedmgame_only_dlcs_list: {
     name: '3DMGAME (ONLY DLCS LIST)',
     file: {
-      name: '',
-      ext: 'ini',
+      name: '[data]appID[/data]_3dmgame.ini',
       text: threedmgame_only_dlcs_list,
     },
   },
   skidrow_only_dlcs_list: {
     name: 'SKIDROW (ONLY DLCS LIST)',
     file: {
-      name: '',
-      ext: 'ini',
+      name: '[data]appID[/data]_skidrow.ini',
       text: skidrow_only_dlcs_list,
     },
   },
   appid_appidname: {
     name: 'APPID = APPIDNAME',
     file: {
-      name: '',
-      ext: 'ini',
+      name: '[data]appID[/data]_appid_appidname.ini',
       text: appid_appidname,
     },
   },
   appidname: {
     name: 'APPIDNAME',
     file: {
-      name: '',
-      ext: 'ini',
+      name: '[data]appID[/data]_appidname.ini',
       text: appidname,
     },
   },

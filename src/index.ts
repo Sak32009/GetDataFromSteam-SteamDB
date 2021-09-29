@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import FileSaver from 'file-saver';
+import cryptoJS from 'crypto-js';
 import 'bootstrap/dist/js/bootstrap.esm.min';
 
 import skBootstrap from './css/bootstrap.css';
@@ -25,6 +25,7 @@ $(() => {
       countDlcs: 0,
       countDlcsUnknowns: 0,
       countAll: 0,
+      withDLCSUnknowns: false,
     };
     public urls = {
       steamdbApp: 'https://steamdb.info/app/',
@@ -99,7 +100,7 @@ $(() => {
     }
 
     public steamDBDepot() {
-      let output: string[] = [];
+      let content = '';
       // eslint-disable-next-line no-undef
       const dataTable = unsafeWindow.jQuery('div#files .table.file-tree').DataTable().data();
       const depotID = $(`div[data-depotid]`).data('depotid');
@@ -107,13 +108,15 @@ $(() => {
         const fileName = values[0];
         const sha1 = values[1];
         if (this.isValidSHA1(sha1)) {
-          output.push(`${sha1} *${fileName}`);
+          content += `${sha1} *${fileName}\n`;
         }
       });
-      if (output.length > 0) {
+      if (content.length > 0) {
         this.setModal();
-        $('button#sake_download').attr('data-filename', depotID);
-        $('textarea#sake_textarea').val(output.join('\n'));
+        $('button#sake_download')
+          .attr('data-filename', depotID + '.sha1')
+          .prop('disabled', false);
+        $('textarea#sake_textarea').val(content);
       }
     }
 
@@ -178,7 +181,7 @@ $(() => {
         modalContainer = `<h5 class="text-center m-3">Patience is the virtue of the strong!</h5>`;
       } else if (this.is.steamdbDepot) {
         modalContainer = `<div class="d-flex flex-row justify-content-end m-2">
-              <button id="sake_download" type="button" class="btn btn-dark border border-secondary" data-extension="sha1">Download as file</button>
+              <button id="sake_download" type="button" class="btn btn-dark border border-secondary" disabled>Download as file</button>
           </div>
           <div class="m-2">
             <textarea id="sake_textarea" class="form-control resize-none bg-dark text-white border-secondary" readonly rows="14"></textarea>
@@ -198,7 +201,7 @@ $(() => {
             <input class="form-check-input" type="checkbox" id="sake_unknowns">
             <span>With DLCS Unknowns</span>
           </label>
-          <button id="sake_download" type="button" class="btn btn-dark border border-secondary">Download as file</button>
+          <button id="sake_download" type="button" class="btn btn-dark border border-secondary" disabled>Download as file</button>
         </div>
         <div class="m-2 relative">
           <textarea id="sake_textarea" class="form-control resize-none bg-dark text-white border-secondary" rows="14"
@@ -228,17 +231,22 @@ $(() => {
     public setEvents() {
       $(document).on('click', 'button#sake_convert', (event) => {
         event.preventDefault();
-        const selected = $(`select#sake_select option:selected`).val()?.toString();
-        const withDLCSUnknowns = $('input#sake_unknowns').is(':checked');
-        if (typeof selected !== 'undefined') {
+        const selected = $(`select#sake_select option:selected`).val();
+        if (typeof selected === 'string') {
           const dataFormat = this.formats[selected];
-          const rtn = this.bbcode(dataFormat.file.text, withDLCSUnknowns);
-          $(`textarea#sake_textarea`).html(rtn).scrollTop(0);
-          $(`button#sake_download`).attr({
-            'data-filename': this.bbcode(dataFormat.file.name, false),
-            'data-extension': dataFormat.file.ext,
-          });
+          const fileText = dataFormat.file.text;
+          const fileName = dataFormat.file.name;
+          const content = this.parse(fileText);
+          $(`textarea#sake_textarea`).html(content).scrollTop(0);
+          $(`button#sake_download`)
+            .attr({
+              'data-filename': this.parse(fileName),
+            })
+            .prop('disabled', false);
         }
+      });
+      $(document).on('change', 'input#sake_unknowns', (event) => {
+        this.data.withDLCSUnknowns = $(event.currentTarget).is(':checked');
       });
     }
 
@@ -247,38 +255,56 @@ $(() => {
         event.preventDefault();
         const $dom = $(event.currentTarget);
         const fileName = $dom.attr('data-filename');
+        // fix special html chars
         const content = ($('textarea#sake_textarea').get(0) as HTMLInputElement).value;
-        const extension = $dom.attr('data-extension');
-        if (typeof fileName !== 'undefined' && typeof content !== 'undefined' && typeof extension !== 'undefined') {
-          const newFileName = `${fileName.length > 0 ? fileName : this.data.appID}.${extension}`;
-          const file = new File([content], newFileName, { type: 'text/plain;charset=utf-8' });
-          FileSaver.saveAs(file);
+        if (typeof fileName !== 'undefined' && typeof content !== 'undefined') {
+          this.saveAs(content, fileName);
         }
       });
+    }
+
+    public saveAs(content: string, fileName: string) {
+      const base64 = cryptoJS.enc.Base64.stringify(cryptoJS.enc.Utf8.parse(content));
+      const dataURI = 'data:text/plain;charset=utf-8;base64,' + base64;
+      // fix for https://poperblocker.com/
+      window.setTimeout(() => {
+        // eslint-disable-next-line no-undef
+        GM_download(dataURI, fileName);
+      }, 0);
     }
 
     public isValidSHA1(string: string) {
       return /^[a-fA-F0-9]{40}$/gm.test(string);
     }
 
-    public bbcodeDLCSReplace(string: string, values: {}) {
-      let rtn = string;
-      $.each(values, (index, value) => {
-        rtn = rtn.replace(new RegExp(`{${index}}`, 'gm'), value);
-      });
-      return rtn;
+    public parse(content: string) {
+      let newContent = content;
+      newContent = newContent.replace(
+        /\[dlcs(?: fromZero="(.*?)")?(?: prefix="(.*?)")?]([^[]+)\[\/dlcs]/gm,
+        this.parseDLCSMatch.bind(this),
+      );
+      newContent = newContent.replace(/\[data]([^[]+)\[\/data]/gm, this.parseDataMatch.bind(this));
+      newContent = newContent.replace(/\\n/gm, '\n');
+      return newContent;
     }
 
-    public bbcodeDLCSPrefix(index: string, prefix: string | number) {
+    // eslint-disable-next-line max-params
+    public parseDLCSMatch(match: any, p1: any, p2: any, p3: any) {
+      const indexFromZero = typeof p1 !== 'undefined' ? p1 === 'true' : false;
+      const indexPrefix = typeof p2 !== 'undefined' ? p2 : '0';
+      const content = p3;
+      return this.parseDLCSMatchValue(content, indexFromZero, indexPrefix);
+    }
+
+    public parseDLCSMatchPrefix(index: string, prefix: string) {
       const prefixInt = Number(prefix);
       return prefixInt > index.length ? '0'.repeat(prefixInt - index.length) + index : index;
     }
 
-    // eslint-disable-next-line max-params
-    public bbcodeDLCS(string: string, indexFromZero: boolean, indexPrefix: string | number, withDLCSUnknowns: boolean) {
-      let rtn = '';
+    public parseDLCSMatchValue(content: string, indexFromZero: boolean, indexPrefix: string) {
+      let newContent = '';
       let index = indexFromZero ? 0 : -1;
-      const dlcs = withDLCSUnknowns
+      const dlcs = this.data.withDLCSUnknowns
         ? {
             ...this.data.dlcs,
             ...this.data.dlcsUnknowns,
@@ -286,44 +312,20 @@ $(() => {
         : this.data.dlcs;
       $.each(dlcs, (appid, name) => {
         index += 1;
-        rtn += this.bbcodeDLCSReplace(string, {
-          dlc_id: appid,
-          dlc_name: name,
-          dlc_index: this.bbcodeDLCSPrefix(index.toString(), indexPrefix),
+        newContent += content.replace(/{(.*?)}/gm, (match: any, content: any) => {
+          const values: { [index: string]: any } = {
+            dlc_id: appid,
+            dlc_name: name,
+            dlc_index: this.parseDLCSMatchPrefix(index.toString(), indexPrefix),
+          };
+          return values[content];
         });
       });
-      return rtn;
+      return newContent;
     }
 
-    public bbcode(string: string, withDLCSUnknowns: boolean) {
-      let data: RegExpExecArray | null;
-      let rtn = string;
-      const re = /\[(\w+)(?:=(.*))?]([^[]+)\[\/(\w+)]/g;
-      while ((data = re.exec(rtn)) !== null) {
-        const [bbcode, bbcodeOpen, bbcodeOpt, bbcodeVal, bbcodeClose] = data;
-        if (bbcodeOpen === bbcodeClose) {
-          const bbcodeOpts = typeof bbcodeOpt !== 'undefined' ? bbcodeOpt.split(':') : [];
-          switch (bbcodeOpen) {
-            case 'steam': {
-              rtn = rtn.replace(bbcode, this.data[bbcodeVal]);
-              break;
-            }
-            case 'dlcs': {
-              rtn = rtn.replace(
-                bbcode,
-                this.bbcodeDLCS(
-                  bbcodeVal.replace(/\\n/gm, '\n'),
-                  bbcodeOpts[0] === 'true',
-                  bbcodeOpts[1] || 0,
-                  withDLCSUnknowns,
-                ),
-              );
-              break;
-            }
-          }
-        }
-      }
-      return rtn;
+    public parseDataMatch(match: any, content: any) {
+      return this.data[content];
     }
   }
   const a = new SK();

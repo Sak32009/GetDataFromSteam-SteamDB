@@ -1,6 +1,6 @@
 {
   "name": "getdlcinfofromsteam_steamdb_epicdb",
-  "version": "4.2.9",
+  "version": "4.3.0",
   "description": "Get Data from Steam / SteamDB / EpicDB (ex Get DLC Info from SteamDB) it's a userscript able to extract all the information of the DLCs Games from Steam / SteamDB / EpicDB and are exported in various formats. It also has small tools :)",
   "author": {
     "name": "Sak32009"
@@ -31,17 +31,17 @@
     "@babel/core": "^7.15.5",
     "@babel/eslint-parser": "^7.15.4",
     "@popperjs/core": "^2.10.1",
-    "@types/file-saver": "^2.0.3",
+    "@types/crypto-js": "^4.0.2",
     "@types/jquery": "^3.5.6",
     "@types/node": "^16.9.6",
     "@types/tampermonkey": "^4.0.5",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
     "bootstrap": "^5.1.1",
+    "crypto-js": "^4.1.1",
     "del-cli": "^4.0.1",
     "eslint": "^7.32.0",
     "eslint-config-alloy": "^4.3.0",
-    "file-saver": "^2.0.5",
     "http-server": "^13.0.2",
     "jquery": "^3.6.0",
     "prettier": "^2.4.1",
