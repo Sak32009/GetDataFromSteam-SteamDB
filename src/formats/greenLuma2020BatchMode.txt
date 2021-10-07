@@ -6,7 +6,7 @@ IF EXIST .\\AppList RMDIR /S /Q .\\AppList
 :: CREATE APPLIST DIR
 MKDIR .\\AppList
 :: CREATE DLCS FILES FOR __[data]name[/data]__
-ECHO [data]appID[/data]> .\\AppList\\0.txt
+ECHO [data]appId[/data]> .\\AppList\\0.txt
 [dlcs fromZero="true"]:: {dlc_name}\nECHO {dlc_id}> .\\AppList\\{dlc_index}.txt\n[/dlcs]
 :: START GREENLUMA 2020
 IF EXIST .\\DLLInjector.exe GOTO :Q
@@ -18,7 +18,7 @@ IF /I "%c%" EQU "N" GOTO :EXIT
 GOTO :Q
 :START
 CLS
-ECHO Launching Greenluma 2020 - APPID [data]appID[/data] - APPNAME [data]name[/data]
+ECHO Launching Greenluma 2020 - APPID [data]appId[/data] - APPNAME [data]name[/data]
 TASKKILL /F /IM steam.exe
 TIMEOUT /T 2
 DLLInjector.exe -DisablePreferSystem32Images

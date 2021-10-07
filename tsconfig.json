@@ -1,16 +1,15 @@
 {
   "compilerOptions": {
-    "lib": ["ESNext"],
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "node",
-    "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
     "resolveJsonModule": true,
-    "typeRoots": ["./node_modules/@types", "./typings"]
+    "strict": true,
+    "isolatedModules": true,
+    "typeRoots": ["./node_modules/@types", "./types"]
   },
   "exclude": ["node_modules"]
 }

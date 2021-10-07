@@ -1,0 +1,13 @@
+{
+  "space": true,
+  "prettier": true,
+  "rules": {
+    "no-warning-comments": "off",
+    "import/no-extraneous-dependencies": "off",
+    "import/no-unassigned-import": "off",
+    "unicorn/prefer-node-protocol": "off",
+    "unicorn/prefer-module": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-call": "off"
+  }
+}

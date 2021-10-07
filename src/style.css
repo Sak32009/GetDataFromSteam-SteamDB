@@ -1,0 +1,83 @@
+button[data-bs-toggle='modal'] {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+
+.modal {
+  z-index: 99993;
+}
+
+.modal-backdrop {
+  z-index: 99992;
+}
+
+.modal-header-logo img {
+  width: 96px;
+  height: 96px;
+}
+
+.btn {
+  white-space: initial;
+  box-shadow: initial;
+  appearance: initial;
+}
+
+.resize-none {
+  resize: none;
+}
+
+.relative {
+  position: relative;
+}
+
+.fixed-to-textarea {
+  position: absolute;
+  bottom: 0;
+  right: 15px;
+}
+
+.btn-sake {
+  color: #fff;
+  background-color: #4b2e52;
+  border-color: #4b2e52;
+}
+
+.btn-sake:hover {
+  color: #fff;
+  background-color: #402746;
+  border-color: #3c2542;
+}
+
+.btn-check:focus + .btn-sake,
+.btn-sake:focus {
+  color: #fff;
+  background-color: #402746;
+  border-color: #3c2542;
+  box-shadow: 0 0 0 0.25rem rgba(102, 77, 108, 0.5);
+}
+
+.btn-check:checked + .btn-sake,
+.btn-check:active + .btn-sake,
+.btn-sake:active,
+.btn-sake.active,
+.show > .btn-sake.dropdown-toggle {
+  color: #fff;
+  background-color: #3c2542;
+  border-color: #38233e;
+}
+
+.btn-check:checked + .btn-sake:focus,
+.btn-check:active + .btn-sake:focus,
+.btn-sake:active:focus,
+.btn-sake.active:focus,
+.show > .btn-sake.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.25rem rgba(102, 77, 108, 0.5);
+}
+
+.btn-sake:disabled,
+.btn-sake.disabled {
+  color: #fff;
+  background-color: #4b2e52;
+  border-color: #4b2e52;
+}

@@ -1,0 +1,9 @@
+{
+  "[javascript]": {
+    "editor.defaultFormatter": "spence-s.linter-xo"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "spence-s.linter-xo"
+  },
+  "xo.format.enable": true
+}

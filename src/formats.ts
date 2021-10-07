@@ -1,75 +1,75 @@
-import cream_api_4_5_0_0 from './formats/cream_api_4_5_0_0.ini?raw';
-import cream_api_3_4_1_0 from './formats/cream_api_3_4_1_0.ini?raw';
-import greenluma_2020_batch_mode from './formats/greenluma_2020_batch_mode.bat?raw';
-import lumaemu_only_dlcs_list from './formats/lumaemu_only_dlcs_list.ini?raw';
-import codex_dlc00000_dlcname from './formats/codex_dlc00000_dlcname.ini?raw';
-import threedmgame_only_dlcs_list from './formats/3dmgame_only_dlcs_list.ini?raw';
-import skidrow_only_dlcs_list from './formats/skidrow_only_dlcs_list.ini?raw';
-import appid_appidname from './formats/appid_appidname.ini?raw';
-import appidname from './formats/appidname.ini?raw';
+import creamApi4500 from './formats/creamApi4500.txt?raw';
+import creamApi3410 from './formats/creamApi3410.txt?raw';
+import greenLuma2020BatchMode from './formats/greenLuma2020BatchMode.txt?raw';
+import lumaEmuOnlyDlcsList from './formats/lumaEmuOnlyDlcsList.txt?raw';
+import codexDlc00000DlcName from './formats/codexDlc00000DlcName.txt?raw';
+import threeDmGameOnlyDlcsList from './formats/threeDmGameOnlyDlcsList.txt?raw';
+import skidrowOnlyDlcsList from './formats/skidrowOnlyDlcsList.txt?raw';
+import appIdAppIdName from './formats/appIdAppIdName.txt?raw';
+import appIdName from './formats/appIdName.txt?raw';
 
 const formats = {
-  cream_api_4_5_0_0: {
+  creamApi4500: {
     name: 'CreamAPI v4.5.0.0',
     file: {
       name: 'cream_api.ini',
-      text: cream_api_4_5_0_0,
+      text: creamApi4500,
     },
   },
-  cream_api_3_4_1_0: {
+  creamApi3410: {
     name: 'CreamAPI v3.4.1.0',
     file: {
       name: 'cream_api.ini',
-      text: cream_api_3_4_1_0,
+      text: creamApi3410,
     },
   },
-  greenluma_2020_batch_mode: {
+  greenLuma2020BatchMode: {
     name: 'GreenLuma 2020 [BATCH MODE]',
     file: {
       name: '[data]appID[/data]_GreenLuma.bat',
-      text: greenluma_2020_batch_mode,
+      text: greenLuma2020BatchMode,
     },
   },
-  lumaemu_only_dlcs_list: {
+  lumaEmuOnlyDlcsList: {
     name: 'LUMAEMU (ONLY DLCS LIST)',
     file: {
       name: '[data]appID[/data]_lumaemu.ini',
-      text: lumaemu_only_dlcs_list,
+      text: lumaEmuOnlyDlcsList,
     },
   },
-  codex_dlc00000_dlcname: {
+  codexDlc00000DlcName: {
     name: 'CODEX (DLC00000 = DLCName)',
     file: {
       name: '[data]appID[/data]_codex.ini',
-      text: codex_dlc00000_dlcname,
+      text: codexDlc00000DlcName,
     },
   },
-  threedmgame_only_dlcs_list: {
+  threeDmGameOnlyDlcsList: {
     name: '3DMGAME (ONLY DLCS LIST)',
     file: {
       name: '[data]appID[/data]_3dmgame.ini',
-      text: threedmgame_only_dlcs_list,
+      text: threeDmGameOnlyDlcsList,
     },
   },
-  skidrow_only_dlcs_list: {
+  skidrowOnlyDlcsList: {
     name: 'SKIDROW (ONLY DLCS LIST)',
     file: {
       name: '[data]appID[/data]_skidrow.ini',
-      text: skidrow_only_dlcs_list,
+      text: skidrowOnlyDlcsList,
     },
   },
-  appid_appidname: {
+  appIdAppIdName: {
     name: 'APPID = APPIDNAME',
     file: {
       name: '[data]appID[/data]_appid_appidname.ini',
-      text: appid_appidname,
+      text: appIdAppIdName,
     },
   },
-  appidname: {
+  appIdName: {
     name: 'APPIDNAME',
     file: {
       name: '[data]appID[/data]_appidname.ini',
-      text: appidname,
+      text: appIdName,
     },
   },
 };

@@ -1,11 +1,19 @@
-import { metablock, description, author, version, license, homepage, bugs } from '../package.json';
+import {
+  name,
+  productName,
+  description,
+  author,
+  version,
+  license,
+  homepage,
+  bugs,
+} from '../package.json';
 
 const out = `// ==UserScript==
-// @name          ${metablock.name}
-// @namespace     ${metablock.namespace}
+// @name          ${productName}
+// @namespace     ${name}
 // @description   ${description}
 // @author        ${author.name}
-// @year          ${metablock.year}
 // @version       ${version}
 // @license       ${license}
 // @homepageURL   ${homepage}
