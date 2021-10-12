@@ -2,7 +2,6 @@ import {join} from 'path';
 import {cwd} from 'process';
 import {defineConfig, UserConfig} from 'vite';
 import viteMetablockPlugin from './src/plugins/metablock/main';
-import metablock from './src/metablock';
 import {name as packageName} from './package.json';
 
 export default defineConfig(({mode}) => {
@@ -12,7 +11,7 @@ export default defineConfig(({mode}) => {
   const viteEntry = join(viteRoot, 'index.ts');
   const viteConfig: UserConfig = {
     root: viteRoot,
-    plugins: [viteMetablockPlugin(metablock)],
+    plugins: [viteMetablockPlugin()],
     build: {
       outDir: rootPath,
       lib: {

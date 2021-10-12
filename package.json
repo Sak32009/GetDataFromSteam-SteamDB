@@ -1,6 +1,6 @@
 {
   "name": "sak32009-get-data-from-steam-steamdb-epicdb",
-  "version": "4.3.1",
+  "version": "4.3.2",
   "description": "Get Data from Steam / SteamDB / EpicDB (ex Get DLC Info from SteamDB) it's a userscript able to extract all the information of the DLCs Games from Steam / SteamDB / EpicDB and are exported in various formats. It also has small tools :)",
   "keywords": [
     "steamdb",
@@ -50,6 +50,7 @@
     "postcss": "^8.3.9",
     "postcss-prefix-selector": "^1.13.0",
     "prettier": "^2.4.1",
+    "typescript": "^4.4.3",
     "vite": "^2.6.7",
     "xo": "^0.45.0"
   }
