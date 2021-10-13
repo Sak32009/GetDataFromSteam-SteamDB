@@ -5,5 +5,8 @@
   "[typescript]": {
     "editor.defaultFormatter": "spence-s.linter-xo"
   },
-  "xo.format.enable": true
+  "xo.format.enable": true,
+  "files.exclude": {
+    "**/node_modules": true
+  }
 }

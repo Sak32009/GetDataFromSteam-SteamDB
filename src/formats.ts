@@ -26,49 +26,49 @@ const formats = {
   greenLuma2020BatchMode: {
     name: 'GreenLuma 2020 [BATCH MODE]',
     file: {
-      name: '[data]appID[/data]_GreenLuma.bat',
+      name: '[data]appId[/data]_GreenLuma.bat',
       text: greenLuma2020BatchMode,
     },
   },
   lumaEmuOnlyDlcsList: {
     name: 'LUMAEMU (ONLY DLCS LIST)',
     file: {
-      name: '[data]appID[/data]_lumaemu.ini',
+      name: '[data]appId[/data]_lumaemu.ini',
       text: lumaEmuOnlyDlcsList,
     },
   },
   codexDlc00000DlcName: {
     name: 'CODEX (DLC00000 = DLCName)',
     file: {
-      name: '[data]appID[/data]_codex.ini',
+      name: '[data]appId[/data]_codex.ini',
       text: codexDlc00000DlcName,
     },
   },
   threeDmGameOnlyDlcsList: {
     name: '3DMGAME (ONLY DLCS LIST)',
     file: {
-      name: '[data]appID[/data]_3dmgame.ini',
+      name: '[data]appId[/data]_3dmgame.ini',
       text: threeDmGameOnlyDlcsList,
     },
   },
   skidrowOnlyDlcsList: {
     name: 'SKIDROW (ONLY DLCS LIST)',
     file: {
-      name: '[data]appID[/data]_skidrow.ini',
+      name: '[data]appId[/data]_skidrow.ini',
       text: skidrowOnlyDlcsList,
     },
   },
   appIdAppIdName: {
     name: 'APPID = APPIDNAME',
     file: {
-      name: '[data]appID[/data]_appid_appidname.ini',
+      name: '[data]appId[/data]_appid_appidname.ini',
       text: appIdAppIdName,
     },
   },
   appIdName: {
     name: 'APPIDNAME',
     file: {
-      name: '[data]appID[/data]_appidname.ini',
+      name: '[data]appId[/data]_appidname.ini',
       text: appIdName,
     },
   },

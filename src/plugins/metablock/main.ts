@@ -12,7 +12,6 @@ const plugin = (): Plugin => {
     },
     async writeBundle(_options, bundle) {
       for (const fileName of Object.keys(bundle)) {
-        console.log(fileName);
         if (fileName.endsWith('.js')) {
           const filePath = resolve(outDir, fileName);
           const data = readFileSync(filePath, {

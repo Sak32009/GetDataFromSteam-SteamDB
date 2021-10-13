@@ -1,5 +1,5 @@
+import {Buffer} from 'buffer';
 import $ from 'jquery';
-import {enc as encoder} from 'crypto-js';
 import 'bootstrap';
 
 import skBootstrap from 'bootstrap/dist/css/bootstrap.min.css';
@@ -274,8 +274,8 @@ $(() => {
 
     public encodeToDataUri(content: string) {
       const strip = ($('<textarea>').html(content).get(0) as HTMLInputElement).value;
-      const wordArray = encoder.Utf8.parse(strip);
-      const base64 = encoder.Base64.stringify(wordArray);
+      const wordArray = Buffer.from(strip, 'utf8');
+      const base64 = wordArray.toString('base64');
       return 'data:text/plain;charset=utf-8;base64,' + base64;
     }
 
