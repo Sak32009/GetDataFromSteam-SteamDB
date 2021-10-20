@@ -45,7 +45,7 @@
     "bootstrap": "^5.1.3",
     "buffer": "^6.0.3",
     "del-cli": "^4.0.1",
-    "http-server": "^13.0.2",
+    "http-server": "^14.0.0",
     "jquery": "^3.6.0",
     "postcss": "^8.3.9",
     "postcss-prefix-selector": "^1.13.0",
