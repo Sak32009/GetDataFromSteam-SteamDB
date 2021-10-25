@@ -3166,10 +3166,10 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-vite@^2.6.7:
-  version "2.6.7"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-2.6.7.tgz#e15c1d8327950720b5d7c4ec3fb36a5a58ccf7cb"
-  integrity sha512-ewk//jve9k6vlU8PfJmWUHN8k0YYdw4VaKOMvoQ3nT2Pb6k5OSMKQi4jPOzVH/TlUqMsCrq7IJ80xcuDDVyigg==
+vite@^2.6.11:
+  version "2.6.11"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-2.6.11.tgz#20d3d8f4b4fe38904a2e425356aab1cb23325e12"
+  integrity sha512-JWnGmiO1IFwou9aUWS4N0kMyHcgTTt1+2f4bJyzgBJLJDyAqGEX3HewE4jgrL6V4d9+mxs+lZ4L8HL2kyVBe7A==
   dependencies:
     esbuild "^0.13.2"
     postcss "^8.3.8"
