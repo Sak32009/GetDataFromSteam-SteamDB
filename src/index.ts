@@ -180,7 +180,7 @@ $(() => {
               <p class="mb-3">Source code licensed <a href="https://opensource.org/licenses/mit-license.php" target="_blank">MIT</a>.</p>
               <div>
                 <a class="btn btn-primary" target="_blank"
-                  href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=U7TLCVMHN9HA2&amp;source=url">PayPal Donation</a>
+                  href="https://www.paypal.me/sak32009a">PayPal Donation</a>
                 <a class="btn btn-secondary" target="_blank"
                   href="https://github.com/Sak32009/GetDLCInfoFromSteamDB/">GitHub Project</a>
               </div>
