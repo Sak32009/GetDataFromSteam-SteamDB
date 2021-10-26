@@ -1,5 +1,5 @@
 import {readFileSync, writeFileSync} from 'fs';
-import {resolve} from 'path';
+import {join} from 'path';
 import type {Plugin} from 'vite';
 import metablock from '../../metablock';
 
@@ -13,7 +13,7 @@ const plugin = (): Plugin => {
     async writeBundle(_options, bundle) {
       for (const fileName of Object.keys(bundle)) {
         if (fileName.endsWith('.js')) {
-          const filePath = resolve(outDir, fileName);
+          const filePath = join(outDir, fileName);
           const data = readFileSync(filePath, {
             encoding: 'utf8',
           });

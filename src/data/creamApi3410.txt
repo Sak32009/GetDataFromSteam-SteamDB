@@ -98,7 +98,9 @@ achievementscount = 0
 ; e.g. : 247295 = Saints Row IV - GAT V Pack
 ; If the DLC is not specified in this section
 ; then it won't be unlocked
-[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]
+[dlcs]{dlc_id} = {dlc_name}
+[/dlcs]
+
 [dlc_installdirs]
 ; Installation path for the specific DLC (dependent from "installdir" option).
 ; This section works only if "dlcasinstalldir" option is set to "false".

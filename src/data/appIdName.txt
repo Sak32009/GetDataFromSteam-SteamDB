@@ -1,0 +1,2 @@
+[dlcs]{dlc_name}
+[/dlcs]

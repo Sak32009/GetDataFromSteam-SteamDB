@@ -1,0 +1,3 @@
+[dlcs prefix="5"]DLC{dlc_index} = {dlc_id}
+DLCName{dlc_index} = {dlc_name}
+[/dlcs]

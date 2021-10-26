@@ -1,14 +1,14 @@
-import creamApi4500 from './formats/creamApi4500.txt?raw';
-import creamApi3410 from './formats/creamApi3410.txt?raw';
-import greenLuma2020BatchMode from './formats/greenLuma2020BatchMode.txt?raw';
-import lumaEmuOnlyDlcsList from './formats/lumaEmuOnlyDlcsList.txt?raw';
-import codexDlc00000DlcName from './formats/codexDlc00000DlcName.txt?raw';
-import threeDmGameOnlyDlcsList from './formats/threeDmGameOnlyDlcsList.txt?raw';
-import skidrowOnlyDlcsList from './formats/skidrowOnlyDlcsList.txt?raw';
-import appIdAppIdName from './formats/appIdAppIdName.txt?raw';
-import appIdName from './formats/appIdName.txt?raw';
+import creamApi4500 from './data/creamApi4500.txt?raw';
+import creamApi3410 from './data/creamApi3410.txt?raw';
+import greenLuma2020BatchMode from './data/greenLuma2020BatchMode.txt?raw';
+import lumaEmuOnlyDlcsList from './data/lumaEmuOnlyDlcsList.txt?raw';
+import codexDlc00000DlcName from './data/codexDlc00000DlcName.txt?raw';
+import threeDmGameOnlyDlcsList from './data/threeDmGameOnlyDlcsList.txt?raw';
+import skidrowOnlyDlcsList from './data/skidrowOnlyDlcsList.txt?raw';
+import appIdAppIdName from './data/appIdAppIdName.txt?raw';
+import appIdName from './data/appIdName.txt?raw';
 
-const formats = {
+const data = {
   creamApi4500: {
     name: 'CreamAPI v4.5.0.0',
     file: {
@@ -74,4 +74,4 @@ const formats = {
   },
 };
 
-export default formats;
+export default data;

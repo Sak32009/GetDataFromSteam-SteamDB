@@ -1,5 +1,18 @@
 module.exports = {
   plugins: [
+    require('@fullhuman/postcss-purgecss')({
+      content: [
+        './src/**/*.html',
+        './src/**/*.ts',
+        // NOTE: fix modal-backdrop(show, fade)
+        './node_modules/bootstrap/js/dist/modal.js',
+      ],
+      fontFace: true,
+      keyframes: true,
+      variables: true,
+      // NOTE: i don't use table
+      blocklist: ['table'],
+    }),
     require('postcss-prefix-selector')({
       prefix: '.sak32009',
       transform(prefix, selector, prefixedSelector) {

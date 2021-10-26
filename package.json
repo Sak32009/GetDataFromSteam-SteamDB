@@ -1,6 +1,6 @@
 {
   "name": "sak32009-get-data-from-steam-steamdb-epicdb",
-  "version": "4.3.4",
+  "version": "4.3.5",
   "description": "Get Data from Steam / SteamDB / EpicDB (ex Get DLC Info from SteamDB) it's a userscript able to extract all the information of the DLCs Games from Steam / SteamDB / EpicDB and are exported in various formats. It also has small tools :)",
   "keywords": [
     "steamdb",
@@ -31,27 +31,26 @@
   "copyright": "Copyright © 2016 - 2021 Sak32009",
   "scripts": {
     "dev": "yarn vite build --mode development -w",
-    "prod": "yarn vite build && yarn del ./style.css",
-    "editor": "yarn http-server -c-1"
+    "prod": "yarn run lint && yarn vite build",
+    "editor": "yarn http-server -c-1",
+    "lint": "tsc --noEmit && xo ."
   },
   "dependencies": {},
   "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^4.0.3",
     "@popperjs/core": "^2.10.2",
-    "@types/crypto-js": "^4.0.2",
-    "@types/jquery": "^3.5.7",
-    "@types/node": "^16.11.0",
+    "@types/jquery": "^3.5.8",
+    "@types/node": "^16.11.6",
     "@types/tampermonkey": "^4.0.5",
     "autoprefixer": "^10.3.7",
     "bootstrap": "^5.1.3",
     "buffer": "^6.0.3",
-    "del-cli": "^4.0.1",
-    "http-server": "^13.0.2",
-    "jquery": "^3.6.0",
-    "postcss": "^8.3.9",
+    "http-server": "^14.0.0",
+    "postcss": "^8.3.11",
     "postcss-prefix-selector": "^1.13.0",
     "prettier": "^2.4.1",
     "typescript": "^4.4.4",
-    "vite": "^2.6.7",
+    "vite": "^2.6.11",
     "xo": "^0.45.0"
   }
 }

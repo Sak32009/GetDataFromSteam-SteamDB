@@ -39,4 +39,5 @@ disableuserinterface = false
 ; e.g. : 247295 = Saints Row IV - GAT V Pack
 ; If the DLC is not specified in this section
 ; then it won't be unlocked
-[dlcs]{dlc_id} = {dlc_name}\n[/dlcs]
+[dlcs]{dlc_id} = {dlc_name}
+[/dlcs]

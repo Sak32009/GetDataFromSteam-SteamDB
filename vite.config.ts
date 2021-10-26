@@ -9,10 +9,12 @@ export default defineConfig(({mode}) => {
   const rootPath = cwd();
   const viteRoot = join(rootPath, 'src');
   const viteEntry = join(viteRoot, 'index.ts');
+
   const viteConfig: UserConfig = {
     root: viteRoot,
     plugins: [viteMetablockPlugin()],
     build: {
+      target: 'esnext',
       outDir: rootPath,
       lib: {
         entry: viteEntry,
