@@ -1,4 +1,5 @@
 import {Buffer} from 'buffer';
+import $ from 'jquery';
 import 'bootstrap/js/dist/modal';
 import skBootstrapCss from 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -14,9 +15,6 @@ import skData from './data';
 import skMainStyle from './style.css';
 import skAuthorIcon from './sak32009.svg';
 
-const $: JQueryStatic = unsafeWindow.jQuery;
-// NOTE: duplicated because it does not return an error on the dataTable
-const jQuery = unsafeWindow.jQuery;
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const EOL = '\r\n';
 
@@ -111,7 +109,7 @@ class Sak32009 {
   public steamDbDepot() {
     let content = '';
     // eslint-disable-next-line new-cap
-    const dataTable = jQuery('div#files .table.file-tree').DataTable().data();
+    const dataTable = unsafeWindow.jQuery('div#files .table.file-tree').DataTable().data();
     const depotId: string = $(`div[data-depotid]`).data('depotid');
     $.each(dataTable, (_index: string, values: string) => {
       const fileName = values[0];
@@ -171,22 +169,17 @@ class Sak32009 {
           <div class="modal-content bg-dark text-white shadow-lg">
             <div class="modal-header flex-column border-secondary">
               <div class="modal-header-logo">
-                <img src="${skAuthorIcon as string}" alt="${packageProductName}">
+                <img src="${skAuthorIcon}" alt="${packageProductName}">
               </div>
               <h5 class="text-center">${this.titleScript}</h5>
+              <h6><a target="_blank" href="https://github.com/Sak32009/SteamLauncher">check my new project, @SteamLauncher.</a></h6>
             </div>
             <div class="modal-body p-0">`;
     let modalContainer = '';
     const modalBottom = `</div>
             <div class="modal-footer flex-column border-secondary">
               <h6><strong>Protect</strong> development and free things,<br>because their survival is in our hands.</h6>
-              <p class="mb-3">Source code licensed <a href="https://opensource.org/licenses/mit-license.php" target="_blank">MIT</a>.</p>
-              <div>
-                <a class="btn btn-primary" target="_blank"
-                  href="https://www.paypal.me/sak32009a">PayPal Donation</a>
-                <a class="btn btn-secondary" target="_blank"
-                  href="https://github.com/Sak32009/GetDLCInfoFromSteamDB/">GitHub Project</a>
-              </div>
+              <p>You can donate by clicking on <a target="_blank" href="https://www.paypal.me/sak32009a">paypal.me</a>.</p>
             </div>
           </div>
         </div>

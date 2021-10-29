@@ -24,10 +24,6 @@ Install a userscript directly from GitHub by clicking on the "RAW" button of the
 
 ### Usage:
 
-- **STEAM**
-
-  - Go to [https://store.steampowered.com/app/24010/Train_Simulator_2021/](https://store.steampowered.com/app/24010/Train_Simulator_2021/) for example, click on the button at bottom-right screen, select format and click "Convert".
-
 - **STEAMDB**
 
   - Go to [https://steamdb.info/app/570/dlc/](https://steamdb.info/app/570/dlc/) for example, click on the button at bottom-right screen, select format and click "Convert".
@@ -38,7 +34,7 @@ Install a userscript directly from GitHub by clicking on the "RAW" button of the
 
 - **STORE.STEAMPOWERED.COM**
 
-  - Go to [https://store.steampowered.com/app/1325200/Nioh_2\_\_The_Complete_Edition/](https://store.steampowered.com/app/1325200/Nioh_2__The_Complete_Edition/) for example, click on the button at bottom-right screen, select format and click "Convert".
+  - Go to [https://store.steampowered.com/app/440900/Conan_Exiles/](https://store.steampowered.com/app/440900/Conan_Exiles/) for example, click on the button at bottom-right screen, select format and click "Convert".
 
 - **EPICGAMES.COM**
 
