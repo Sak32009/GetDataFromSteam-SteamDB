@@ -283,7 +283,7 @@ class Sak32009 {
   public parse(content: string) {
     let newContent = content;
     newContent = newContent.replace(
-      /\[dlcs(?: fromZero="(.*?)")?(?: prefix="(.*?)")?]([^[]+)\[\/dlcs]/gm,
+      /\[dlcs(?: (fromZero))?(?: prefix="(.*?)")?]([^[]+)\[\/dlcs]/gm,
       this.parseDlcsMatch.bind(this),
     );
     newContent = newContent.replace(/\[data]([^[]+)\[\/data]/gm, this.parseDataMatch.bind(this));
@@ -291,7 +291,7 @@ class Sak32009 {
   }
 
   public parseDlcsMatch(_match: any, p1: any, p2: any, p3: any) {
-    const indexFromZero = typeof p1 === 'undefined' ? false : p1 === 'true';
+    const indexFromZero = typeof p1 !== 'undefined';
     const indexPrefix = typeof p2 === 'undefined' ? '0' : p2;
     const content = p3;
     return this.parseDlcsMatchValue(content, indexFromZero, indexPrefix);
@@ -304,7 +304,7 @@ class Sak32009 {
 
   public parseDlcsMatchValue(content: string, indexFromZero: boolean, indexPrefix: string) {
     let newContent = '';
-    let index = indexFromZero ? 0 : -1;
+    let index = indexFromZero ? -1 : 0;
     const dlcs = this.extractedData.withDlcsUnknowns
       ? {
           ...this.extractedData.dlcs,
