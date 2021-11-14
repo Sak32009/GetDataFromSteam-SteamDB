@@ -1,4 +1,4 @@
-button[data-bs-toggle='modal'] {
+button[data-bs-toggle="modal"] {
   position: fixed;
   bottom: 0;
   right: 0;

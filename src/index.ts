@@ -1,3 +1,4 @@
+// eslint-disable-next-line unicorn/prefer-node-protocol
 import {Buffer} from 'buffer';
 import $ from 'jquery';
 import 'bootstrap/js/dist/modal';
@@ -65,7 +66,7 @@ class Sak32009 {
   }
 
   public steamDbApp() {
-    this.extractedData.appId = $('div[data-appid]').data('appid');
+    this.extractedData.appId = $('div[data-appid]').data('appid') as string;
     this.extractedData.name = $('h1[itemprop="name"]').text().trim();
     $('#dlc.tab-pane tr.app[data-appid]').each((_index, element) => {
       const $dom = $(element);
@@ -89,11 +90,11 @@ class Sak32009 {
   }
 
   public steamPowered() {
-    this.extractedData.appId = $('div[data-appid]').data('appid');
+    this.extractedData.appId = $('div[data-appid]').data('appid') as string;
     this.extractedData.name = $('div#appHubAppName').text().trim();
     $('a.game_area_dlc_row').each((_index, element) => {
       const $dom = $(element);
-      const appId = $dom.data('ds-appid');
+      const appId = $dom.data('ds-appid') as string;
       const appName = $dom.find('.game_area_dlc_name').text().trim();
       if (typeof appId !== 'undefined' && typeof appName !== 'undefined') {
         this.extractedData.dlcs[appId] = appName;
@@ -108,9 +109,14 @@ class Sak32009 {
 
   public steamDbDepot() {
     let content = '';
-    // eslint-disable-next-line new-cap
-    const dataTable = unsafeWindow.jQuery('div#files .table.file-tree').DataTable().data();
-    const depotId: string = $(`div[data-depotid]`).data('depotid');
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    const dataTable = unsafeWindow
+      .jQuery('div#files .table.file-tree')
+      // eslint-disable-next-line new-cap
+      .DataTable()
+      .data() as Record<string, string>;
+    const depotId = $(`div[data-depotid]`).data('depotid') as string;
     $.each(dataTable, (_index: string, values: string) => {
       const fileName = values[0];
       const sha1 = values[1];
@@ -247,9 +253,9 @@ class Sak32009 {
       event.preventDefault();
       const selected = $(`select#sake_select option:selected`).val();
       if (typeof selected === 'string') {
-        const dataFormat = this.data[selected];
-        const fileText = dataFormat.file.text;
-        const fileName = this.parse(dataFormat.file.name);
+        const dataFormatFile = this.data[selected].file as Record<string, Record<string, string>>;
+        const fileText = dataFormatFile.file.text;
+        const fileName = this.parse(dataFormatFile.file.name);
         const content = this.parse(fileText);
         $(`textarea#sake_textarea`).html(content).scrollTop(0);
         $(`a#sake_download`)
@@ -292,8 +298,8 @@ class Sak32009 {
 
   public parseDlcsMatch(_match: any, p1: any, p2: any, p3: any) {
     const indexFromZero = typeof p1 !== 'undefined';
-    const indexPrefix = typeof p2 === 'undefined' ? '0' : p2;
-    const content = p3;
+    const indexPrefix = (typeof p2 === 'undefined' ? '0' : p2) as string;
+    const content = p3 as string;
     return this.parseDlcsMatchValue(content, indexFromZero, indexPrefix);
   }
 
@@ -305,12 +311,14 @@ class Sak32009 {
   public parseDlcsMatchValue(content: string, indexFromZero: boolean, indexPrefix: string) {
     let newContent = '';
     let index = indexFromZero ? -1 : 0;
-    const dlcs = this.extractedData.withDlcsUnknowns
-      ? {
-          ...this.extractedData.dlcs,
-          ...this.extractedData.dlcsUnknowns,
-        }
-      : this.extractedData.dlcs;
+    const dlcs = (
+      this.extractedData.withDlcsUnknowns
+        ? {
+            ...this.extractedData.dlcs,
+            ...this.extractedData.dlcsUnknowns,
+          }
+        : this.extractedData.dlcs
+    ) as Record<string, string>;
     $.each(dlcs, (appid, name) => {
       index += 1;
       newContent += content.replace(/{(.*?)}/gm, (_match: any, content: any) => {

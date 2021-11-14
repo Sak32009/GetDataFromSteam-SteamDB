@@ -1,5 +1,5 @@
-import {readFileSync, writeFileSync} from 'fs';
-import {join} from 'path';
+import {readFileSync, writeFileSync} from 'node:fs';
+import {join} from 'node:path';
 import type {Plugin} from 'vite';
 import metablock from '../../metablock';
 
