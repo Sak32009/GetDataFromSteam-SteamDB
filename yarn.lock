@@ -2550,12 +2550,10 @@ portfinder@^1.0.28:
     debug "^3.1.1"
     mkdirp "^0.5.5"
 
-postcss-prefix-selector@^1.13.0:
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/postcss-prefix-selector/-/postcss-prefix-selector-1.13.0.tgz#136c3eb848edaced90417bb10383de56c07557f6"
-  integrity sha512-cZtbe79XeClbrip8WODngB8PmF/FpaeYpt8IX1aefIHarjxfBYWO6sETlNopvp2u2c7XFGYQeUTEgF1onsNJ5A==
-  dependencies:
-    postcss "^8.3.6"
+postcss-prefix-selector@^1.14.0:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/postcss-prefix-selector/-/postcss-prefix-selector-1.14.0.tgz#93b8433074b7aadc5715d57379475246341cfb2d"
+  integrity sha512-8d5fiBQZWMtGWH/7ewEeo6RnBNyT2kLD5wTIfV2oHYqH4hjiofg/rP5X3SUwnqOINzE4mM/K/UOAiNrIaKzd4w==
 
 postcss-selector-parser@^6.0.2:
   version "6.0.6"
@@ -2570,7 +2568,7 @@ postcss-value-parser@^4.1.0:
   resolved "https://registry.yarnpkg.com/postcss-value-parser/-/postcss-value-parser-4.1.0.tgz#443f6a20ced6481a2bda4fa8532a6e55d789a2cb"
   integrity sha512-97DXOFbQJhk71ne5/Mt6cOu6yxsSfM0QGQyl0L25Gca4yGWEGJaig7l7gbCX623VqTBNGLRLaVUCnNkcedlRSQ==
 
-postcss@^8.2.1, postcss@^8.3.11, postcss@^8.3.6, postcss@^8.3.8:
+postcss@^8.2.1, postcss@^8.3.11, postcss@^8.3.8:
   version "8.3.11"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.3.11.tgz#c3beca7ea811cd5e1c4a3ec6d2e7599ef1f8f858"
   integrity sha512-hCmlUAIlUiav8Xdqw3Io4LcpA1DOt7h3LSTAC4G6JGHFFaWzI6qvFt9oilvl8BmkbBRX1IhM90ZAmpk68zccQA==
