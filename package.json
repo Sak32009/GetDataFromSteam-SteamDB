@@ -38,7 +38,7 @@
   "dependencies": {},
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^4.0.3",
-    "@popperjs/core": "^2.10.2",
+    "@popperjs/core": "^2.11.0",
     "@types/jquery": "^3.5.8",
     "@types/node": "^16.11.7",
     "@types/tampermonkey": "^4.0.5",
