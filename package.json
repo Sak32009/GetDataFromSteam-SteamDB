@@ -40,7 +40,7 @@
     "@fullhuman/postcss-purgecss": "^4.0.3",
     "@popperjs/core": "^2.10.2",
     "@types/jquery": "^3.5.8",
-    "@types/node": "^16.11.7",
+    "@types/node": "^17.0.7",
     "@types/tampermonkey": "^4.0.5",
     "autoprefixer": "^10.4.0",
     "bootstrap": "^5.1.3",
