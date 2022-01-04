@@ -267,10 +267,12 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@popperjs/core@^2.10.2":
-  version "2.10.2"
-  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.10.2.tgz#0798c03351f0dea1a5a4cabddf26a55a7cbee590"
-  integrity sha512-IXf3XA7+XyN7CP9gGh/XB0UxVMlvARGEgGXLubFICsUMGz6Q+DU+i4gGlpOxTjKvXjkJDJC8YdqdKkDj9qZHEQ==
+"@popperjs/core@^2.11.1":
+  version "2.11.1"
+  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.1.tgz#81178278931b46924f4b9d08e9caf65ba91e3a7f"
+  integrity sha512-lfBpADue1tq3+ZLp7E/r8qQB2XWlrml6BuwDzeJ3cNx7h2K1ww5mCs0Vdt9S5EIJHalPifCTt3TFtCTmnQetlA==
+  dependencies:
+    closure-compiler "^0.2.12"
 
 "@types/eslint@^7.2.13":
   version "7.28.2"
@@ -644,6 +646,13 @@ clean-regexp@^1.0.0:
   integrity sha1-jffHquUf02h06PjQW5GAvBGj/tc=
   dependencies:
     escape-string-regexp "^1.0.5"
+
+closure-compiler@^0.2.12:
+  version "0.2.12"
+  resolved "https://registry.yarnpkg.com/closure-compiler/-/closure-compiler-0.2.12.tgz#6c3087cad12742c79e47f0ce50e87af91cf8e171"
+  integrity sha1-bDCHytEnQseeR/DOUOh6+Rz44XE=
+  dependencies:
+    google-closure-compiler "20150901.x"
 
 color-convert@^1.9.0:
   version "1.9.3"
@@ -1586,6 +1595,11 @@ globby@^12.0.2:
     ignore "^5.1.8"
     merge2 "^1.4.1"
     slash "^4.0.0"
+
+google-closure-compiler@20150901.x:
+  version "20150901.0.0"
+  resolved "https://registry.yarnpkg.com/google-closure-compiler/-/google-closure-compiler-20150901.0.0.tgz#3d01c6cade65790a9bfb4e30b2158b7635acbade"
+  integrity sha1-PQHGyt5leQqb+04wshWLdjWsut4=
 
 graceful-fs@^4.1.2:
   version "4.2.8"
