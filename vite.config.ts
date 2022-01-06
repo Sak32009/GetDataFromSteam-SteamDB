@@ -1,7 +1,7 @@
 import {join} from 'node:path';
 import {cwd} from 'node:process';
 import {defineConfig, UserConfig} from 'vite';
-import viteMetablockPlugin from './src/plugins/metablock/main';
+import viteMetablockPlugin from './src/plugins/metablock/main.js';
 import {name as packageName} from './package.json';
 
 export default defineConfig(({mode}) => {

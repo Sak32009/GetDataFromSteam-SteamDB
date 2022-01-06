@@ -1,7 +1,7 @@
 import {readFileSync, writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 import type {Plugin} from 'vite';
-import metablock from '../../metablock';
+import metablock from '../../metablock.js';
 
 const plugin = (): Plugin => {
   let outDir: string;

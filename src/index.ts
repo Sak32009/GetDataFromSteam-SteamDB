@@ -12,7 +12,7 @@ import {
   version as packageVersion,
 } from '../package.json';
 
-import skData from './data';
+import skData from './data.js';
 import skMainStyle from './style.css';
 import skAuthorIcon from './sak32009.svg';
 
@@ -75,12 +75,15 @@ class Sak32009 {
       if (typeof appId !== 'undefined' && typeof appName !== 'undefined') {
         if ($dom.find('td:nth-of-type(2)').hasClass('muted')) {
           this.extractedData.dlcsUnknowns[appId] = appName;
+          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
           this.extractedData.countDlcsUnknowns += 1;
         } else {
           this.extractedData.dlcs[appId] = appName;
+          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
           this.extractedData.countDlcs += 1;
         }
 
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         this.extractedData.countAll += 1;
       }
     });
@@ -98,7 +101,9 @@ class Sak32009 {
       const appName = $dom.find('.game_area_dlc_name').text().trim();
       if (typeof appId !== 'undefined' && typeof appName !== 'undefined') {
         this.extractedData.dlcs[appId] = appName;
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         this.extractedData.countDlcs += 1;
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         this.extractedData.countAll += 1;
       }
     });
