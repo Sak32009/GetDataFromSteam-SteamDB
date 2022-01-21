@@ -7,8 +7,8 @@ IF EXIST .\\AppList RMDIR /S /Q .\\AppList
 MKDIR .\\AppList
 :: CREATE DLCS FILES FOR __[data]name[/data]__
 ECHO [data]appId[/data]> .\\AppList\\0.txt
-[dlcs]:: {dlc_name}
-ECHO {dlc_id}> .\\AppList\\{dlc_index}.txt
+[dlcs]:: {dlcName}
+ECHO {dlcId}> .\\AppList\\{dlcIndex}.txt
 [/dlcs]
 :: START GREENLUMA 2020
 IF EXIST .\\DLLInjector.exe GOTO :Q

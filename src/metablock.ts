@@ -26,7 +26,6 @@ const out = `// ==UserScript==
 // @match         *://store.steampowered.com/app/*
 // @match         *://www.epicgames.com/store/*/p/*
 // @run-at        document-end
-// @grant         GM_addStyle
 // @grant         unsafeWindow
 // ==/UserScript==`;
 

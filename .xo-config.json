@@ -2,9 +2,7 @@
   "space": true,
   "prettier": true,
   "rules": {
-    "import/no-extraneous-dependencies": "off",
     "import/no-unassigned-import": "off",
-    "unicorn/prefer-module": "off",
-    "no-warning-comments": "off"
+    "unicorn/prefer-module": "off"
   }
 }

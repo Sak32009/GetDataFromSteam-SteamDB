@@ -1,3 +1,3 @@
-[dlcs]; {dlc_name}
-{dlc_id}
+[dlcs]; {dlcName}
+{dlcId}
 [/dlcs]

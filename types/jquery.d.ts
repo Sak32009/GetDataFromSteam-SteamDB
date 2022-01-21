@@ -1,3 +1,5 @@
 interface Window {
-  jQuery: any;
+  wrappedJSObject: {
+    jQuery: JQueryStatic;
+  };
 }

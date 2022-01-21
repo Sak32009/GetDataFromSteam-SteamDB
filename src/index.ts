@@ -1,8 +1,11 @@
 // eslint-disable-next-line unicorn/prefer-node-protocol
 import {Buffer} from 'buffer';
-import $ from 'jquery';
+import $ from 'jquery/dist/jquery.slim.js';
 import 'bootstrap/js/dist/modal';
-import skBootstrapCss from 'bootstrap/dist/css/bootstrap.min.css';
+
+import './revert.css';
+import 'bootstrap/dist/css/bootstrap.css';
+import './style.css';
 
 import {
   name as packageName,
@@ -13,15 +16,14 @@ import {
 } from '../package.json';
 
 import skData from './data.js';
-import skMainStyle from './style.css';
 import skAuthorIcon from './sak32009.svg';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const EOL = '\r\n';
 
 class Sak32009 {
-  public data: Record<string, any> = skData;
-  public extractedData: Record<string, any> = {
+  public data = skData;
+  public extractedData = {
     appId: '',
     name: '',
     dlcs: {},
@@ -74,16 +76,13 @@ class Sak32009 {
       const appName = $dom.find('td:nth-of-type(2)').text().trim();
       if (typeof appId !== 'undefined' && typeof appName !== 'undefined') {
         if ($dom.find('td:nth-of-type(2)').hasClass('muted')) {
-          this.extractedData.dlcsUnknowns[appId] = appName;
-          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+          (this.extractedData.dlcsUnknowns as Record<string, string>)[appId] = appName;
           this.extractedData.countDlcsUnknowns += 1;
         } else {
-          this.extractedData.dlcs[appId] = appName;
-          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+          (this.extractedData.dlcs as Record<string, string>)[appId] = appName;
           this.extractedData.countDlcs += 1;
         }
 
-        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         this.extractedData.countAll += 1;
       }
     });
@@ -100,10 +99,8 @@ class Sak32009 {
       const appId = $dom.data('ds-appid') as string;
       const appName = $dom.find('.game_area_dlc_name').text().trim();
       if (typeof appId !== 'undefined' && typeof appName !== 'undefined') {
-        this.extractedData.dlcs[appId] = appName;
-        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+        (this.extractedData.dlcs as Record<string, string>)[appId] = appName;
         this.extractedData.countDlcs += 1;
-        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         this.extractedData.countAll += 1;
       }
     });
@@ -114,17 +111,16 @@ class Sak32009 {
 
   public steamDbDepot() {
     let content = '';
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    const dataTable = unsafeWindow
+    // NOTE: 21/01/2022 unsafeWindow.wrappedJSObject fix for ViolentMonkey
+    const dataTable = unsafeWindow.wrappedJSObject
       .jQuery('div#files .table.file-tree')
       // eslint-disable-next-line new-cap
       .DataTable()
-      .data() as Record<string, string>;
+      .data();
     const depotId = $(`div[data-depotid]`).data('depotid') as string;
-    $.each(dataTable, (_index: string, values: string) => {
-      const fileName = values[0];
-      const sha1 = values[1];
+    $.each(dataTable, (_index, values) => {
+      const fileName = values[0] as string;
+      const sha1 = values[1] as string;
       if (this.isValidSha1(sha1)) {
         content += `${sha1} *${fileName}${EOL}`;
       }
@@ -143,18 +139,7 @@ class Sak32009 {
     this.setModal();
   }
 
-  public setStyles() {
-    // Revert before new css
-    // eslint-disable-next-line new-cap
-    GM_addStyle(`.sak32009 *{all:revert;}`);
-    // eslint-disable-next-line new-cap
-    GM_addStyle(skBootstrapCss);
-    // eslint-disable-next-line new-cap
-    GM_addStyle(skMainStyle);
-  }
-
   public setModal() {
-    this.setStyles();
     this.setModalContainer();
     this.setModalEvents();
     if (!this.is.epicGames) {
@@ -207,7 +192,7 @@ class Sak32009 {
           </div>`;
     } else {
       let sakeSelect = '';
-      $.each(this.data, (index: string, values: Record<string, string>) => {
+      $.each(this.data, (index, values) => {
         sakeSelect += `<option value='${index}'>${values.name}</option>`;
       });
       modalContainer = `<div class="input-group p-2 border-bottom border-secondary">
@@ -225,15 +210,13 @@ class Sak32009 {
           <textarea id="sake_textarea" class="form-control resize-none bg-dark text-white border-secondary" rows="14"
             placeholder="Select an option and click 'Convert'" readonly></textarea>
           <div class="d-flex flex-row justify-content-end m-2 fixed-to-textarea">
-            <div class="mx-1">DLCs: ${this.extractedData.countDlcs as string}</div>
+            <div class="mx-1">DLCs: ${this.extractedData.countDlcs}</div>
             ${
               this.is.steamdbApp
-                ? `<div class="mx-1">DLCs Unknown: ${
-                    this.extractedData.countDlcsUnknowns as string
-                  }</div> `
+                ? `<div class="mx-1">DLCs Unknown: ${this.extractedData.countDlcsUnknowns}</div> `
                 : ''
             }
-            <div class="mx-1">Total DLCs: ${this.extractedData.countAll as string}</div>
+            <div class="mx-1">Total DLCs: ${this.extractedData.countAll}</div>
           </div>
         </div>`;
     }
@@ -258,9 +241,9 @@ class Sak32009 {
       event.preventDefault();
       const selected = $(`select#sake_select option:selected`).val();
       if (typeof selected === 'string') {
-        const dataFormatFile = this.data[selected].file as Record<string, Record<string, string>>;
-        const fileText = dataFormatFile.file.text;
-        const fileName = this.parse(dataFormatFile.file.name);
+        const dataFormatFile = (this.data as any)[selected].file as Record<string, string>;
+        const fileText = dataFormatFile.text;
+        const fileName = this.parse(dataFormatFile.name);
         const content = this.parse(fileText);
         $(`textarea#sake_textarea`).html(content).scrollTop(0);
         $(`a#sake_download`)
@@ -292,20 +275,18 @@ class Sak32009 {
   }
 
   public parse(content: string) {
-    let newContent = content;
-    newContent = newContent.replace(
+    content = content.replace(
       /\[dlcs(?: (fromZero))?(?: prefix="(.*?)")?]([^[]+)\[\/dlcs]/gm,
-      this.parseDlcsMatch.bind(this),
+      (_substring, p1: string | undefined, p2: string | undefined, content: string) => {
+        const indexFromZero = typeof p1 !== 'undefined';
+        const indexPrefix = typeof p2 === 'undefined' ? '0' : p2;
+        return this.parseDlcsMatchValue(content, indexFromZero, indexPrefix);
+      },
     );
-    newContent = newContent.replace(/\[data]([^[]+)\[\/data]/gm, this.parseDataMatch.bind(this));
-    return newContent;
-  }
-
-  public parseDlcsMatch(_match: any, p1: any, p2: any, p3: any) {
-    const indexFromZero = typeof p1 !== 'undefined';
-    const indexPrefix = (typeof p2 === 'undefined' ? '0' : p2) as string;
-    const content = p3 as string;
-    return this.parseDlcsMatchValue(content, indexFromZero, indexPrefix);
+    content = content.replace(/\[data]([^[]+)\[\/data]/gm, (_substring, content: string) => {
+      return (this.extractedData as any)[content] as string;
+    });
+    return content;
   }
 
   public parseDlcsMatchPrefix(index: string, prefix: string) {
@@ -326,23 +307,16 @@ class Sak32009 {
     ) as Record<string, string>;
     $.each(dlcs, (appid, name) => {
       index += 1;
-      newContent += content.replace(/{(.*?)}/gm, (_match: any, content: any) => {
-        const values: Record<string, any> = {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          dlc_id: appid,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          dlc_name: name,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          dlc_index: this.parseDlcsMatchPrefix(index.toString(), indexPrefix),
+      newContent += content.replace(/{(.*?)}/gm, (_substring, content: string) => {
+        const values: Record<string, string> = {
+          dlcId: appid,
+          dlcName: name,
+          dlcIndex: this.parseDlcsMatchPrefix(index.toString(), indexPrefix),
         };
-        return values[content] as string;
+        return values[content];
       });
     });
     return newContent;
-  }
-
-  public parseDataMatch(_match: any, content: any) {
-    return this.extractedData[content] as string;
   }
 }
 

@@ -1,2 +1,2 @@
-[dlcs]{dlc_name}
+[dlcs]{dlcName}
 [/dlcs]

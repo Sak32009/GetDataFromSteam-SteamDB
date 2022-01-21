@@ -4,23 +4,17 @@ button[data-bs-toggle="modal"] {
   right: 0;
 }
 
-.modal {
-  z-index: 99993;
-}
-
 .modal-backdrop {
   z-index: 99992;
+}
+
+.modal {
+  z-index: 99993;
 }
 
 .modal-header-logo img {
   width: 96px;
   height: 96px;
-}
-
-.btn {
-  white-space: initial;
-  box-shadow: initial;
-  appearance: initial;
 }
 
 .resize-none {

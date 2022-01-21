@@ -1,7 +1,11 @@
 version: 2
 updates:
-  - package-ecosystem: 'npm'
-    directory: '/'
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
-      interval: 'daily'
-    open-pull-requests-limit: 25
+      interval: "daily"
+# DependaBot isn't available for yarn v3
+#  - package-ecosystem: "npm"
+#    directory: "/"
+#    schedule:
+#      interval: "daily"
