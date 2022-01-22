@@ -111,9 +111,20 @@ class Sak32009 {
 
   public steamDbDepot() {
     let content = '';
+
     // NOTE: 21/01/2022 unsafeWindow.wrappedJSObject fix for ViolentMonkey
-    const dataTable = unsafeWindow.wrappedJSObject
-      .jQuery('div#files .table.file-tree')
+    const unsafejQuery =
+      typeof unsafeWindow.jQuery === 'undefined'
+        ? unsafeWindow.wrappedJSObject.jQuery
+        : unsafeWindow.jQuery;
+
+    // NOTE: extra check because yes
+    if (typeof unsafejQuery === 'undefined') {
+      $('textarea#sake_textarea').val('ERROR: undefined jQuery');
+      return;
+    }
+
+    const dataTable = unsafejQuery('div#files .table.file-tree')
       // eslint-disable-next-line new-cap
       .DataTable()
       .data();
