@@ -1,0 +1,65 @@
+<div class="sak32009">
+  <div class="modal" id="{{packageName}}">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content bg-dark text-white shadow-lg">
+        <div class="modal-header flex-column border-secondary">
+          <div class="modal-header-logo">
+            <img src="{{skAuthorIcon}}" alt="{{packageProductName}}">
+          </div>
+          <h5 class="text-center">{{&titleScript}}</h5>
+          <h6>
+            <a target="_blank" href="https://github.com/Sak32009/SteamLauncher">check my new project,
+              @SteamLauncher.</a>
+          </h6>
+        </div>
+        <div class="modal-body p-0">
+          {{^is.epicGames}}
+          {{^is.steamdbDepot}}
+          <div class="input-group p-2 border-bottom border-secondary">
+            <select id="sake_select" class="form-select bg-dark text-white border-secondary">
+              {{#skSelect}}
+              <option value="{{@key}}">{{@val.name}}</option>
+              {{/skSelect}}
+            </select>
+            <button id="sake_convert" type="button" class="btn btn-dark border border-secondary">Convert</button>
+            <label class="btn btn-dark border border-secondary {{^is.steamdbApp}}d-none{{/is.steamdbApp}}"
+              for="sake_unknowns">
+              <input class="form-check-input" type="checkbox" id="sake_unknowns">
+              <span>With DLCS Unknowns</span>
+            </label>
+            <a id="sake_download" href="#" class="btn btn-dark border border-secondary disabled">Download as file</a>
+          </div>
+          <div class="m-2 relative">
+            <textarea id="sake_textarea" class="form-control resize-none bg-dark text-white border-secondary" rows="14"
+              placeholder="Select an option and click 'Convert'" readonly></textarea>
+            <div class="d-flex flex-row justify-content-end m-2 fixed-to-textarea">
+              <div class="me-1">DLCs: {{extractedData.countDlcs}}</div>
+              {{#is.steamdbApp}}
+              <div class="me-1">DLCs Unknown: {{extractedData.countDlcsUnknowns}}</div>
+              {{/is.steamdbApp}}
+              <div>Total DLCs: {{extractedData.countAll}}</div>
+            </div>
+          </div>
+          {{/is.steamdbDepot}}
+          {{/is.epicGames}}
+          {{#is.steamdbDepot}}
+          <div class="d-flex flex-row justify-content-end m-2">
+            <a id="sake_download" href="#" class="btn btn-dark border border-secondary">Download as file</a>
+          </div>
+          <div class="m-2">
+            <textarea id="sake_textarea" class="form-control resize-none bg-dark text-white border-secondary" readonly
+              rows="14"></textarea>
+          </div>
+          {{/is.steamdbDepot}}
+          {{#is.epicGames}}
+          <h5 class="text-center m-3">Patience is the virtue of the strong!</h5>
+          {{/is.epicGames}}
+        </div>
+        <div class="modal-footer flex-column border-secondary">
+          <h6><strong>Protect</strong> development and free things,<br>because their survival is in our hands.</h6>
+          <p>You can donate by clicking on <a target="_blank" href="https://www.paypal.me/sak32009a">paypal.me</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

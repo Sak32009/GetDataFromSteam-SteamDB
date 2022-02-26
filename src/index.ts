@@ -1,12 +1,9 @@
 // eslint-disable-next-line unicorn/prefer-node-protocol
 import {Buffer} from 'buffer';
-import $ from 'jquery/dist/jquery.slim.js';
+import $ from 'jquery';
+import mustache from 'mustache';
 import 'bootstrap/js/dist/modal';
-
-import './revert.css';
-import 'bootstrap/dist/css/bootstrap.css';
-import './style.css';
-
+import './scss/styles.scss';
 import {
   name as packageName,
   productName as packageProductName,
@@ -14,16 +11,26 @@ import {
   year as packageYear,
   version as packageVersion,
 } from '../package.json';
-
 import skData from './data.js';
 import skAuthorIcon from './sak32009.svg';
+import html from './modal.html?raw';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const EOL = '\r\n';
 
+function objs2list(p: Record<string, unknown>) {
+  const r = [];
+  for (const k in p) {
+    if (Object.prototype.hasOwnProperty.call(p, k)) {
+      r.push({'@key': k, '@val': p[k]});
+    }
+  }
+
+  return r;
+}
+
 class Sak32009 {
-  public data = skData;
-  public extractedData = {
+  public extractedData: ExtractedData = {
     appId: '',
     name: '',
     dlcs: {},
@@ -68,18 +75,18 @@ class Sak32009 {
   }
 
   public steamDbApp() {
-    this.extractedData.appId = $('div[data-appid]').data('appid') as string;
+    this.extractedData.appId = $('div[data-appid]').attr('data-appid')!;
     this.extractedData.name = $('h1[itemprop="name"]').text().trim();
     $('#dlc.tab-pane tr.app[data-appid]').each((_index, element) => {
       const $dom = $(element);
       const appId = $dom.attr('data-appid');
       const appName = $dom.find('td:nth-of-type(2)').text().trim();
-      if (typeof appId !== 'undefined' && typeof appName !== 'undefined') {
+      if (typeof appId !== 'undefined') {
         if ($dom.find('td:nth-of-type(2)').hasClass('muted')) {
-          (this.extractedData.dlcsUnknowns as Record<string, string>)[appId] = appName;
+          this.extractedData.dlcsUnknowns[appId] = appName;
           this.extractedData.countDlcsUnknowns += 1;
         } else {
-          (this.extractedData.dlcs as Record<string, string>)[appId] = appName;
+          this.extractedData.dlcs[appId] = appName;
           this.extractedData.countDlcs += 1;
         }
 
@@ -92,14 +99,14 @@ class Sak32009 {
   }
 
   public steamPowered() {
-    this.extractedData.appId = $('div[data-appid]').data('appid') as string;
+    this.extractedData.appId = $('div[data-appid]').attr('data-appid')!;
     this.extractedData.name = $('div#appHubAppName').text().trim();
     $('a.game_area_dlc_row').each((_index, element) => {
       const $dom = $(element);
-      const appId = $dom.data('ds-appid') as string;
+      const appId = $dom.attr('data-ds-appid');
       const appName = $dom.find('.game_area_dlc_name').text().trim();
-      if (typeof appId !== 'undefined' && typeof appName !== 'undefined') {
-        (this.extractedData.dlcs as Record<string, string>)[appId] = appName;
+      if (typeof appId !== 'undefined') {
+        this.extractedData.dlcs[appId] = appName;
         this.extractedData.countDlcs += 1;
         this.extractedData.countAll += 1;
       }
@@ -111,7 +118,6 @@ class Sak32009 {
 
   public steamDbDepot() {
     let content = '';
-
     // NOTE: 21/01/2022 unsafeWindow.wrappedJSObject fix for ViolentMonkey
     const unsafejQuery =
       typeof unsafeWindow.jQuery === 'undefined'
@@ -128,10 +134,10 @@ class Sak32009 {
       // eslint-disable-next-line new-cap
       .DataTable()
       .data();
-    const depotId = $(`div[data-depotid]`).data('depotid') as string;
-    $.each(dataTable, (_index, values) => {
-      const fileName = values[0] as string;
-      const sha1 = values[1] as string;
+    const depotId = $(`div[data-depotid]`).attr('data-depotid')!;
+    $.each(dataTable, (_index, values: string[]) => {
+      const fileName = values[0];
+      const sha1 = values[1];
       if (this.isValidSha1(sha1)) {
         content += `${sha1} *${fileName}${EOL}`;
       }
@@ -164,87 +170,34 @@ class Sak32009 {
   }
 
   public setModalButton() {
-    $(`<div class="sak32009">
+    $(
+      `<div class="sak32009">
   <button type="button" class="btn btn-sake me-2" data-bs-toggle="modal" data-bs-target="#${packageName}">${this.titleScript}</button>
-</div>`).appendTo('body');
+</div>`,
+    ).appendTo('body');
   }
 
   public setModalContainer() {
-    const modalTop = `<div class="sak32009">
-      <div class="modal" id="${packageName}">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-          <div class="modal-content bg-dark text-white shadow-lg">
-            <div class="modal-header flex-column border-secondary">
-              <div class="modal-header-logo">
-                <img src="${skAuthorIcon}" alt="${packageProductName}">
-              </div>
-              <h5 class="text-center">${this.titleScript}</h5>
-              <h6><a target="_blank" href="https://github.com/Sak32009/SteamLauncher">check my new project, @SteamLauncher.</a></h6>
-            </div>
-            <div class="modal-body p-0">`;
-    let modalContainer = '';
-    const modalBottom = `</div>
-            <div class="modal-footer flex-column border-secondary">
-              <h6><strong>Protect</strong> development and free things,<br>because their survival is in our hands.</h6>
-              <p>You can donate by clicking on <a target="_blank" href="https://www.paypal.me/sak32009a">paypal.me</a>.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>`;
-    if (this.is.epicGames) {
-      modalContainer = `<h5 class="text-center m-3">Patience is the virtue of the strong!</h5>`;
-    } else if (this.is.steamdbDepot) {
-      modalContainer = `<div class="d-flex flex-row justify-content-end m-2">
-            <a id="sake_download" href="#" class="btn btn-dark border border-secondary">Download as file</a>
-          </div>
-          <div class="m-2">
-            <textarea id="sake_textarea" class="form-control resize-none bg-dark text-white border-secondary" readonly rows="14"></textarea>
-          </div>`;
-    } else {
-      let sakeSelect = '';
-      $.each(this.data, (index, values) => {
-        sakeSelect += `<option value='${index}'>${values.name}</option>`;
-      });
-      modalContainer = `<div class="input-group p-2 border-bottom border-secondary">
-          <select id="sake_select" class="form-select bg-dark text-white border-secondary">${sakeSelect}</select>
-          <button id="sake_convert" type="button" class="btn btn-dark border border-secondary">Convert</button>
-          <label class="btn btn-dark border border-secondary${
-            this.is.steamdbApp ? '' : ' d-none'
-          }" for="sake_unknowns">
-            <input class="form-check-input" type="checkbox" id="sake_unknowns">
-            <span>With DLCS Unknowns</span>
-          </label>
-          <a id="sake_download" href="#" class="btn btn-dark border border-secondary disabled">Download as file</a>
-        </div>
-        <div class="m-2 relative">
-          <textarea id="sake_textarea" class="form-control resize-none bg-dark text-white border-secondary" rows="14"
-            placeholder="Select an option and click 'Convert'" readonly></textarea>
-          <div class="d-flex flex-row justify-content-end m-2 fixed-to-textarea">
-            <div class="mx-1">DLCs: ${this.extractedData.countDlcs}</div>
-            ${
-              this.is.steamdbApp
-                ? `<div class="mx-1">DLCs Unknown: ${this.extractedData.countDlcsUnknowns}</div> `
-                : ''
-            }
-            <div class="mx-1">Total DLCs: ${this.extractedData.countAll}</div>
-          </div>
-        </div>`;
-    }
-
-    $(modalTop + modalContainer + modalBottom).appendTo('body');
+    const rendered = mustache.render(html, {
+      packageName,
+      packageProductName,
+      skAuthorIcon,
+      titleScript: this.titleScript,
+      is: this.is,
+      extractedData: this.extractedData,
+      skSelect: objs2list(skData),
+    });
+    $(rendered).appendTo('body');
   }
 
   public setModalEvents() {
-    const $modal = document.querySelector('#' + packageName);
-    if ($modal !== null) {
-      $modal.addEventListener('shown.bs.modal', () => {
-        $('.modal-backdrop').wrap($('<div class="sak32009"></div>'));
-      });
-      $modal.addEventListener('hidden.bs.modal', () => {
-        $('.sak32009:empty').remove();
-      });
-    }
+    const $modal = document.querySelector('#' + packageName)!;
+    $modal.addEventListener('shown.bs.modal', () => {
+      $('.modal-backdrop').wrap($('<div class="sak32009"></div>'));
+    });
+    $modal.addEventListener('hidden.bs.modal', () => {
+      $('.sak32009:empty').remove();
+    });
   }
 
   public setEvents() {
@@ -252,7 +205,7 @@ class Sak32009 {
       event.preventDefault();
       const selected = $(`select#sake_select option:selected`).val();
       if (typeof selected === 'string') {
-        const dataFormatFile = (this.data as any)[selected].file as Record<string, string>;
+        const dataFormatFile = skData[selected].file;
         const fileText = dataFormatFile.text;
         const fileName = this.parse(dataFormatFile.name);
         const content = this.parse(fileText);
@@ -295,7 +248,7 @@ class Sak32009 {
       },
     );
     content = content.replace(/\[data]([^[]+)\[\/data]/gm, (_substring, content: string) => {
-      return (this.extractedData as any)[content] as string;
+      return (this.extractedData as Record<string, unknown>)[content] as string;
     });
     return content;
   }
@@ -308,14 +261,12 @@ class Sak32009 {
   public parseDlcsMatchValue(content: string, indexFromZero: boolean, indexPrefix: string) {
     let newContent = '';
     let index = indexFromZero ? -1 : 0;
-    const dlcs = (
-      this.extractedData.withDlcsUnknowns
-        ? {
-            ...this.extractedData.dlcs,
-            ...this.extractedData.dlcsUnknowns,
-          }
-        : this.extractedData.dlcs
-    ) as Record<string, string>;
+    const dlcs = this.extractedData.withDlcsUnknowns
+      ? {
+          ...this.extractedData.dlcs,
+          ...this.extractedData.dlcsUnknowns,
+        }
+      : this.extractedData.dlcs;
     $.each(dlcs, (appid, name) => {
       index += 1;
       newContent += content.replace(/{(.*?)}/gm, (_substring, content: string) => {

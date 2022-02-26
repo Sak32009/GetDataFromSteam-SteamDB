@@ -8,7 +8,7 @@ import skidrowOnlyDlcsList from './data/skidrowOnlyDlcsList.txt?raw';
 import appIdAppIdName from './data/appIdAppIdName.txt?raw';
 import appIdName from './data/appIdName.txt?raw';
 
-const data = {
+const data: FormatsData = {
   creamApi4500: {
     name: 'CreamAPI v4.5.0.0',
     file: {
