@@ -149,10 +149,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@popperjs/core@npm:^2.11.2":
-  version: 2.11.2
-  resolution: "@popperjs/core@npm:2.11.2"
-  checksum: 5695bf020eda54636e16a62dc9b5fdd92beaf7b2d19f62fcef049d57c5cff92773562d80cbf760b217c3ec928da310eb24994ab6a00fd39dffa0af9b5dfc01a6
+"@popperjs/core@npm:^2.11.4":
+  version: 2.11.4
+  resolution: "@popperjs/core@npm:2.11.4"
+  checksum: 36168d274aa164368a50aef2e7b2f858e1b9145d9250af9dc1315ff719d874a367177760f8285efb75c8cf48267194a50e7dc9cdb41bf0b1958c38805c13564c
   languageName: node
   linkType: hard
 
@@ -4122,7 +4122,7 @@ __metadata:
   resolution: "sak32009-get-data-from-steam-steamdb-epicdb@workspace:."
   dependencies:
     "@fullhuman/postcss-purgecss": ^4.1.3
-    "@popperjs/core": ^2.11.2
+    "@popperjs/core": ^2.11.4
     "@types/datatables.net": ^1.10.21
     "@types/jquery": ^3.5.14
     "@types/mustache": ^4.1.2
