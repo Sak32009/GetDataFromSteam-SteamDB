@@ -1,7 +1,7 @@
 {
   "name": "sak32009-gaxvyvrguokgtog",
   "productName": "Get Data from Steam / SteamDB",
-  "version": "4.4.1",
+  "version": "4.4.2",
   "description": "Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB) it’s a userscript able to extract all the information of the dlcs games from Steam / SteamDB and are exported in various formats.",
   "year": "2016 - 2022",
   "copyright": "Copyright © 2016 - 2022 Sak32009",
