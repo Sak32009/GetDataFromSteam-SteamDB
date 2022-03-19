@@ -1,8 +1,8 @@
-![Get DLC Info from SteamDB Logo](./sak32009-get-dlc-info-from-steamdb-logo.png)
+# Get Data from Steam / SteamDB
 
-> Get Data from Steam / SteamDB / EpicDB (**ex Get DLC Info from SteamDB**) it's a userscript able to extract all the information of the **DLCs Games** from **[Steam](https://store.steampowered.com/)** / **[SteamDB](https://steamdb.info)** / **EpicDB** and are exported in various formats. **It also has small tools** :)
+**_Get Data from Steam / SteamDB_** (_ex Get DLC Info from SteamDB_) it's a userscript able to extract all the information of the **dlcs games** from **[Steam](https://store.steampowered.com/)** / **[SteamDB](https://steamdb.info)** and are exported in various formats.
 
-_[forum cs.rin.ru support](https://cs.rin.ru/forum/viewtopic.php?f=29&t=71837)_
+[forum cs.rin.ru support](https://cs.rin.ru/forum/viewtopic.php?f=29&t=71837)
 
 ## Donate
 
@@ -20,7 +20,7 @@ Make sure you have userscripts manager enabled in your browser:
 - [Violent Monkey](https://violentmonkey.github.io/) _(OPEN SOURCE)_
 - ~~Greasemonkey~~ _!!NOT WORKING ANYMORE ON THIS USERSCRIPTS MANAGER!!_
 
-Install a userscript directly from GitHub by clicking on the "RAW" button of the **[./sak32009-get-dlc-info-from-steamdb.user.js](./sak32009-get-dlc-info-from-steamdb.user.js)** page or click **[this](https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.user.js)**.
+Install a userscript from GitHub by clicking on the "RAW" button of the **[page](./sak32009-get-dlc-info-from-steamdb.user.js)** or click **[this](https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/sak32009-get-dlc-info-from-steamdb.user.js)** directly.
 
 ### Usage:
 
@@ -35,10 +35,6 @@ Install a userscript directly from GitHub by clicking on the "RAW" button of the
 - **STORE.STEAMPOWERED.COM**
 
   - Go to [https://store.steampowered.com/app/440900/Conan_Exiles/](https://store.steampowered.com/app/440900/Conan_Exiles/) for example, click on the button at bottom-right screen, select format and click "Convert".
-
-- **EPICGAMES.COM**
-
-  - Not ready.
 
 ### Features:
 

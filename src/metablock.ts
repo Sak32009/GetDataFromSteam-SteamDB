@@ -20,13 +20,16 @@ const out = `// ==UserScript==
 // @supportURL    ${bugs.url}
 // @updateURL     https://raw.githack.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb.user.js
 // @downloadURL   https://raw.githack.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb.user.js
-// @icon          https://rawcdn.githack.com/Sak32009/GetDLCInfoFromSteamDB/33433ac6e0910e980fa8e14a0a8c785736134c41/sak32009-get-dlc-info-from-steamdb-icon.png
+// @icon          https://raw.githack.com/Sak32009/GetDLCInfoFromSteamDB/master/src/icon.png
+// @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.slim.min.js
+// @require       https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js
+// @require       https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js
 // @match         *://steamdb.info/app/*
 // @match         *://steamdb.info/depot/*
 // @match         *://store.steampowered.com/app/*
-// @match         *://www.epicgames.com/store/*/p/*
 // @run-at        document-end
 // @grant         unsafeWindow
+// @grant         GM_addStyle
 // ==/UserScript==`;
 
 export default out;
