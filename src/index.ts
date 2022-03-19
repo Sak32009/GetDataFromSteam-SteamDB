@@ -13,7 +13,7 @@ import skStyles from './scss/styles.scss?inline';
 
 // NOTE: 21/01/2022 unsafeWindow.wrappedJSObject fix for ViolentMonkey
 const unsafeWindowC = ((unsafeWindow as unknown) as TypeUnsafeWindow);
-const unsafejQuery = unsafeWindowC.wrappedJSObject.jQuery || unsafeWindowC.jQuery;
+const unsafejQuery = typeof unsafeWindowC.jQuery === 'undefined' ? unsafeWindowC.wrappedJSObject.jQuery : unsafeWindowC.jQuery;
 
 class Sak32009 {
   private extractedData: ExtractedData = {
