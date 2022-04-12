@@ -37,7 +37,7 @@
     "autoprefixer": "^10.4.4",
     "bootstrap": "^5.1.3",
     "eslint": "^8.11.0",
-    "eslint-config-canonical": "^33.0.1",
+    "eslint-config-canonical": "^34.2.1",
     "http-server": "^14.1.0",
     "mustache": "^4.2.0",
     "postcss": "^8.4.12",
