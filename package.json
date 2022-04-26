@@ -43,7 +43,7 @@
     "postcss": "^8.4.12",
     "postcss-prefix-selector": "^1.15.0",
     "prettier": "^2.6.0",
-    "sass": "^1.49.9",
+    "sass": "^1.51.0",
     "typescript": "^4.6.2",
     "vite": "^2.8.6"
   },
