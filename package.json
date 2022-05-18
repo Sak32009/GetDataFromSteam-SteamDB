@@ -40,7 +40,7 @@
     "eslint-config-canonical": "^33.0.1",
     "http-server": "^14.1.0",
     "mustache": "^4.2.0",
-    "postcss": "^8.4.12",
+    "postcss": "^8.4.14",
     "postcss-prefix-selector": "^1.15.0",
     "prettier": "^2.6.0",
     "sass": "^1.49.9",
