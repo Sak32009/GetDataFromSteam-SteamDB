@@ -1,0 +1,8 @@
+[dlcs]
+        {
+            "id": "{dlcId}",
+            "name": "{dlcName}",
+            "type": "DLC"
+        },
+        
+[/dlcs]
