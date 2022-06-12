@@ -21,16 +21,16 @@ jobs:
           node-version: '16'
           cache: 'yarn'
 
-      - name: Install Dependencies
+      - name: Action / Install Dependencies
         run: yarn install
 
-      - name: Build
+      - name: Action / Build
         run: yarn run prod
 
-      - name: Release
+      - name: Action / Release
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          branch: main
+          branch: master
           push_options: '--force'
           commit_message: 'I have released a new version!'
           file_pattern: 'sak32009-get-dlc-info-from-steamdb.user.js'
