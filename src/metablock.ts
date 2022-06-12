@@ -1,13 +1,4 @@
-import {
-  name,
-  productName,
-  description,
-  author,
-  version,
-  license,
-  homepage,
-  bugs,
-} from '../package.json';
+import { name, productName, description, author, version, license, homepage, bugs } from '../package.json';
 
 const out = `// ==UserScript==
 // @name          ${productName}
@@ -22,7 +13,7 @@ const out = `// ==UserScript==
 // @downloadURL   https://raw.githack.com/Sak32009/GetDLCInfoFromSteamDB/master/sak32009-get-dlc-info-from-steamdb.user.js
 // @icon          https://raw.githack.com/Sak32009/GetDLCInfoFromSteamDB/master/src/icon.png
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.slim.min.js
-// @require       https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js
+// @require       https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0-beta1/js/bootstrap.min.js
 // @require       https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js
 // @match         *://steamdb.info/app/*
 // @match         *://steamdb.info/depot/*

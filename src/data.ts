@@ -1,4 +1,3 @@
-/* eslint-disable canonical/sort-keys */
 import appIdAppIdName from './data/appIdAppIdName.txt?raw';
 import appIdName from './data/appIdName.txt?raw';
 import codexDlcFiveZeroDlcName from './data/codexDlc00000DlcName.txt?raw';
@@ -8,6 +7,7 @@ import greenLumaTwoZeroTwoZeroBatchMode from './data/greenLuma2020BatchMode.txt?
 import lumaEmuOnlyDlcsList from './data/lumaEmuOnlyDlcsList.txt?raw';
 import skidrowOnlyDlcsList from './data/skidrowOnlyDlcsList.txt?raw';
 import threeDmGameOnlyDlcsList from './data/threeDmGameOnlyDlcsList.txt?raw';
+import greenLuma2020ManagerBlueAmulet from './data/greenLuma2020ManagerBlueAmulet.txt?raw';
 
 const data: FormatsData = {
   creamApi4500: {
@@ -27,8 +27,15 @@ const data: FormatsData = {
   greenLuma2020BatchMode: {
     name: 'GreenLuma 2020 [BATCH MODE]',
     file: {
-      name: '[data]appId[/data]_GreenLuma.bat',
+      name: '[data]appId[/data]_GreenLuma_2020.bat',
       text: greenLumaTwoZeroTwoZeroBatchMode,
+    },
+  },
+  greenLuma2020ManagerBlueAmulet: {
+    name: 'GreenLuma 2020 Manager [BlueAmulet]',
+    file: {
+      name: '[data]appId[/data]_GreenLuma_2020_Manager_BlueAmulet.json',
+      text: greenLuma2020ManagerBlueAmulet,
     },
   },
   lumaEmuOnlyDlcsList: {

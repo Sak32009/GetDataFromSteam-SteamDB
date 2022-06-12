@@ -1,20 +1,38 @@
-@import "../node_modules/bootstrap/scss/functions";
-@import "../node_modules/bootstrap/scss/variables";
-@import "../node_modules/bootstrap/scss/mixins";
-@import "../node_modules/bootstrap/scss/utilities";
+/*!
+ * Bootstrap v5.2.0-beta1 (https://getbootstrap.com/)
+ * Copyright 2011-2022 The Bootstrap Authors
+ * Copyright 2011-2022 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
+ */
+
+// scss-docs-start import-stack
+// Configuration
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
 
 $custom-colors: (
-  "sake": #4b2e52,
+  'sake': #4b2e52,
 );
 
 $theme-colors: map-merge($theme-colors, $custom-colors);
 
-@import "../node_modules/bootstrap/scss/root";
-@import "revert";
-@import "../node_modules/bootstrap/scss/reboot";
-@import "../node_modules/bootstrap/scss/forms";
-@import "../node_modules/bootstrap/scss/buttons";
-@import "../node_modules/bootstrap/scss/transitions";
-@import "../node_modules/bootstrap/scss/modal";
-@import "../node_modules/bootstrap/scss/utilities/api";
-@import "main.scss";
+@import 'bootstrap/scss/maps';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/utilities';
+
+// Layout & components
+@import '../node_modules/bootstrap/scss/root';
+@import 'revert';
+@import '../node_modules/bootstrap/scss/reboot';
+@import '../node_modules/bootstrap/scss/forms';
+@import '../node_modules/bootstrap/scss/buttons';
+@import '../node_modules/bootstrap/scss/transitions';
+@import '../node_modules/bootstrap/scss/modal';
+
+// Helpers
+@import 'bootstrap/scss/helpers';
+
+// Utilities
+@import '../node_modules/bootstrap/scss/utilities/api';
+
+@import 'main.scss';

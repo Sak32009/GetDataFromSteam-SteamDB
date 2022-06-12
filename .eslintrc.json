@@ -1,28 +1,4 @@
 {
-  "extends": ["canonical", "canonical/node", "canonical/browser"],
   "root": true,
-  "env": {
-    "es2022": true,
-    "jquery": true
-  },
-  "rules": {
-    "prefer-template": "error",
-    "linebreak-style": ["error", "windows"],
-    "canonical/filename-match-exported": "off",
-    "import/no-unassigned-import": "off",
-    "no-warning-comments": "off"
-  },
-  "overrides": [
-    {
-      "extends": ["canonical/module", "canonical/typescript"],
-      "files": "*.ts",
-      "parserOptions": {
-        "project": "./tsconfig.json"
-      },
-      "rules": {
-        "@typescript-eslint/no-non-null-assertion": "off",
-        "@typescript-eslint/no-misused-promises": "off"
-      }
-    }
-  ]
+  "extends": ["sak32009"]
 }
