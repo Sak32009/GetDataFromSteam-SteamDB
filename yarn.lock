@@ -3083,12 +3083,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-prefix-selector@npm:^1.15.0":
-  version: 1.15.0
-  resolution: "postcss-prefix-selector@npm:1.15.0"
+"postcss-prefix-selector@npm:^1.16.0":
+  version: 1.16.0
+  resolution: "postcss-prefix-selector@npm:1.16.0"
   peerDependencies:
     postcss: ">4 <9"
-  checksum: 8240608a9dee522f421a46e78d15a56fffcdb5bdead3df9c0ea3ef0904614769bd4fe6f4bbc59a80871f165edad3b1430d685bbabaf3aa7202af0b16f6bd44fb
+  checksum: 8bdf10628ec8b1679a4dbb9cd736a4742c5d9b8a878c35cebaad43d67e50a18ffeb34d15860374f18a89fe4c43f818f3386bdb3321f92bb35eec9ef640a46a76
   languageName: node
   linkType: hard
 
@@ -3409,7 +3409,7 @@ __metadata:
     http-server: ^14.1.1
     mustache: ^4.2.0
     postcss: ^8.4.14
-    postcss-prefix-selector: ^1.15.0
+    postcss-prefix-selector: ^1.16.0
     prettier: ^2.6.2
     sass: ^1.52.3
     typescript: ^4.7.3
