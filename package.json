@@ -37,7 +37,7 @@
     "@types/tampermonkey": "^4.0.5",
     "autoprefixer": "^10.4.7",
     "bootstrap": "5.2.0-beta1",
-    "eslint": "^8.17.0",
+    "eslint": "^8.20.0",
     "eslint-config-sak32009": "https://github.com/Sak32009/eslint-config-sak32009.git#commit=87db841d8c78fba9b3bcd64e85be985daa3ce870",
     "http-server": "^14.1.1",
     "mustache": "^4.2.0",
