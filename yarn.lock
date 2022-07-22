@@ -3411,22 +3411,22 @@ __metadata:
     postcss: ^8.4.14
     postcss-prefix-selector: ^1.15.0
     prettier: ^2.6.2
-    sass: ^1.52.3
+    sass: ^1.54.0
     typescript: ^4.7.3
     vite: ^2.9.12
   languageName: unknown
   linkType: soft
 
-"sass@npm:^1.52.3":
-  version: 1.52.3
-  resolution: "sass@npm:1.52.3"
+"sass@npm:^1.54.0":
+  version: 1.54.0
+  resolution: "sass@npm:1.54.0"
   dependencies:
     chokidar: ">=3.0.0 <4.0.0"
     immutable: ^4.0.0
     source-map-js: ">=0.6.2 <2.0.0"
   bin:
     sass: sass.js
-  checksum: 175a073c0e7b67d1baff6d3969431228002ece681886cebc2a354c241134ff120fda5c12a0465989966dacfb1ca518d85507304f4d4cd03d4a91d71dbc77d978
+  checksum: 7d3acf124d771e8811fce876ad37f786faafa9edce64b20dcf32bf6aed5116802c863d3311fd79e7e7682fcccc4dc684960be1365cffa7dad045be7251c40d70
   languageName: node
   linkType: hard
 
