@@ -18,7 +18,7 @@ Make sure you have userscripts manager enabled in your browser:
 - [Violent Monkey](https://violentmonkey.github.io/) _(OPEN SOURCE)_
 - ~~Greasemonkey~~ _!!NOT WORKING ANYMORE ON THIS USERSCRIPTS MANAGER!!_
 
-Install a userscript from GitHub by clicking on the "RAW" button of the **[page](./dist/sak32009-get-dlc-info-from-steamdb.user.js)** or click **[this](https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/dist/sak32009-get-dlc-info-from-steamdb.user.js)** directly.
+Install a userscript from GitHub by clicking on the "RAW" button of the **[page](./dist/sak32009-get-data-from-steam-steamdb.user.js)** or click **[this](https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/dist/sak32009-get-data-from-steam-steamdb.user.js)** directly.
 
 ### Usage:
 

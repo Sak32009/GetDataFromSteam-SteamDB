@@ -18,7 +18,7 @@ export default defineConfig(({ mode }) => {
       emptyOutDir: true,
       lib: {
         entry: viteEntry,
-        fileName: () => 'sak32009-get-dlc-info-from-steamdb.user.js',
+        fileName: () => 'sak32009-get-data-from-steam-steamdb.user.js',
         formats: ['es'],
       },
     },
