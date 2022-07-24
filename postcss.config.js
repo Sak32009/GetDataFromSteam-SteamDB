@@ -1,14 +1,15 @@
-module.exports = {
+export default {
   plugins: {
     'postcss-prefix-selector': {
       prefix: '.sak32009',
       transform(prefix, selector, prefixedSelector) {
-        if (selector.startsWith('.modal-backdrop')) {
-          return selector;
-        }
-
-        // :root to :root
-        if (selector === ':root') {
+        // selector to selector
+        if (
+          selector.startsWith('.modal-backdrop') ||
+          selector.startsWith('.fade') ||
+          selector.startsWith('.sak32009') ||
+          selector === ':root'
+        ) {
           return selector;
         }
 

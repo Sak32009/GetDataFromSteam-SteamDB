@@ -2,24 +2,26 @@ import type { UserConfigExport } from 'vite';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
 import { defineConfig } from 'vite';
-import viteMetablockPlugin from './src/plugins/metablock/main';
+import viteMetablockPlugin from './plugins/metablock/main';
 
 export default defineConfig(({ mode }) => {
   const isDevelopment = mode === 'development';
   const rootPath = cwd();
   const viteRoot = join(rootPath, 'src');
   const viteEntry = join(viteRoot, 'index.ts');
+  const viteOutDirectory = join(rootPath, 'dist');
   const viteConfig: UserConfigExport = {
+    root: viteRoot,
+    plugins: [viteMetablockPlugin()],
     build: {
+      outDir: viteOutDirectory,
+      emptyOutDir: true,
       lib: {
         entry: viteEntry,
         fileName: () => 'sak32009-get-dlc-info-from-steamdb.user.js',
-        formats: ['cjs'],
+        formats: ['es'],
       },
-      outDir: rootPath,
     },
-    plugins: [viteMetablockPlugin()],
-    root: viteRoot,
   };
 
   if (isDevelopment) {

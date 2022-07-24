@@ -1,7 +1,1 @@
-[
-  [dlcs]{
-    "id": "{dlcId}",
-    "name": "{dlcName}",
-    "type": "DLC"
-  },
-[/dlcs]]
+[[dlcs]{"id":"{dlcId}","name":"{dlcName}","type":"DLC"},[/dlcs]]

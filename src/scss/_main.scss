@@ -1,3 +1,11 @@
+.btn[data-bs-toggle='modal'] {
+  z-index: 99991;
+}
+
+#sake_output {
+  height: 300px;
+}
+
 .modal-backdrop {
   z-index: 99992;
 }
@@ -6,10 +14,8 @@
   z-index: 99993;
 
   .modal-header-logo {
-    img {
-      width: 96px;
-      height: 96px;
-    }
+    width: 96px;
+    height: 96px;
   }
 
   .resize-none {

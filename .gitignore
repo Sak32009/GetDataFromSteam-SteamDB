@@ -1,3 +1,6 @@
+# Get DLC Info from SteamDB
+/dist
+
 # Yarn
 .pnp.*
 .yarn/*

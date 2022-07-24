@@ -33,4 +33,4 @@ jobs:
           branch: master
           push_options: '--force'
           commit_message: 'I have released a new version!'
-          file_pattern: 'sak32009-get-dlc-info-from-steamdb.user.js'
+          file_pattern: 'dist/sak32009-get-dlc-info-from-steamdb.user.js'

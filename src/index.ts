@@ -1,19 +1,19 @@
-/* eslint-disable unicorn/no-unsafe-regex */
-/* eslint-disable new-cap */
 /* eslint-disable sonarjs/no-duplicate-string */
-/* eslint-disable prefer-named-capture-group */
-import mustache from 'mustache';
-import {
-  name as packageName,
-  productName as packageProductName,
-  author as packageAuthor,
-  year as packageYear,
-  version as packageVersion,
-} from '../package.json';
+import { compile, registerPartial } from 'handlebars';
+import cryptoUtf8 from 'crypto-js/enc-utf8';
+import cryptoBase64 from 'crypto-js/enc-base64';
+import appInfo from '../package.json';
+import { acfGenerator } from './acf/acf-generator';
+import skModalHtml from './templates/modal.hbs?raw';
+import skButtonHtml from './templates/button.hbs?raw';
+import skSteamDBAppHtml from './templates/steamdbapp.hbs?raw';
+import skSteamDBDepotHtml from './templates/steamdbdepot.hbs?raw';
 import skData from './data';
-import skModalHtml from './modal.html?raw';
-import skAuthorIcon from './sak32009.svg';
+import skMainIcon from './images/icon.png';
+import skAuthorIcon from './images/sak32009.svg';
 import skStyles from './scss/styles.scss?inline';
+import './instances/jquery';
+import 'bootstrap/js/dist/modal';
 
 // NOTE: 21/01/2022 unsafeWindow.wrappedJSObject fix for ViolentMonkey
 const unsafeWindowC = unsafeWindow as unknown as TypeUnsafeWindow;
@@ -23,53 +23,53 @@ const unsafejQuery =
 class Sak32009 {
   private extractedData: ExtractedData = {
     appId: '',
-    countAll: 0,
-    countDlcs: 0,
-    countDlcsUnknowns: 0,
-    dlcs: {},
-    dlcsUnknowns: {},
     name: '',
+    dlcs: {},
+    countAllDlcs: 0,
+    countDlcs: 0,
+    dlcsUnknowns: {},
+    countDlcsUnknowns: 0,
     withDlcsUnknowns: false,
   };
-  private allowedUrls = {
-    steamdbApp: 'https://steamdb.info/app/',
-    steamdbDepot: 'https://steamdb.info/depot/',
-    steamPowered: 'https://store.steampowered.com/app/',
-  };
-  private isAllowedUrls = {
-    steamdbApp: false,
-    steamdbDepot: false,
-    steamPowered: false,
-  };
-  private titleScript = `${packageProductName} v${packageVersion}<br><small>by ${packageAuthor.name} | ${packageYear}</small>`;
+  private is: 'steamdbapp' | 'steamdbdepot' | 'steamdbacf' | 'steampowered' | undefined;
 
-  public runScript() {
-    GM_addStyle(skStyles);
-
-    const { href } = window.location;
-    if (href.startsWith(this.allowedUrls.steamdbApp)) {
-      this.isAllowedUrls.steamdbApp = true;
-      this.getDataFromSteamDbApp();
-    } else if (href.startsWith(this.allowedUrls.steamdbDepot)) {
-      this.isAllowedUrls.steamdbDepot = true;
-      this.getDataFromSteamDbDepot();
-    } else if (href.startsWith(this.allowedUrls.steamPowered)) {
-      this.isAllowedUrls.steamPowered = true;
-      this.getDataFromSteamPowered();
+  public runScript(clear = false) {
+    if (clear) {
+      $('.sak32009').remove();
     }
 
-    if (this.extractedData.countAll > 0) {
-      this.setModal();
+    const href = window.location.href;
+    // eslint-disable-next-line compat/compat
+    const queryString = new URL(href).searchParams;
+
+    if (/https:\/\/steamdb\.info\/app\/\d+\/dlc\//u.test(href)) {
+      this.is = 'steamdbapp';
+      this.getDataFromSteamDBApp();
+    } else if (/https:\/\/steamdb\.info\/app\/\d+\/depots\//u.test(href)) {
+      const branch = queryString.get('branch');
+      if (branch === 'public') {
+        this.is = 'steamdbacf';
+        this.getDataFromSteamDBForACF();
+      }
+    } else if (/https:\/\/steamdb\.info\/depot\/\d+\//u.test(href)) {
+      const showHashes = queryString.has('show_hashes');
+      if (showHashes) {
+        this.is = 'steamdbdepot';
+        this.getDataFromSteamDBDepot();
+      }
+    } else if (/https:\/\/store\.steampowered\.com\/app\/\d+\/\w+/u.test(href)) {
+      this.is = 'steampowered';
+      this.getDataFromSteamPowered();
     }
   }
 
-  private getDataFromSteamDbApp() {
-    this.extractedData.appId = $('div[data-appid]').attr('data-appid')!;
+  private getDataFromSteamDBApp() {
+    this.extractedData.appId = $('div[data-appid]').attr('data-appid') as string;
     this.extractedData.name = $('h1[itemprop="name"]').text().trim();
 
     $('#dlc.tab-pane tr.app[data-appid]').each((_index, element) => {
       const dom = $(element);
-      const appId = dom.attr('data-appid')!;
+      const appId = dom.attr('data-appid') as string;
       const appNameSelector = dom.find('td:nth-of-type(2)');
       const appName = appNameSelector.text().trim();
 
@@ -81,88 +81,182 @@ class Sak32009 {
         this.extractedData.countDlcs += 1;
       }
 
-      this.extractedData.countAll += 1;
+      this.extractedData.countAllDlcs += 1;
     });
+
+    if (this.extractedData.countAllDlcs > 0) {
+      this.setModal();
+    }
   }
 
   private getDataFromSteamPowered() {
-    this.extractedData.appId = $('div[data-appid]').attr('data-appid')!;
+    this.extractedData.appId = $('div[data-appid]').attr('data-appid') as string;
     this.extractedData.name = $('div#appHubAppName').text().trim();
 
     $('a.game_area_dlc_row').each((_index, element) => {
       const dom = $(element);
-      const appId = dom.attr('data-ds-appid')!;
+      const appId = dom.attr('data-ds-appid') as string;
       const appName = dom.find('.game_area_dlc_name').text().trim();
 
       this.extractedData.dlcs[appId] = appName;
       this.extractedData.countDlcs += 1;
-      this.extractedData.countAll += 1;
+      this.extractedData.countAllDlcs += 1;
     });
+
+    if (this.extractedData.countAllDlcs > 0) {
+      this.setModal();
+    }
   }
 
-  private getDataFromSteamDbDepot() {
+  private getDataFromSteamDBDepot() {
     let content = '';
-    const depotId = $('div[data-depotid]').attr('data-depotid')!;
+    const depotId = $('div[data-depotid]').attr('data-depotid') as string;
+    // eslint-disable-next-line new-cap
     const depotData = unsafejQuery('div#files .table.file-tree').DataTable().data();
 
     $.each(depotData, (_index, values: Record<number, string>) => {
       const fileName = values[0];
       const sha1 = values[1];
-
       if (sha1 !== 'NULL') {
-        content += `${sha1} *${fileName}\r\n`;
+        content += `${sha1} *${fileName}\n`;
       }
     });
 
     if (content.length > 0) {
       this.setModal();
-
-      $('a#sake_download').attr({
+      $('.sak32009 a#sake_download').attr({
         download: `${depotId}.sha1`,
         href: this.encodeToDataUri(content),
       });
-      $('textarea#sake_textarea').val(content);
+      $('.sak32009 pre#sake_output').html(content);
     }
+  }
+
+  private getDataFromSteamDBForACF() {
+    const appId = Number($('div[data-appid]').attr('data-appid') as string);
+    const appName = $('h1[itemprop="name"]').text().trim();
+    const appInstallDirectory = $('#config > table tbody tr td:first-child:contains("installdir")')
+      .closest('tr')
+      .find('td:last-child')
+      .text()
+      .trim();
+    const appBuildId = $('#depots > ul.app-json li i:contains("buildid")').closest('li').find('b').text().trim();
+
+    console.log('appId', appId);
+    console.log('appName', appName);
+    console.log('appInstallDirectory', appInstallDirectory);
+    console.log('appBuildId', appBuildId);
+
+    const steamCMDData: SteamCMDApi = {};
+    steamCMDData[appId] = {
+      common: { name: appName },
+      config: { installdir: appInstallDirectory },
+      depots: { branches: { public: { buildid: appBuildId } } },
+    };
+
+    $('#depots > .table-responsive:nth-child(4) > table tbody tr').each((_index, value) => {
+      const $this = $(value);
+      const depotId = Number($this.find('td:nth-child(1) a').text().trim());
+      const depotName = $this.find('td:nth-child(2)').text().trim();
+      const depotSize = $this.find('td:nth-child(3)').attr('data-sort') as string;
+      const depotOs = $this.find('td:nth-child(4)').attr('data-sort');
+      const depotManifestId = $this.find('td:nth-child(5) a').text().trim();
+      const depotExtraInfo = $this.find('td:nth-child(6)').text();
+
+      steamCMDData[appId].depots[depotId] = {
+        name: depotName,
+        maxsize: depotSize,
+      };
+
+      if (typeof depotOs !== 'undefined') {
+        steamCMDData[appId].depots[depotId].config = {
+          oslist: depotOs,
+        };
+      }
+
+      if (depotManifestId.length > 0) {
+        steamCMDData[appId].depots[depotId].manifests = {
+          public: depotManifestId,
+        };
+      }
+
+      const depotIsDlc = /DLC (?<dlcid>\d+)/u.exec(depotExtraInfo);
+      if (depotIsDlc !== null) {
+        steamCMDData[appId].depots[depotId].dlcappid = depotIsDlc[1];
+      }
+
+      const depotIsSharedInstall = depotExtraInfo.includes('Shared Install');
+      if (depotIsSharedInstall) {
+        const depotFromApp = /Depot from (?<depotid>\d+)/u.exec(depotExtraInfo);
+        if (depotFromApp !== null) {
+          steamCMDData[appId].depots[depotId].sharedinstall = 1;
+          steamCMDData[appId].depots[depotId].depotfromapp = depotFromApp[1];
+        }
+      }
+
+      console.log('-------------------------- depotId', depotId);
+      console.log('depotName', depotName);
+      console.log('depotSize', depotSize);
+      console.log('depotOs', depotOs);
+      console.log('depotManifestId', depotManifestId);
+      console.log('depotExtraInfo', depotExtraInfo);
+      console.log('depotIsDlc', depotIsDlc);
+      console.log('depotIsSharedInstall', depotIsSharedInstall);
+    });
+
+    this.setModal();
+    const output = acfGenerator(appId, steamCMDData);
+    $('.sak32009 a#sake_download').attr({
+      download: `appmanifest_${appId}.acf`,
+      href: this.encodeToDataUri(output),
+    });
+    $('.sak32009 pre#sake_output').html(output);
   }
 
   private setModal() {
+    // eslint-disable-next-line new-cap
+    GM_addStyle(skStyles);
+    this.setModalPartials();
     this.setModalContainer();
-
-    if (!this.isAllowedUrls.steamdbDepot) {
+    if (this.is !== 'steamdbdepot' && this.is !== 'steamdbacf') {
       this.setEvents();
     }
-
     this.setModalButton();
   }
 
+  public setModalPartials() {
+    registerPartial('steamdbapp', skSteamDBAppHtml);
+    registerPartial('steamdbdepot', skSteamDBDepotHtml);
+    registerPartial('steamdbacf', skSteamDBDepotHtml);
+    registerPartial('steampowered', skSteamDBAppHtml);
+  }
+
   private setModalButton() {
-    $(
-      `<div class="sak32009">
-  <button type="button" class="btn btn-sake me-2 rounded-0 rounded-top position-fixed bottom-0 end-0" data-bs-toggle="modal" data-bs-target="#${packageName}">
-    ${this.titleScript}
-  </button>
-</div>`
-    ).appendTo('body');
+    const rendered = compile(skButtonHtml)({
+      appInfo,
+      skMainIcon,
+    });
+    $(rendered).appendTo(document.body);
   }
 
   private setModalContainer() {
-    const rendered = mustache.render(skModalHtml, {
+    const rendered = compile(skModalHtml)({
+      isSteamDBApp: this.is === 'steamdbapp',
+      isSteamDBDepot: this.is === 'steamdbdepot',
+      isSteamDBACF: this.is === 'steamdbacf',
+      isSteamPowered: this.is === 'steampowered',
       extractedData: this.extractedData,
-      isAllowedUrls: this.isAllowedUrls,
-      packageName,
-      packageProductName,
+      appInfo,
       skAuthorIcon,
-      skSelect: this.mustacheObjsToList(skData),
-      titleScript: this.titleScript,
+      skData,
     });
-    $(rendered).appendTo('body');
+    $(rendered).appendTo(document.body);
   }
 
   private setEvents() {
-    $(document).on('click', '.sak32009 button#sake_convert', (event) => {
+    $(document).on('change', '.sak32009 select#sake_select', (event) => {
       event.preventDefault();
-      const selectedOption = $('select#sake_select option:selected').val();
-
+      const selectedOption = $(event.currentTarget).find(':selected').val();
       if (typeof selectedOption === 'string') {
         const dataFormatFile = skData[selectedOption].file;
         const fileText = dataFormatFile.text;
@@ -171,55 +265,42 @@ class Sak32009 {
 
         // NOTE: TWEAK FOR LAST COMMA JSON
         if (selectedOption === 'greenLuma2020ManagerBlueAmulet') {
-          const parsedContentArray = [...parsedContent];
-          parsedContent = `${parsedContentArray.splice(0, parsedContentArray.length - 6).join('')}\r\n]\r\n`;
+          parsedContent = JSON.stringify(JSON.parse(parsedContent.replace(/,\]/gu, ']')), undefined, 4);
         }
 
-        $('textarea#sake_textarea').html(parsedContent).scrollTop(0);
-        $('a#sake_download')
-          .attr({
-            download: fileName,
-            href: this.encodeToDataUri(parsedContent),
-          })
-          .removeClass('disabled');
+        $('.sak32009 pre#sake_output').html(parsedContent).scrollTop(0);
+        $('.sak32009 a#sake_download').attr({
+          download: fileName,
+          href: this.encodeToDataUri(parsedContent),
+        });
       }
     });
 
+    $('.sak32009 select#sake_select').trigger('change');
+
     $(document).on('change', '.sak32009 input#sake_unknowns', (event) => {
       this.extractedData.withDlcsUnknowns = $(event.currentTarget).is(':checked');
+      $('.sak32009 select#sake_select').trigger('change');
     });
   }
 
   private encodeToDataUri(content: string) {
     const textStripped = ($('<textarea>').html(content)[0] as HTMLInputElement).value;
-    const encodedWord = CryptoJS.enc.Utf8.parse(textStripped);
-    const encoded = CryptoJS.enc.Base64.stringify(encodedWord);
+    const encodedWord = cryptoUtf8.parse(textStripped);
+    const encoded = cryptoBase64.stringify(encodedWord);
     return `data:text/plain;charset=utf-8;base64,${encoded}`;
-  }
-
-  private mustacheObjsToList(pp: Record<string, unknown>) {
-    const rr = [];
-    for (const kk in pp) {
-      if (Object.hasOwn(pp, kk)) {
-        rr.push({
-          '@key': kk,
-          '@val': pp[kk],
-        });
-      }
-    }
-
-    return rr;
   }
 
   private parse(content: string) {
     let out = content;
     out = out.replace(
-      /\[dlcs(?: (fromZero))?(?: prefix="(.*?)")?\]([\s\S]+?)\[\/dlcs\]/gu,
+      // eslint-disable-next-line unicorn/no-unsafe-regex
+      /\[dlcs(?: (?<fromZero>fromZero))?(?: prefix="(?<prefix>\d*)")?\](?<content>[\s\S]+?)\[\/dlcs\]/gu,
       (_substring, indexFromZero: string, indexPrefix: string | undefined, contentOne: string) =>
         this.parseDlcsMatchValue(contentOne, indexFromZero, indexPrefix)
     );
     out = out.replace(
-      /\[data\]([^[]+)\[\/data\]/gu,
+      /\[data\](?<data>[\s\S]*)\[\/data\]/gu,
       (_substring, contentOne: string) => this.extractedData[contentOne] as string
     );
     return out;
@@ -242,7 +323,7 @@ class Sak32009 {
       : this.extractedData.dlcs;
     $.each(dlcs, (appId, name) => {
       index += 1;
-      out += content.replace(/\{(.*?)\}/gu, (_substring, contentOne: string) => {
+      out += content.replace(/\{(?<content>\w+)\}/gu, (_substring, contentOne: string) => {
         const values: Record<string, string> = {
           dlcId: appId,
           dlcIndex: this.parseDlcsMatchPrefix(index.toString(), indexPrefix),
@@ -255,5 +336,15 @@ class Sak32009 {
   }
 }
 
-const a = new Sak32009();
-a.runScript();
+(() => {
+  const script = new Sak32009();
+  let href = window.location.href;
+  script.runScript();
+  window.setInterval(() => {
+    const newhref = window.location.href;
+    if (href !== newhref) {
+      href = newhref;
+      script.runScript(true);
+    }
+  }, 50);
+})();

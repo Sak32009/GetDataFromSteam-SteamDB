@@ -1,0 +1,26 @@
+<div class='input-group p-1 bg-white border-top border-1 border-sake-secondary'>
+  <select id='sake_select' class='form-select border-sake-secondary rounded-0'>
+    {{#each skData}}
+      <option value='{{@key}}'>{{this.name}}</option>
+    {{/each}}
+  </select>
+  {{#if isSteamDBApp}}
+    <label class='btn btn-outline-sake-secondary' for='sake_unknowns'>
+      <div class='form-check'>
+        <input class='form-check-input' type='checkbox' id='sake_unknowns' />
+        <span>With DLCS Unknowns</span>
+      </div>
+    </label>
+  {{/if}}
+  <a href='#' id='sake_download' class='btn btn-outline-sake-secondary rounded-0'>Download as file</a>
+</div>
+<pre id='sake_output' class='bg-white text-dark p-2 mb-0 border-top border-1 border-sake-secondary'></pre>
+<div class='d-flex flex-row justify-content-end p-2 text-bg-sake-secondary'>
+  <div class='me-1'>DLCs: {{extractedData.countDlcs}}</div>
+  <div class='me-1'>|</div>
+  {{#if isSteamDBApp}}
+    <div class='me-1'>DLCs Unknowns: {{extractedData.countDlcsUnknowns}}</div>
+    <div class='me-1'>|</div>
+  {{/if}}
+  <div>Total DLCs: {{extractedData.countAllDlcs}}</div>
+</div>

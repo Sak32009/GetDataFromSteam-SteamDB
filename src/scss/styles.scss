@@ -1,38 +1,54 @@
-/*!
- * Bootstrap v5.2.0-beta1 (https://getbootstrap.com/)
- * Copyright 2011-2022 The Bootstrap Authors
- * Copyright 2011-2022 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
- */
+@import 'revert';
 
-// scss-docs-start import-stack
+//@import "boostrap/mixins/banner";
+//@include bsBanner("");
+
 // Configuration
 @import 'bootstrap/scss/functions';
+@import './variables';
 @import 'bootstrap/scss/variables';
-
-$custom-colors: (
-  'sake': #4b2e52,
-);
-
-$theme-colors: map-merge($theme-colors, $custom-colors);
-
+@import './maps';
 @import 'bootstrap/scss/maps';
 @import 'bootstrap/scss/mixins';
 @import 'bootstrap/scss/utilities';
 
 // Layout & components
-@import '../node_modules/bootstrap/scss/root';
-@import 'revert';
-@import '../node_modules/bootstrap/scss/reboot';
-@import '../node_modules/bootstrap/scss/forms';
-@import '../node_modules/bootstrap/scss/buttons';
-@import '../node_modules/bootstrap/scss/transitions';
-@import '../node_modules/bootstrap/scss/modal';
+@import 'bootstrap/scss/root';
+@import 'bootstrap/scss/reboot';
+//@import 'bootstrap/scss/type';
+//@import 'bootstrap/scss/images';
+//@import 'bootstrap/scss/containers';
+//@import 'bootstrap/scss/grid';
+//@import 'bootstrap/scss/tables';
+@import 'bootstrap/scss/forms';
+@import 'bootstrap/scss/buttons';
+@import 'bootstrap/scss/transitions';
+//@import 'bootstrap/scss/dropdown';
+//@import 'bootstrap/scss/button-group';
+//@import 'bootstrap/scss/nav';
+//@import 'bootstrap/scss/navbar';
+//@import 'bootstrap/scss/card';
+//@import 'bootstrap/scss/accordion';
+//@import 'bootstrap/scss/breadcrumb';
+//@import 'bootstrap/scss/pagination';
+//@import 'bootstrap/scss/badge';
+//@import 'bootstrap/scss/alert';
+//@import 'bootstrap/scss/progress';
+//@import 'bootstrap/scss/list-group';
+@import 'bootstrap/scss/close';
+//@import 'bootstrap/scss/toasts';
+@import 'bootstrap/scss/modal';
+//@import 'bootstrap/scss/tooltip';
+//@import 'bootstrap/scss/popover';
+//@import 'bootstrap/scss/carousel';
+//@import 'bootstrap/scss/spinners';
+//@import 'bootstrap/scss/offcanvas';
+//@import 'bootstrap/scss/placeholders';
 
 // Helpers
 @import 'bootstrap/scss/helpers';
 
 // Utilities
-@import '../node_modules/bootstrap/scss/utilities/api';
+@import 'bootstrap/scss/utilities/api';
 
 @import 'main.scss';
