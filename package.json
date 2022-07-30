@@ -28,7 +28,7 @@
     "@types/jquery": "^3.5.14",
     "@types/node": "^16.11.45",
     "@types/tampermonkey": "^4.0.5",
-    "autoprefixer": "^10.4.7",
+    "autoprefixer": "^10.4.8",
     "bootstrap": "5.2.0",
     "crypto-js": "^4.1.1",
     "eslint": "^8.20.0",
