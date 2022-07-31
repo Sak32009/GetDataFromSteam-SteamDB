@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => {
   const rootPath = cwd();
   const viteRoot = join(rootPath, 'src');
   const viteEntry = join(viteRoot, 'index.ts');
-  const viteOutDirectory = join(rootPath, 'dist');
+  const viteOutDirectory = join(rootPath, isDevelopment ? 'debug' : 'dist');
   const viteConfig: UserConfigExport = {
     root: viteRoot,
     plugins: [viteMetablockPlugin()],

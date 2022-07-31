@@ -109,7 +109,7 @@ class Sak32009 {
   }
 
   private getDataFromSteamDBDepot() {
-    let content = '';
+    let output = '';
     const depotId = $('div[data-depotid]').attr('data-depotid') as string;
     // eslint-disable-next-line new-cap
     const depotData = unsafejQuery('div#files .table.file-tree').DataTable().data();
@@ -118,17 +118,13 @@ class Sak32009 {
       const fileName = values[0];
       const sha1 = values[1];
       if (sha1 !== 'NULL') {
-        content += `${sha1} *${fileName}\n`;
+        output += `${sha1} *${fileName}\n`;
       }
     });
 
-    if (content.length > 0) {
+    if (output.length > 0) {
       this.setModal();
-      $('.sak32009 a#sake_download').attr({
-        download: `${depotId}.sha1`,
-        href: this.encodeToDataUri(content),
-      });
-      $('.sak32009 pre#sake_output').html(content);
+      this.showOutputOnTextarea(`${depotId}.sha1`, output);
     }
   }
 
@@ -205,12 +201,7 @@ class Sak32009 {
     });
 
     this.setModal();
-    const output = acfGenerator(appId, steamCMDData);
-    $('.sak32009 a#sake_download').attr({
-      download: `appmanifest_${appId}.acf`,
-      href: this.encodeToDataUri(output),
-    });
-    $('.sak32009 pre#sake_output').html(output);
+    this.showOutputOnTextarea(`appmanifest_${appId}.acf`, acfGenerator(appId, steamCMDData));
   }
 
   private setModal() {
@@ -253,34 +244,40 @@ class Sak32009 {
     $(rendered).appendTo(document.body);
   }
 
+  private showOutputOnTextarea(fileName: string, output: string) {
+    $('.sak32009 a#sake_download').attr({
+      download: fileName,
+      href: this.encodeToDataUri(output),
+    });
+    $('.sak32009 pre#sake_output').html(output).scrollTop(0);
+  }
+
   private setEvents() {
-    $(document).on('change', '.sak32009 select#sake_select', (event) => {
+    const sakeSelect = '.sak32009 select#sake_select';
+
+    $(document).on('change', sakeSelect, (event) => {
       event.preventDefault();
       const selectedOption = $(event.currentTarget).find(':selected').val();
       if (typeof selectedOption === 'string') {
         const dataFormatFile = skData[selectedOption].file;
         const fileText = dataFormatFile.text;
         const fileName = this.parse(dataFormatFile.name);
-        let parsedContent = this.parse(fileText);
+        let output = this.parse(fileText);
 
         // NOTE: TWEAK FOR LAST COMMA JSON
         if (selectedOption === 'greenLuma2020ManagerBlueAmulet') {
-          parsedContent = JSON.stringify(JSON.parse(parsedContent.replace(/,\]/gu, ']')), undefined, 4);
+          output = JSON.stringify(JSON.parse(output.replace(/,\]/gu, ']')), undefined, 4);
         }
 
-        $('.sak32009 pre#sake_output').html(parsedContent).scrollTop(0);
-        $('.sak32009 a#sake_download').attr({
-          download: fileName,
-          href: this.encodeToDataUri(parsedContent),
-        });
+        this.showOutputOnTextarea(fileName, output);
       }
     });
 
-    $('.sak32009 select#sake_select').trigger('change');
+    $(sakeSelect).trigger('change');
 
     $(document).on('change', '.sak32009 input#sake_unknowns', (event) => {
       this.extractedData.withDlcsUnknowns = $(event.currentTarget).is(':checked');
-      $('.sak32009 select#sake_select').trigger('change');
+      $(sakeSelect).trigger('change');
     });
   }
 

@@ -4,17 +4,13 @@
  * https://github.com/Sak32009/GetDLCInfoFromSteamDB
  * AND
  * https://github.com/Sak32009/SteamACFGenerator
- * VERSION: 1.0.0
+ * VERSION: 1.0.1
  */
-import vdf from 'vdf-parser';
+import { stringify as vdfStringify } from 'vdf-parser';
 import acfConsole from './acf-console';
 
-export const isNumeric = (txt: string) => {
-  if (typeof txt !== 'string') {
-    return false;
-  }
-  return !Number.isNaN(txt) && !Number.isNaN(Number.parseFloat(txt));
-};
+// eslint-disable-next-line unicorn/prevent-abbreviations
+export const isNumeric = (str: string) => /^\d+$/u.test(str);
 
 export const acfGenerator = (appId: number, steamCMDData: SteamCMDApi) => {
   const data = steamCMDData[appId];
@@ -126,7 +122,5 @@ export const acfGenerator = (appId: number, steamCMDData: SteamCMDApi) => {
     appManifestOutput.AppState.SharedDepots = appSharedDepots;
   }
 
-  return vdf.stringify(appManifestOutput, { pretty: true, indent: '   ' });
+  return vdfStringify(appManifestOutput, { pretty: true, indent: '   ' });
 };
-
-export default { isNumeric, acfGenerator };

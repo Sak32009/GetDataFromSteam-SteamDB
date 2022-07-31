@@ -1,5 +1,5 @@
 /.github
 /.yarn
+/dist
+/debug
 /node_modules
-
-/dist/sak32009-get-data-from-steam-steamdb.user.js
