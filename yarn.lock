@@ -170,12 +170,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/bootstrap@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "@types/bootstrap@npm:5.2.0"
+"@types/bootstrap@npm:^5.2.1":
+  version: 5.2.1
+  resolution: "@types/bootstrap@npm:5.2.1"
   dependencies:
     "@popperjs/core": ^2.9.2
-  checksum: 887f991d647fd59b3cbdb3fc65bd427887bd41896b689d41b9bc96eac9331eb3dbe5475b62fb339dfcfd31a29f8b7752daad2a5f2f87203dbca24cbb22f1edea
+  checksum: 3cfeea38fd5b63717a9607acda0bb7c983985a078156a1d44d03d4573017bfcc50507a40d251c81ca282ea65839e83df7618944ced616201be369f6c3e04b6bf
   languageName: node
   linkType: hard
 
@@ -3580,7 +3580,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "sak32009-gaxvyvrguokgtog@workspace:."
   dependencies:
-    "@types/bootstrap": ^5.2.0
+    "@types/bootstrap": ^5.2.1
     "@types/crypto-js": ^4.1.1
     "@types/datatables.net": ^1.10.23
     "@types/jquery": ^3.5.14

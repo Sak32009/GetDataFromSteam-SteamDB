@@ -22,7 +22,7 @@
     "lint": "yarn tsc --noEmit && yarn eslint ."
   },
   "devDependencies": {
-    "@types/bootstrap": "^5.2.0",
+    "@types/bootstrap": "^5.2.1",
     "@types/crypto-js": "^4.1.1",
     "@types/datatables.net": "^1.10.23",
     "@types/jquery": "^3.5.14",
