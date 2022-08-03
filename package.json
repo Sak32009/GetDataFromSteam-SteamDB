@@ -31,7 +31,7 @@
     "autoprefixer": "^10.4.8",
     "bootstrap": "5.2.0",
     "crypto-js": "^4.1.1",
-    "eslint": "^8.20.0",
+    "eslint": "^8.21.0",
     "eslint-config-sak32009": "https://github.com/Sak32009/eslint-config-sak32009.git#commit=ce5f60bfdf46f3f2b6be4d04f55178dc48767c67",
     "handlebars": "^4.7.7",
     "http-server": "^14.1.1",
