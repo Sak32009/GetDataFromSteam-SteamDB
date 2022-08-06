@@ -3,7 +3,7 @@
 // @namespace     sak32009-gaxvyvrguokgtog
 // @description   Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB) is a userscript that extracts all data needed to generate DLCs formats, depot.sha1 and appmanifest.acf for Steam games.
 // @author        Sak32009 (https://sak32009.github.io/)
-// @version       4.4.7
+// @version       4.5.0
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/
@@ -3398,14 +3398,14 @@ var ya = { exports: {} };
     }(), l.enc.Base64;
   });
 })(ya);
-const wl = ya.exports, _l = "sak32009-gaxvyvrguokgtog", Sl = "Get Data from Steam / SteamDB", Ml = "4.4.7", Ll = "Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB) is a userscript that extracts all data needed to generate DLCs formats, depot.sha1 and appmanifest.acf for Steam games.", Cl = "Copyright \xA9 2016 - 2022 Sak32009", Nl = "2016 - 2022", Dl = "https://github.com/Sak32009/GetDLCInfoFromSteamDB/", El = "https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/", Tl = "Sak32009 (https://sak32009.github.io/)", Al = "github:Sak32009/GetDLCInfoFromSteamDB", Il = "module", jl = "MIT", Ol = {
-  node: ">=v16.16.0"
-}, Pl = {
+const wl = ya.exports, _l = "sak32009-gaxvyvrguokgtog", Sl = "Get Data from Steam / SteamDB", Ml = "4.5.0", Ll = "Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB) is a userscript that extracts all data needed to generate DLCs formats, depot.sha1 and appmanifest.acf for Steam games.", Cl = "https://github.com/Sak32009/GetDLCInfoFromSteamDB/", Nl = "https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/", Dl = "MIT", El = "Copyright \xA9 2016 - 2022 Sak32009", Tl = "2016 - 2022", Al = "Sak32009 (https://sak32009.github.io/)", Il = "github:Sak32009/GetDLCInfoFromSteamDB", jl = "module", Ol = {
   dev: "yarn vite build --mode development -c ./src/vite.config.ts -w",
   prod: "yarn vite build -c ./src/vite.config.ts",
   server: "yarn http-server ./debug -c-1",
   lint: "yarn tsc --noEmit && yarn eslint ."
-}, zl = {
+}, Pl = "yarn@3.2.2", zl = {
+  node: ">=v16.16.0"
+}, Rl = {
   "@types/bootstrap": "^5.2.1",
   "@types/crypto-js": "^4.1.1",
   "@types/datatables.net": "^1.10.23",
@@ -3415,36 +3415,36 @@ const wl = ya.exports, _l = "sak32009-gaxvyvrguokgtog", Sl = "Get Data from Stea
   autoprefixer: "^10.4.8",
   bootstrap: "5.2.0",
   "crypto-js": "^4.1.1",
-  eslint: "^8.20.0",
-  "eslint-config-sak32009": "https://github.com/Sak32009/eslint-config-sak32009.git#commit=ce5f60bfdf46f3f2b6be4d04f55178dc48767c67",
+  eslint: "^8.21.0",
+  "eslint-config-sak32009": "https://github.com/Sak32009/eslint-config-sak32009.git#commit=bd13ecbc0f7a34790464e079639d413a6dbd711f",
   handlebars: "^4.7.7",
   "http-server": "^14.1.1",
   jquery: "^3.6.0",
   postcss: "^8.4.14",
   "postcss-prefix-selector": "^1.16.0",
   prettier: "^2.7.1",
-  sass: "^1.54.0",
+  sass: "^1.54.3",
   typescript: "^4.7.4",
   "vdf-parser": "^1.2.0",
   vite: "^3.0.4"
-}, Rl = "yarn@3.2.2", Wi = {
+}, Wi = {
   name: _l,
   productName: Sl,
   version: Ml,
   description: Ll,
-  copyright: Cl,
-  copyright_year: Nl,
-  homepage: Dl,
-  bugs: El,
-  author: Tl,
-  repository: Al,
-  type: Il,
-  license: jl,
-  engines: Ol,
+  homepage: Cl,
+  bugs: Nl,
+  license: Dl,
+  copyright: El,
+  copyright_year: Tl,
+  author: Al,
+  repository: Il,
+  type: jl,
+  scripts: Ol,
+  packageManager: Pl,
+  engines: zl,
   private: !0,
-  scripts: Pl,
-  devDependencies: zl,
-  packageManager: Rl
+  devDependencies: Rl
 };
 function Bl(o, a) {
   if (typeof o != "object")
@@ -3477,14 +3477,14 @@ function kr(o, a, l) {
 var Hl = Bl;
 const zt = console, ql = (o) => /^\d+$/u.test(o), Ul = (o, a) => {
   const l = a[o], k = l.common.name, w = l.config.installdir, g = l.depots.branches.public.buildid, v = {}, h = {};
-  let u = "0";
+  let u = 0;
   zt.debug("appName", k), zt.debug("appInstallDirectory", w), zt.debug("appBuildId", g);
   const b = l.depots;
   for (const _ in b)
     if (Object.hasOwn(b, _))
       if (ql(_)) {
-        const c = b[_], f = c.name, s = c.maxsize, S = typeof c.manifests < "u" ? c.manifests.public : void 0, L = typeof c.config < "u" && typeof c.config.oslist < "u" ? c.config.oslist : void 0, T = typeof c.dlcappid < "u" ? c.dlcappid : void 0, M = typeof c.sharedinstall < "u" ? c.depotfromapp : void 0;
-        zt.debug(`-------------------------- depotId ${_}`), zt.debug("depotName", f), zt.debug("depotSize", s), zt.debug("depotManifestId", S), zt.debug("depotOs", L), zt.debug("depotIsDlc", T), zt.debug("depotIsSharedInstall", M), typeof L > "u" || L === "windows" ? typeof M < "u" ? h[_] = M : typeof S < "u" ? (u === "0" && (u = s, zt.debug("appSize", u, "(it is normal if it is displayed after!)")), v[_] = typeof T < "u" ? {
+        const c = b[_], f = c.name, s = typeof c.maxsize < "u" ? c.maxsize : 0, S = typeof c.manifests < "u" ? c.manifests.public : void 0, L = typeof c.config < "u" && typeof c.config.oslist < "u" ? c.config.oslist : void 0, T = typeof c.dlcappid < "u" ? c.dlcappid : void 0, M = typeof c.sharedinstall < "u" ? c.depotfromapp : void 0;
+        zt.debug(`-------------------------- depotId ${_}`), zt.debug("depotName", f), zt.debug("depotSize", s), zt.debug("depotManifestId", S), zt.debug("depotOs", L), zt.debug("depotIsDlc", T), zt.debug("depotIsSharedInstall", M), typeof L > "u" || L === "windows" ? typeof M < "u" ? h[_] = M : typeof S < "u" ? (u === 0 && (u = s, zt.debug("appSize", u, "(it is normal if it is displayed after!)")), v[_] = typeof T < "u" ? {
           manifest: S,
           size: s,
           dlcappid: T
@@ -3503,9 +3503,9 @@ const zt = console, ql = (o) => /^\d+$/u.test(o), Ul = (o, a) => {
       StateFlags: 4,
       installdir: w,
       LastUpdated: 0,
-      SizeOnDisk: Number(u),
+      SizeOnDisk: u,
       StagingSize: 0,
-      buildid: Number(g),
+      buildid: g,
       LastOwner: 2009,
       UpdateResult: 0,
       BytesToDownload: 0,
@@ -3518,7 +3518,7 @@ const zt = console, ql = (o) => /^\d+$/u.test(o), Ul = (o, a) => {
       ScheduledAutoUpdate: 0
     }
   };
-  return Object.keys(v).length > 0 && (m.AppState.InstalledDepots = v), Object.keys(h).length > 0 && (m.AppState.SharedDepots = h), Hl(m, { pretty: !0, indent: "   " });
+  return Object.keys(v).length > 0 && (m.AppState.InstalledDepots = v), Object.keys(h).length > 0 && (m.AppState.SharedDepots = h), Hl(m, { pretty: !0, indent: "	" }).replaceAll('" "', '"		"');
 }, Fl = `<div class='sak32009'>
   <div class='modal fade' id='{{appInfo.name}}'>
     <div class='modal-dialog modal-dialog-centered modal-lg'>
@@ -3526,7 +3526,6 @@ const zt = console, ql = (o) => /^\d+$/u.test(o), Ul = (o, a) => {
         <div class='modal-header flex-column border-0 text-center'>
           <div>
             <img class='modal-header-logo' src='{{skAuthorIcon}}' alt='{{appInfo.productName}} Author' />
-            <!--<img class='modal-header-logo' src='{{skMainIcon}}' alt='{{appInfo.productName}} Main'/>-->
           </div>
           <h5>{{appInfo.productName}} v{{appInfo.version}}</h5>
           <div class='flex-row'>
@@ -3539,20 +3538,23 @@ const zt = console, ql = (o) => /^\d+$/u.test(o), Ul = (o, a) => {
         </div>
         <div class='modal-body p-0'>
           {{#if isSteamDBApp}}
-            {{> steamdbapp}}
+          {{> steamdbapp}}
           {{/if}}
           {{#if isSteamDBDepot}}
-            {{> steamdbdepot}}
+          {{> steamdbdepot}}
           {{/if}}
           {{#if isSteamDBACF}}
-            {{> steamdbacf}}
+          {{> steamdbacf}}
           {{/if}}
           {{#if isSteamPowered}}
-            {{> steampowered}}
+          {{> steampowered}}
           {{/if}}
         </div>
         <div class='modal-footer flex-column border-0'>
-          <p><strong>Protect</strong> development and free things,<br />because their survival is in our hands.</p>
+          <p>
+            <strong>Protect</strong>
+            development and free things,<br />because their survival is in our hands.
+          </p>
           <p>
             You can donate by clicking on
             <a href='https://www.paypal.me/sak32009a' target='_blank'>paypal.me</a>.
@@ -3572,7 +3574,8 @@ const zt = console, ql = (o) => /^\d+$/u.test(o), Ul = (o, a) => {
     <img src='{{skMainIcon}}' alt='{{appInfo.productName}} Main' style='width: 30px; height: auto;' />
     <span class='ms-1'>{{appInfo.productName}} v{{appInfo.version}}</span>
   </button>
-</div>`, Vi = `<div class='input-group p-1 bg-white border-top border-1 border-sake-secondary'>
+</div>
+`, Vi = `<div class='input-group p-1 bg-white border-top border-1 border-sake-secondary'>
   <select id='sake_select' class='form-select border-sake-secondary rounded-0'>
     {{#each skData}}
       <option value='{{@key}}'>{{this.name}}</option>
@@ -7980,7 +7983,7 @@ class dc {
     }), a.length > 0 && (this.setModal(), this.showOutputOnTextarea(`${l}.sha1`, a));
   }
   getDataFromSteamDBForACF() {
-    const a = Number($("div[data-appid]").attr("data-appid")), l = $('h1[itemprop="name"]').text().trim(), k = $('#config > table tbody tr td:first-child:contains("installdir")').closest("tr").find("td:last-child").text().trim(), w = $('#depots > ul.app-json li i:contains("buildid")').closest("li").find("b").text().trim();
+    const a = Number($("div[data-appid]").attr("data-appid")), l = $('h1[itemprop="name"]').text().trim(), k = $('#config > table tbody tr td:first-child:contains("installdir")').closest("tr").find("td:last-child").text().trim(), w = Number($('#depots > ul.app-json li i:contains("buildid")').closest("li").find("b").text().trim());
     console.log("appId", a), console.log("appName", l), console.log("appInstallDirectory", k), console.log("appBuildId", w);
     const g = {};
     g[a] = {
@@ -7988,23 +7991,23 @@ class dc {
       config: { installdir: k },
       depots: { branches: { public: { buildid: w } } }
     }, $("#depots > .table-responsive:nth-child(4) > table tbody tr").each((v, h) => {
-      const u = $(h), b = Number(u.find("td:nth-child(1) a").text().trim()), m = u.find("td:nth-child(2)").text().trim(), _ = u.find("td:nth-child(3)").attr("data-sort"), c = u.find("td:nth-child(4)").attr("data-sort"), f = u.find("td:nth-child(5) a").text().trim(), s = u.find("td:nth-child(6)").text();
+      const u = $(h), b = Number(u.find("td:nth-child(1) a").text().trim()), m = u.find("td:nth-child(2)").text().trim(), _ = u.find("td:nth-child(3)").attr("data-sort"), c = typeof _ < "u" ? Number(_) : 0, f = u.find("td:nth-child(4)").attr("data-sort"), s = u.find("td:nth-child(5) a").text().trim(), S = u.find("td:nth-child(6)").text();
       g[a].depots[b] = {
         name: m,
-        maxsize: _
-      }, typeof c < "u" && (g[a].depots[b].config = {
-        oslist: c
-      }), f.length > 0 && (g[a].depots[b].manifests = {
-        public: f
+        maxsize: c
+      }, typeof f < "u" && (g[a].depots[b].config = {
+        oslist: f
+      }), s.length > 0 && (g[a].depots[b].manifests = {
+        public: Number(s)
       });
-      const S = /DLC (?<dlcid>\d+)/u.exec(s);
-      S !== null && (g[a].depots[b].dlcappid = S[1]);
-      const L = s.includes("Shared Install");
-      if (L) {
-        const T = /Depot from (?<depotid>\d+)/u.exec(s);
-        T !== null && (g[a].depots[b].sharedinstall = 1, g[a].depots[b].depotfromapp = T[1]);
+      const L = /DLC (?<dlcid>\d+)/u.exec(S);
+      L !== null && (g[a].depots[b].dlcappid = Number(L[1]));
+      const T = S.includes("Shared Install");
+      if (T) {
+        const M = /Depot from (?<depotid>\d+)/u.exec(S);
+        M !== null && (g[a].depots[b].sharedinstall = 1, g[a].depots[b].depotfromapp = Number(M[1]));
       }
-      console.log("-------------------------- depotId", b), console.log("depotName", m), console.log("depotSize", _), console.log("depotOs", c), console.log("depotManifestId", f), console.log("depotExtraInfo", s), console.log("depotIsDlc", S), console.log("depotIsSharedInstall", L);
+      console.log("-------------------------- depotId", b), console.log("depotName", m), console.log("$depotSize", _), console.log("depotSize", c), console.log("depotOs", f), console.log("depotManifestId", s), console.log("depotExtraInfo", S), console.log("depotIsDlc", L), console.log("depotIsSharedInstall", T);
     }), this.setModal(), this.showOutputOnTextarea(`appmanifest_${a}.acf`, Ul(a, g));
   }
   setModal() {
@@ -8079,11 +8082,11 @@ class dc {
     }), w;
   }
 }
-(() => {
+$(() => {
   const o = new dc();
   let a = window.location.href;
   o.runScript(), window.setInterval(() => {
     const l = window.location.href;
     a !== l && (a = l, o.runScript(!0));
   }, 50);
-})();
+});
