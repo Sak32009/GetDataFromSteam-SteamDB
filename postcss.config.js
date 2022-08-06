@@ -10,23 +10,23 @@ export default {
           selector.startsWith('.sak32009') ||
           selector === ':root'
         ) {
-          return selector;
+          return selector
         }
 
         // body to .sak32009
         if (selector === 'body') {
-          return prefix;
+          return prefix
         }
 
         // ::a-b-c to .sak32009 *::a-b-c
         if (selector.startsWith('::')) {
-          return `${prefix} *${selector}`;
+          return `${prefix} *${selector}`
         }
 
         // [selector] to .sak32009 [selector]
-        return prefixedSelector;
-      },
+        return prefixedSelector
+      }
     },
-    autoprefixer: {},
-  },
-};
+    autoprefixer: {}
+  }
+}

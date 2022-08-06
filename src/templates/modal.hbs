@@ -5,7 +5,6 @@
         <div class='modal-header flex-column border-0 text-center'>
           <div>
             <img class='modal-header-logo' src='{{skAuthorIcon}}' alt='{{appInfo.productName}} Author' />
-            <!--<img class='modal-header-logo' src='{{skMainIcon}}' alt='{{appInfo.productName}} Main'/>-->
           </div>
           <h5>{{appInfo.productName}} v{{appInfo.version}}</h5>
           <div class='flex-row'>
@@ -18,20 +17,23 @@
         </div>
         <div class='modal-body p-0'>
           {{#if isSteamDBApp}}
-            {{> steamdbapp}}
+          {{> steamdbapp}}
           {{/if}}
           {{#if isSteamDBDepot}}
-            {{> steamdbdepot}}
+          {{> steamdbdepot}}
           {{/if}}
           {{#if isSteamDBACF}}
-            {{> steamdbacf}}
+          {{> steamdbacf}}
           {{/if}}
           {{#if isSteamPowered}}
-            {{> steampowered}}
+          {{> steampowered}}
           {{/if}}
         </div>
         <div class='modal-footer flex-column border-0'>
-          <p><strong>Protect</strong> development and free things,<br />because their survival is in our hands.</p>
+          <p>
+            <strong>Protect</strong>
+            development and free things,<br />because their survival is in our hands.
+          </p>
           <p>
             You can donate by clicking on
             <a href='https://www.paypal.me/sak32009a' target='_blank'>paypal.me</a>.

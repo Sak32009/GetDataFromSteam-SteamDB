@@ -1,102 +1,104 @@
 interface SteamCMDApiConfig {
-  installdir: string;
+  installdir: string
 }
 
 interface SteamCMDApiCommon {
-  name: string;
+  name: string
 }
 
 interface SteamCMDApiBranchPublic {
-  buildid: string;
+  buildid: number
 }
 
 interface SteamCMDApiBranches {
-  public: SteamCMDApiBranchPublic;
+  public: SteamCMDApiBranchPublic
 }
 
 interface SteamCMDApiDepotManifests {
-  public: string;
+  public: number
 }
 
 interface SteamCMDApiDepotConfig {
-  oslist?: string;
+  oslist?: string
 }
 
 interface SteamCMDApiDepot {
-  name: string;
-  maxsize: string;
-  dlcappid?: string;
-  depotfromapp?: string;
-  sharedinstall?: number;
-  config?: SteamCMDApiDepotConfig;
-  manifests?: SteamCMDApiDepotManifests;
+  name: string
+  maxsize?: number
+  dlcappid?: number
+  depotfromapp?: number
+  sharedinstall?: number
+  config?: SteamCMDApiDepotConfig
+  manifests?: SteamCMDApiDepotManifests
 }
 
 interface SteamCMDApiDepots {
-  [depotid: number]: SteamCMDApiDepot;
-  branches: SteamCMDApiBranches;
-  baselanguages?: string;
+  [depotid: number]: SteamCMDApiDepot
+  branches: SteamCMDApiBranches
+  baselanguages?: string
 }
 
 interface SteamCMDApiAppId {
-  common: SteamCMDApiCommon;
-  config: SteamCMDApiConfig;
-  depots: SteamCMDApiDepots;
+  common: SteamCMDApiCommon
+  config: SteamCMDApiConfig
+  depots: SteamCMDApiDepots
 }
 
 interface SteamCMDApi {
-  [appid: number]: SteamCMDApiAppId;
+  [appid: number]: SteamCMDApiAppId
 }
 
 interface SteamCMDAcfSharedDepots {
-  [depotid: number]: string;
+  [depotid: number]: number
 }
 
 interface SteamCMDAcfInstalledDepot {
-  manifest: string;
-  size: string;
-  dlcappid?: string;
+  manifest: number
+  size: number
+  dlcappid?: number
 }
 
 interface SteamCMDAcfInstalledDepots {
-  [depotid: number]: SteamCMDAcfInstalledDepot;
+  [depotid: number]: SteamCMDAcfInstalledDepot
 }
 
 interface SteamCMDAcfAppState {
-  appid: number;
-  Universe: number;
-  LauncherPath: string;
-  name: string;
-  StateFlags: number;
-  installdir: string;
-  LastUpdated: number;
-  SizeOnDisk: number;
-  StagingSize: number;
-  buildid: number;
-  LastOwner: number;
-  UpdateResult: number;
-  BytesToDownload: number;
-  BytesDownloaded: number;
-  BytesToStage: number;
-  BytesStaged: number;
-  TargetBuildID: number;
-  AutoUpdateBehavior: number;
-  AllowOtherDownloadsWhileRunning: number;
-  ScheduledAutoUpdate: number;
+  appid: number
+  Universe: number
+  LauncherPath: string
+  name: string
+  StateFlags: number
+  installdir: string
+  LastUpdated: number
+  SizeOnDisk: number
+  StagingSize: number
+  buildid: number
+  LastOwner: number
+  UpdateResult: number
+  BytesToDownload: number
+  BytesDownloaded: number
+  BytesToStage: number
+  BytesStaged: number
+  TargetBuildID: number
+  AutoUpdateBehavior: number
+  AllowOtherDownloadsWhileRunning: number
+  ScheduledAutoUpdate: number
+
   /*
   "UserConfig"
-	{
-		"language"  "english"
-	}
+  {
+    "language"  "english"
+  }
   */
-  UserConfig?: Record<string, string>;
+  UserConfig?: Record<string, string>
   /*
   "MountedConfig"
-	{
-		"language"  "english"
-	}
+  {
+    "language"  "english"
+  }
   */
-  MountedConfig?: Record<string, string>;
+  MountedConfig?: Record<string, string>
+
   /*
   "InstalledDepots"
   {
@@ -106,7 +108,8 @@ interface SteamCMDAcfAppState {
     }
   }
   */
-  InstalledDepots?: SteamCMDAcfInstalledDepots;
+  InstalledDepots?: SteamCMDAcfInstalledDepots
+
   /*
   "SharedDepots"
   {
@@ -114,23 +117,24 @@ interface SteamCMDAcfAppState {
     "229002"  "228980"
   }
   */
-  SharedDepots?: SteamCMDAcfSharedDepots;
+  SharedDepots?: SteamCMDAcfSharedDepots
   /*
   "MountedDepots"
   {
     "228986"  "1003373983685403880"
   }
   */
-  MountedDepots?: Record<string, string>;
+  MountedDepots?: Record<number, number>
+
   /*
   "InstallScripts"
   {
     "228986"  "_CommonRedist\vcredist\2015\installscript.vdf"
   }
   */
-  InstallScripts?: Record<string, string>;
+  InstallScripts?: Record<number, string>
 }
 
 interface SteamCMDAcf {
-  AppState: SteamCMDAcfAppState;
+  AppState: SteamCMDAcfAppState
 }

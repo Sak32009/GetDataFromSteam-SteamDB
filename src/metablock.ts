@@ -1,4 +1,4 @@
-import { name, productName, description, author, version, license, homepage, bugs } from '../package.json';
+import { name, productName, description, author, version, license, homepage, bugs } from '../package.json'
 
 const out = `// ==UserScript==
 // @name          ${productName}
@@ -18,6 +18,6 @@ const out = `// ==UserScript==
 // @run-at        document-end
 // @grant         unsafeWindow
 // @grant         GM_addStyle
-// ==/UserScript==`;
+// ==/UserScript==`
 
-export default out;
+export default out

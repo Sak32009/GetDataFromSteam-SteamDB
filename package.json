@@ -3,25 +3,28 @@
   "productName": "Get Data from Steam / SteamDB",
   "version": "4.4.7",
   "description": "Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB) is a userscript that extracts all data needed to generate DLCs formats, depot.sha1 and appmanifest.acf for Steam games.",
-  "copyright": "Copyright © 2016 - 2022 Sak32009",
-  "copyright_year": "2016 - 2022",
   "homepage": "https://github.com/Sak32009/GetDLCInfoFromSteamDB/",
   "bugs": "https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/",
+  "license": "MIT",
+  "copyright": "Copyright © 2016 - 2022 Sak32009",
+  "copyright_year": "2016 - 2022",
   "author": "Sak32009 (https://sak32009.github.io/)",
   "repository": "github:Sak32009/GetDLCInfoFromSteamDB",
   "type": "module",
-  "license": "MIT",
-  "engines": {
-    "node": ">=v16.16.0"
-  },
-  "private": true,
   "scripts": {
     "dev": "yarn vite build --mode development -c ./src/vite.config.ts -w",
     "prod": "yarn vite build -c ./src/vite.config.ts",
     "server": "yarn http-server ./debug -c-1",
     "lint": "yarn tsc --noEmit && yarn eslint ."
   },
+  "packageManager": "yarn@3.2.2",
+  "engines": {
+    "node": ">=v16.16.0"
+  },
+  "private": true,
   "devDependencies": {
+    "@sak32009/prettierconfig": "https://github.com/sak32009/prettierconfig.git#commit=e2e7d3f7210840eeee140bbeaadcb632841fe19d",
+    "@sak32009/tsconfig": "https://github.com/sak32009/tsconfig.git#commit=a835c0f656e18c31124e023d81b94ae2153d3197",
     "@types/bootstrap": "^5.2.1",
     "@types/crypto-js": "^4.1.1",
     "@types/datatables.net": "^1.10.23",
@@ -31,18 +34,18 @@
     "autoprefixer": "^10.4.8",
     "bootstrap": "5.2.0",
     "crypto-js": "^4.1.1",
-    "eslint": "^8.20.0",
-    "eslint-config-sak32009": "https://github.com/Sak32009/eslint-config-sak32009.git#commit=ce5f60bfdf46f3f2b6be4d04f55178dc48767c67",
+    "eslint": "^8.21.0",
+    "eslint-config-sak32009": "https://github.com/Sak32009/eslint-config-sak32009.git#commit=f43b18039daaafe2fcec1b3b82c54f0ce4d6da97",
     "handlebars": "^4.7.7",
     "http-server": "^14.1.1",
     "jquery": "^3.6.0",
     "postcss": "^8.4.14",
     "postcss-prefix-selector": "^1.16.0",
     "prettier": "^2.7.1",
-    "sass": "^1.54.0",
+    "sass": "^1.54.3",
     "typescript": "^4.7.4",
     "vdf-parser": "^1.2.0",
     "vite": "^3.0.4"
   },
-  "packageManager": "yarn@3.2.2"
+  "prettier": "@sak32009/prettierconfig"
 }
