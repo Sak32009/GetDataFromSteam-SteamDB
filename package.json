@@ -1,7 +1,7 @@
 {
   "name": "sak32009-gaxvyvrguokgtog",
   "productName": "Get Data from Steam / SteamDB",
-  "version": "4.4.8",
+  "version": "4.4.9",
   "description": "Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB) is a userscript that extracts all data needed to generate DLCs formats, depot.sha1 and appmanifest.acf for Steam games.",
   "homepage": "https://github.com/Sak32009/GetDLCInfoFromSteamDB/",
   "bugs": "https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/",
@@ -35,7 +35,7 @@
     "bootstrap": "5.2.0",
     "crypto-js": "^4.1.1",
     "eslint": "^8.21.0",
-    "eslint-config-sak32009": "https://github.com/Sak32009/eslint-config-sak32009.git#commit=f43b18039daaafe2fcec1b3b82c54f0ce4d6da97",
+    "eslint-config-sak32009": "https://github.com/Sak32009/eslint-config-sak32009.git#commit=405d74c7544acff6a05da0185f7498f10a62b2db",
     "handlebars": "^4.7.7",
     "http-server": "^14.1.1",
     "jquery": "^3.6.0",
@@ -46,6 +46,5 @@
     "typescript": "^4.7.4",
     "vdf-parser": "^1.2.0",
     "vite": "^3.0.4"
-  },
-  "prettier": "@sak32009/prettierconfig"
+  }
 }

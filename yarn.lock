@@ -1618,9 +1618,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-sak32009@https://github.com/Sak32009/eslint-config-sak32009.git#commit=f43b18039daaafe2fcec1b3b82c54f0ce4d6da97":
-  version: 1.1.6
-  resolution: "eslint-config-sak32009@https://github.com/Sak32009/eslint-config-sak32009.git#commit=f43b18039daaafe2fcec1b3b82c54f0ce4d6da97"
+"eslint-config-sak32009@https://github.com/Sak32009/eslint-config-sak32009.git#commit=405d74c7544acff6a05da0185f7498f10a62b2db":
+  version: 1.1.8
+  resolution: "eslint-config-sak32009@https://github.com/Sak32009/eslint-config-sak32009.git#commit=405d74c7544acff6a05da0185f7498f10a62b2db"
   dependencies:
     "@babel/core": ^7.18.10
     "@babel/eslint-parser": ^7.18.9
@@ -1644,7 +1644,7 @@ __metadata:
     eslint: ^8.21.0
     prettier: ^2.7.1
     typescript: ^4.7.4
-  checksum: 203fe5a510316f2058270ccbd9ee42363b21a47dd3b6bab4313429a4487d4060d24a9c6ca7eb19e92bc258f72964056070d65192cacb71e28cffcb5024eaa015
+  checksum: bee7ec4d6399c033f51d9e7d5af8fd153faf5e43af04565e2fb213bce47e3d35985fdfcf1619acaab0e89c2d8a7094799e17a3e5362b2f14a71739c4ced72c6c
   languageName: node
   linkType: hard
 
@@ -3674,7 +3674,7 @@ __metadata:
     bootstrap: 5.2.0
     crypto-js: ^4.1.1
     eslint: ^8.21.0
-    eslint-config-sak32009: "https://github.com/Sak32009/eslint-config-sak32009.git#commit=f43b18039daaafe2fcec1b3b82c54f0ce4d6da97"
+    eslint-config-sak32009: "https://github.com/Sak32009/eslint-config-sak32009.git#commit=405d74c7544acff6a05da0185f7498f10a62b2db"
     handlebars: ^4.7.7
     http-server: ^14.1.1
     jquery: ^3.6.0
