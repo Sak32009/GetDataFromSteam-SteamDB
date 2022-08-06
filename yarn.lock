@@ -437,20 +437,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sak32009/prettierconfig@https://github.com/sak32009/prettierconfig.git#commit=e2e7d3f7210840eeee140bbeaadcb632841fe19d":
-  version: 1.0.1
-  resolution: "@sak32009/prettierconfig@https://github.com/sak32009/prettierconfig.git#commit=e2e7d3f7210840eeee140bbeaadcb632841fe19d"
-  checksum: bd92bcf2dc40a567106996d1711f0e0c15f2844bf6ec6c1ca02beb7116e6403e6548e960b9a214d8f4401402563eec9510317c03df2bc078b70f25b762ee1703
-  languageName: node
-  linkType: hard
-
-"@sak32009/tsconfig@https://github.com/sak32009/tsconfig.git#commit=a835c0f656e18c31124e023d81b94ae2153d3197":
-  version: 1.0.1
-  resolution: "@sak32009/tsconfig@https://github.com/sak32009/tsconfig.git#commit=a835c0f656e18c31124e023d81b94ae2153d3197"
-  checksum: b34a5a81e4e990233f6d3f6e35f6d128c69a613f12d775f010c91fc0ad9effd6c02e8fd973a3458cdfdd6b1b5008bf5f9f384685afbfefdd52e5d616a0536394
-  languageName: node
-  linkType: hard
-
 "@tootallnate/once@npm:1":
   version: 1.1.2
   resolution: "@tootallnate/once@npm:1.1.2"
@@ -1618,9 +1604,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-sak32009@https://github.com/Sak32009/eslint-config-sak32009.git#commit=405d74c7544acff6a05da0185f7498f10a62b2db":
-  version: 1.1.8
-  resolution: "eslint-config-sak32009@https://github.com/Sak32009/eslint-config-sak32009.git#commit=405d74c7544acff6a05da0185f7498f10a62b2db"
+"eslint-config-sak32009@https://github.com/Sak32009/eslint-config-sak32009.git#commit=bd13ecbc0f7a34790464e079639d413a6dbd711f":
+  version: 1.1.9
+  resolution: "eslint-config-sak32009@https://github.com/Sak32009/eslint-config-sak32009.git#commit=bd13ecbc0f7a34790464e079639d413a6dbd711f"
   dependencies:
     "@babel/core": ^7.18.10
     "@babel/eslint-parser": ^7.18.9
@@ -1644,7 +1630,7 @@ __metadata:
     eslint: ^8.21.0
     prettier: ^2.7.1
     typescript: ^4.7.4
-  checksum: bee7ec4d6399c033f51d9e7d5af8fd153faf5e43af04565e2fb213bce47e3d35985fdfcf1619acaab0e89c2d8a7094799e17a3e5362b2f14a71739c4ced72c6c
+  checksum: 31c971393ce932fa5d9dbf942dd10e7b6ce5327d02c81b82716d5c352b69d17357040682768f76d3e8a0e2d9e468bf25b65b88e3286ce4538ed6dc3166040d17
   languageName: node
   linkType: hard
 
@@ -3662,8 +3648,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "sak32009-gaxvyvrguokgtog@workspace:."
   dependencies:
-    "@sak32009/prettierconfig": "https://github.com/sak32009/prettierconfig.git#commit=e2e7d3f7210840eeee140bbeaadcb632841fe19d"
-    "@sak32009/tsconfig": "https://github.com/sak32009/tsconfig.git#commit=a835c0f656e18c31124e023d81b94ae2153d3197"
     "@types/bootstrap": ^5.2.1
     "@types/crypto-js": ^4.1.1
     "@types/datatables.net": ^1.10.23
@@ -3674,7 +3658,7 @@ __metadata:
     bootstrap: 5.2.0
     crypto-js: ^4.1.1
     eslint: ^8.21.0
-    eslint-config-sak32009: "https://github.com/Sak32009/eslint-config-sak32009.git#commit=405d74c7544acff6a05da0185f7498f10a62b2db"
+    eslint-config-sak32009: "https://github.com/Sak32009/eslint-config-sak32009.git#commit=bd13ecbc0f7a34790464e079639d413a6dbd711f"
     handlebars: ^4.7.7
     http-server: ^14.1.1
     jquery: ^3.6.0

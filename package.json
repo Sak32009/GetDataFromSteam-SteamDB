@@ -1,7 +1,7 @@
 {
   "name": "sak32009-gaxvyvrguokgtog",
   "productName": "Get Data from Steam / SteamDB",
-  "version": "4.4.9",
+  "version": "4.5.0",
   "description": "Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB) is a userscript that extracts all data needed to generate DLCs formats, depot.sha1 and appmanifest.acf for Steam games.",
   "homepage": "https://github.com/Sak32009/GetDLCInfoFromSteamDB/",
   "bugs": "https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/",
@@ -23,8 +23,6 @@
   },
   "private": true,
   "devDependencies": {
-    "@sak32009/prettierconfig": "https://github.com/sak32009/prettierconfig.git#commit=e2e7d3f7210840eeee140bbeaadcb632841fe19d",
-    "@sak32009/tsconfig": "https://github.com/sak32009/tsconfig.git#commit=a835c0f656e18c31124e023d81b94ae2153d3197",
     "@types/bootstrap": "^5.2.1",
     "@types/crypto-js": "^4.1.1",
     "@types/datatables.net": "^1.10.23",
@@ -35,7 +33,7 @@
     "bootstrap": "5.2.0",
     "crypto-js": "^4.1.1",
     "eslint": "^8.21.0",
-    "eslint-config-sak32009": "https://github.com/Sak32009/eslint-config-sak32009.git#commit=405d74c7544acff6a05da0185f7498f10a62b2db",
+    "eslint-config-sak32009": "https://github.com/Sak32009/eslint-config-sak32009.git#commit=bd13ecbc0f7a34790464e079639d413a6dbd711f",
     "handlebars": "^4.7.7",
     "http-server": "^14.1.1",
     "jquery": "^3.6.0",
