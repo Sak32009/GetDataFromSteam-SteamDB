@@ -3397,6 +3397,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"postcss@npm:^8.4.16":
+  version: 8.4.16
+  resolution: "postcss@npm:8.4.16"
+  dependencies:
+    nanoid: ^3.3.4
+    picocolors: ^1.0.0
+    source-map-js: ^1.0.2
+  checksum: 10eee25efd77868036403858577da0cefaf2e0905feeaba5770d5438ccdddba3d01cba8063e96b8aac4c6daa0ed413dd5ae0554a433a3c4db38df1d134cffc1f
+  languageName: node
+  linkType: hard
+
 "prelude-ls@npm:^1.2.1":
   version: 1.2.1
   resolution: "prelude-ls@npm:1.2.1"
@@ -3662,7 +3673,7 @@ __metadata:
     handlebars: ^4.7.7
     http-server: ^14.1.1
     jquery: ^3.6.0
-    postcss: ^8.4.14
+    postcss: ^8.4.16
     postcss-prefix-selector: ^1.16.0
     prettier: ^2.7.1
     sass: ^1.54.3
