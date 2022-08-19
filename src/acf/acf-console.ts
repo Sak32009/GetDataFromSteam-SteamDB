@@ -1,1 +1,1 @@
-export default console
+export default console;

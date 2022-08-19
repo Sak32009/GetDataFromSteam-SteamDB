@@ -3,10 +3,10 @@ module.exports = {
   env: {
     browser: true,
     jquery: true,
-    greasemonkey: true
+    greasemonkey: true,
   },
   extends: ['sak32009'],
   parserOptions: {
-    tsconfigRootDir: __dirname
-  }
-}
+    tsconfigRootDir: __dirname,
+  },
+};
