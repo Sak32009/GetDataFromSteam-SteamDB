@@ -3,7 +3,7 @@
 // @namespace     sak32009-gaxvyvrguokgtog
 // @description   Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB) is a userscript that extracts all data needed to generate DLCs formats, depot.sha1 and appmanifest.acf for Steam games.
 // @author        Sak32009 (https://sak32009.github.io/)
-// @version       4.5.0
+// @version       4.5.2
 // @license       MIT
 // @homepageURL   https://github.com/Sak32009/GetDLCInfoFromSteamDB/
 // @supportURL    https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/
@@ -3398,35 +3398,35 @@ var ya = { exports: {} };
     }(), l.enc.Base64;
   });
 })(ya);
-const wl = ya.exports, _l = "sak32009-gaxvyvrguokgtog", Sl = "Get Data from Steam / SteamDB", Ml = "4.5.0", Ll = "Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB) is a userscript that extracts all data needed to generate DLCs formats, depot.sha1 and appmanifest.acf for Steam games.", Cl = "https://github.com/Sak32009/GetDLCInfoFromSteamDB/", Nl = "https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/", Dl = "MIT", El = "Copyright \xA9 2016 - 2022 Sak32009", Tl = "2016 - 2022", Al = "Sak32009 (https://sak32009.github.io/)", Il = "github:Sak32009/GetDLCInfoFromSteamDB", jl = "module", Ol = {
+const wl = ya.exports, _l = "sak32009-gaxvyvrguokgtog", Sl = "Get Data from Steam / SteamDB", Ml = "4.5.2", Ll = "Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB) is a userscript that extracts all data needed to generate DLCs formats, depot.sha1 and appmanifest.acf for Steam games.", Cl = "https://github.com/Sak32009/GetDLCInfoFromSteamDB/", Nl = "https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/", Dl = "MIT", El = "Copyright \xA9 2016 - 2022 Sak32009", Tl = "2016 - 2022", Al = "Sak32009 (https://sak32009.github.io/)", Il = "github:Sak32009/GetDLCInfoFromSteamDB", jl = "module", Ol = {
   dev: "yarn vite build --mode development -c ./src/vite.config.ts -w",
   prod: "yarn vite build -c ./src/vite.config.ts",
   server: "yarn http-server ./debug -c-1",
   lint: "yarn tsc --noEmit && yarn eslint ."
 }, Pl = "yarn@3.2.2", zl = {
-  node: ">=v16.16.0"
+  node: ">=v16.17.0"
 }, Rl = {
-  "@types/bootstrap": "^5.2.1",
+  "@types/bootstrap": "^5.2.2",
   "@types/crypto-js": "^4.1.1",
   "@types/datatables.net": "^1.10.23",
   "@types/jquery": "^3.5.14",
-  "@types/node": "^16.11.47",
+  "@types/node": "^16.11.49",
   "@types/tampermonkey": "^4.0.5",
   autoprefixer: "^10.4.8",
   bootstrap: "5.2.0",
   "crypto-js": "^4.1.1",
-  eslint: "^8.21.0",
-  "eslint-config-sak32009": "https://github.com/Sak32009/eslint-config-sak32009.git#commit=bd13ecbc0f7a34790464e079639d413a6dbd711f",
+  eslint: "^8.22.0",
+  "eslint-config-sak32009": "https://github.com/Sak32009/eslint-config-sak32009.git#commit=7252a775add9d89c7338ecff602cb763d2c061a8",
   handlebars: "^4.7.7",
   "http-server": "^14.1.1",
   jquery: "^3.6.0",
-  postcss: "^8.4.14",
+  postcss: "^8.4.16",
   "postcss-prefix-selector": "^1.16.0",
   prettier: "^2.7.1",
-  sass: "^1.54.3",
+  sass: "^1.54.4",
   typescript: "^4.7.4",
   "vdf-parser": "^1.2.0",
-  vite: "^3.0.4"
+  vite: "^3.0.9"
 }, Wi = {
   name: _l,
   productName: Sl,
@@ -7958,7 +7958,7 @@ class dc {
   }
   runScript(a = !1) {
     a && $(".sak32009").remove();
-    const l = window.location.href, k = new URL(l).searchParams;
+    const { href: l } = window.location, k = new URL(l).searchParams;
     /https:\/\/steamdb\.info\/app\/\d+\/dlc\//u.test(l) ? (this.is = "steamdbapp", this.getDataFromSteamDBApp()) : /https:\/\/steamdb\.info\/app\/\d+\/depots\//u.test(l) ? k.get("branch") === "public" && (this.is = "steamdbacf", this.getDataFromSteamDBForACF()) : /https:\/\/steamdb\.info\/depot\/\d+\//u.test(l) ? k.has("show_hashes") && (this.is = "steamdbdepot", this.getDataFromSteamDBDepot()) : /https:\/\/store\.steampowered\.com\/app\/\d+\/\w+/u.test(l) && (this.is = "steampowered", this.getDataFromSteamPowered());
   }
   getDataFromSteamDBApp() {
@@ -8084,9 +8084,9 @@ class dc {
 }
 $(() => {
   const o = new dc();
-  let a = window.location.href;
+  let { href: a } = window.location;
   o.runScript(), window.setInterval(() => {
-    const l = window.location.href;
+    const { href: l } = window.location;
     a !== l && (a = l, o.runScript(!0));
   }, 50);
 });
