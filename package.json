@@ -1,7 +1,7 @@
 {
   "name": "sak32009-gaxvyvrguokgtog",
   "productName": "Get Data from Steam / SteamDB",
-  "version": "4.5.1",
+  "version": "4.5.2",
   "description": "Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB) is a userscript that extracts all data needed to generate DLCs formats, depot.sha1 and appmanifest.acf for Steam games.",
   "homepage": "https://github.com/Sak32009/GetDLCInfoFromSteamDB/",
   "bugs": "https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/",
@@ -19,7 +19,7 @@
   },
   "packageManager": "yarn@3.2.2",
   "engines": {
-    "node": ">=v16.16.0"
+    "node": ">=v16.17.0"
   },
   "private": true,
   "devDependencies": {
