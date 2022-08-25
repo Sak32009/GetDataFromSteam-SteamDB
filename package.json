@@ -17,7 +17,7 @@
     "server": "yarn http-server ./debug -c-1",
     "lint": "yarn tsc --noEmit && yarn eslint ."
   },
-  "packageManager": "yarn@3.2.2",
+  "packageManager": "yarn@3.2.3",
   "engines": {
     "node": ">=v16.17.0"
   },
