@@ -36,7 +36,7 @@
     "eslint-config-sak32009": "https://github.com/Sak32009/eslint-config-sak32009.git#commit=7252a775add9d89c7338ecff602cb763d2c061a8",
     "handlebars": "^4.7.7",
     "http-server": "^14.1.1",
-    "jquery": "^3.6.0",
+    "jquery": "^3.6.1",
     "postcss": "^8.4.16",
     "postcss-prefix-selector": "^1.16.0",
     "prettier": "^2.7.1",
