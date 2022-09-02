@@ -1,5 +1,8 @@
 export default {
   plugins: {
+    '@fullhuman/postcss-purgecss': {
+      content: ['./src/main.ts', './node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'],
+    },
     'postcss-prefix-selector': {
       prefix: '.sak32009',
       transform(prefix, selector, prefixedSelector) {

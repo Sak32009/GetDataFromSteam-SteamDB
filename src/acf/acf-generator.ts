@@ -4,7 +4,7 @@
  * https://github.com/Sak32009/GetDLCInfoFromSteamDB
  * AND
  * https://github.com/Sak32009/SteamACFGenerator
- * VERSION: 1.0.2
+ * VERSION: 1.0.3
  */
 import { stringify as vdfStringify } from 'vdf-parser';
 import acfConsole from './acf-console';
@@ -28,7 +28,7 @@ export const acfGenerator = (appId: number, steamCMDData: SteamCMDApi) => {
 
   const appDataDepots = data.depots;
   for (const depotId in appDataDepots) {
-    if (Object.hasOwn(appDataDepots, depotId)) {
+    if (Object.prototype.hasOwnProperty.call(appDataDepots, depotId)) {
       if (isNumeric(depotId)) {
         const depotData = appDataDepots[depotId];
         const depotName = depotData.name;

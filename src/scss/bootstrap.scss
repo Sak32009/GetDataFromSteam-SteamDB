@@ -1,4 +1,4 @@
-@import 'revert';
+@import './revert';
 
 //@import "boostrap/mixins/banner";
 //@include bsBanner("");
@@ -51,4 +51,4 @@
 // Utilities
 @import 'bootstrap/scss/utilities/api';
 
-@import 'main.scss';
+@import './main';
