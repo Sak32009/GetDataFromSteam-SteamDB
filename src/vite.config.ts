@@ -10,8 +10,8 @@ export default defineConfig(({ mode }) => {
   const rootPath = cwd();
   const viteRoot = join(rootPath, 'src');
   const viteEntry = join(viteRoot, 'main.ts');
-  const viteOutDirectory = join(rootPath, isDevelopment ? 'debug' : 'dist');
-  const viteOutName = 'sak32009-get-data-from-steam-steamdb.user.js';
+  const viteOutDirectory = join(rootPath, 'dist');
+  const viteOutName = `${isDevelopment ? 'dev-' : ''}sak32009-get-data-from-steam-steamdb.user.js`;
   const viteConfig: UserConfigExport = {
     root: viteRoot,
     plugins: [
@@ -28,16 +28,16 @@ export default defineConfig(({ mode }) => {
         build: {
           fileName: viteOutName,
           externalGlobals: {
-            jquery: viteMonkeyCDNPlugin.cdnjs('jquery', 'jquery.min.js'),
+            jquery: viteMonkeyCDNPlugin.cdnjs('$', 'jquery.min.js'),
             bootstrap: viteMonkeyCDNPlugin.cdnjs('bootstrap', 'js/bootstrap.bundle.min.js'),
-            'crypto-js': viteMonkeyCDNPlugin.cdnjs('crypto-js', 'crypto-js.min.js'),
+            'crypto-js': viteMonkeyCDNPlugin.cdnjs('CryptoJS', 'crypto-js.min.js'),
           },
         },
       }),
     ],
     build: {
       outDir: viteOutDirectory,
-      emptyOutDir: true,
+      // emptyOutDir: true,
       minify: true,
     },
   };

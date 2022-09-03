@@ -1,7 +1,7 @@
 {
   "name": "sak32009-gaxvyvrguokgtog",
   "productName": "Get Data from Steam / SteamDB",
-  "version": "4.5.3",
+  "version": "4.5.4",
   "description": "Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB) is a userscript that extracts all data needed to generate DLCs formats, depot.sha1 and appmanifest.acf for Steam games.",
   "homepage": "https://github.com/Sak32009/GetDLCInfoFromSteamDB/",
   "bugs": "https://github.com/Sak32009/GetDLCInfoFromSteamDB/issues/",
@@ -12,9 +12,9 @@
   "repository": "github:Sak32009/GetDLCInfoFromSteamDB",
   "type": "module",
   "scripts": {
-    "dev": "yarn vite build --mode development -c ./src/vite.config.ts -w",
+    "serve": "yarn vite -c ./src/vite.config.ts",
+    "dev": "yarn vite build --mode development -c ./src/vite.config.ts",
     "prod": "yarn vite build -c ./src/vite.config.ts",
-    "server": "yarn http-server ./debug -c-1",
     "lint": "yarn tsc --noEmit && yarn eslint ."
   },
   "packageManager": "yarn@3.2.3",
@@ -34,7 +34,6 @@
     "crypto-js": "^4.1.1",
     "eslint": "^8.23.0",
     "eslint-config-sak32009": "https://github.com/Sak32009/eslint-config-sak32009.git#commit=1c63f4809d364cdda6c1402690961a3624feb2cc",
-    "http-server": "^14.1.1",
     "jquery": "^3.6.1",
     "postcss": "^8.4.16",
     "postcss-prefix-selector": "^1.16.0",

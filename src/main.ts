@@ -1,4 +1,8 @@
 /* eslint-disable sonarjs/no-duplicate-string */
+import CryptoJS from 'crypto-js';
+import $ from 'jquery';
+import 'bootstrap';
+
 import { acfGenerator } from './acf/acf-generator';
 import skMainIcon from './images/icon.png';
 import skAuthorIcon from './images/sak32009.svg';
