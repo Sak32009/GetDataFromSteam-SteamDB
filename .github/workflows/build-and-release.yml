@@ -36,7 +36,5 @@ jobs:
       - name: Action / Release
         uses: stefanzweifel/git-auto-commit-action@v4.14.1
         with:
-          branch: master
-          push_options: --force
           commit_message: I have released a new version!
-          file_pattern: dist/sak32009-get-data-from-steam-steamdb.user.js
+          file_pattern: dist/*.js
