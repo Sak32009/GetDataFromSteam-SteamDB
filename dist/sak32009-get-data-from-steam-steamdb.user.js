@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Get Data from Steam / SteamDB
 // @namespace    sak32009-gaxvyvrguokgtog
-// @version      4.5.6
+// @version      4.5.7
 // @author       Sak32009 (https://sak32009.github.io/)
 // @description  Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB) is a userscript that extracts all data needed to generate DLCs formats, depot.sha1 and appmanifest.acf for Steam games.
 // @license      MIT
@@ -22,7 +22,7 @@
 // @grant        unsafeWindow
 // ==/UserScript==
 
-// use vite-plugin-monkey@2.3.1 at 2022-09-09T19:14:09.683Z
+// use vite-plugin-monkey@2.3.1 at 2022-09-09T19:41:36.931Z
 
 ;(({ css = "" }) => {
   const style = document.createElement("style");
@@ -422,7 +422,7 @@ disableuserinterface = false
   };
   const name = "sak32009-gaxvyvrguokgtog";
   const productName = "Get Data from Steam / SteamDB";
-  const version = "4.5.6";
+  const version = "4.5.7";
   var monkeyWindow = (_a = Reflect.get(document, "__monkeyWindow")) != null ? _a : window;
   monkeyWindow.GM;
   monkeyWindow.unsafeWindow = (_b = monkeyWindow.unsafeWindow) != null ? _b : window;
@@ -743,7 +743,7 @@ disableuserinterface = false
     }
     parse(raw) {
       raw = raw.replace(
-        /\[dlcs(?: (?<fromZero>fromZero))?(?: prefix="(?<prefix>\d*)")?\](?<content>[\s\S]+?)\[\/dlcs\]/gu,
+        /\[dlcs(?: (?<fromZero>fromZero))?(?: prefix="(?<prefix>\d+)")?\](?<content>[\s\S]+?)\[\/dlcs\]/gu,
         (_substring, optIndexFromZero, optIndexPrefix, content) => {
           const dlcStartIndex = typeof optIndexFromZero === "undefined" ? 1 : 0;
           const dlcIndexPrefix = typeof optIndexPrefix === "undefined" ? 0 : Number(optIndexPrefix);
@@ -772,7 +772,7 @@ disableuserinterface = false
         }
       );
       raw = raw.replace(
-        /\[data\](?<data>[\s\S]*)\[\/data\]/gu,
+        /\[data\](?<data>\w+)\[\/data\]/gu,
         (_substring, content) => this.extractedData[content]
       );
       return raw;
