@@ -38,3 +38,5 @@ jobs:
         with:
           commit_message: I have released a new version!
           file_pattern: dist/*.js
+          branch: master
+          push_options: --force
