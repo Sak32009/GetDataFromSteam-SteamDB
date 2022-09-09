@@ -385,7 +385,7 @@ class Sak32009 {
   private parse(raw: string) {
     // eslint-disable-next-line no-param-reassign
     raw = raw.replace(
-      /\[dlcs(?: (?<fromZero>fromZero))?(?: prefix="(?<prefix>\d*)")?\](?<content>[\s\S]+?)\[\/dlcs\]/gu,
+      /\[dlcs(?: (?<fromZero>fromZero))?(?: prefix="(?<prefix>\d+)")?\](?<content>[\s\S]+?)\[\/dlcs\]/gu,
       (_substring, optIndexFromZero: string | undefined, optIndexPrefix: string | undefined, content: string) => {
         const dlcStartIndex = typeof optIndexFromZero === 'undefined' ? 1 : 0;
         const dlcIndexPrefix = typeof optIndexPrefix === 'undefined' ? 0 : Number(optIndexPrefix);
@@ -420,7 +420,7 @@ class Sak32009 {
 
     // eslint-disable-next-line no-param-reassign
     raw = raw.replace(
-      /\[data\](?<data>[\s\S]*)\[\/data\]/gu,
+      /\[data\](?<data>\w+)\[\/data\]/gu,
       (_substring, content: string) => this.extractedData[content] as string
     );
 
