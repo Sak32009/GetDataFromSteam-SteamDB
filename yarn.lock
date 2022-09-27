@@ -548,12 +548,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/datatables.net@npm:^1.10.23":
-  version: 1.10.23
-  resolution: "@types/datatables.net@npm:1.10.23"
+"@types/datatables.net@npm:^1.10.24":
+  version: 1.10.24
+  resolution: "@types/datatables.net@npm:1.10.24"
   dependencies:
     "@types/jquery": "*"
-  checksum: 481bab522b57ea6e50da88c120f887368f9d7036f7e1da6a4dd9aa9b7b27ddf36996d73b1f55464db7f1c0ebab3b46ebe8e2f65effb8de6159518e4f98f02189
+  checksum: e1c75bcbe0625db1b061e9a3e108553f89388aedc2efcaa4aba38255e10e10a2c61222c2e74383f572189f1a82f70fb8d544b7b84c87ae0bd5d22bfc225671e6
   languageName: node
   linkType: hard
 
@@ -4025,7 +4025,7 @@ __metadata:
     "@fullhuman/postcss-purgecss": ^4.1.3
     "@types/bootstrap": ^5.2.3
     "@types/crypto-js": ^4.1.1
-    "@types/datatables.net": ^1.10.23
+    "@types/datatables.net": ^1.10.24
     "@types/jquery": ^3.5.14
     "@types/node": ^16.11.58
     autoprefixer: ^10.4.8
