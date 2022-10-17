@@ -1272,7 +1272,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:^2.6.0, debug@npm:^2.6.9":
+"debug@npm:^2.6.9":
   version: 2.6.9
   resolution: "debug@npm:2.6.9"
   dependencies:
@@ -1340,16 +1340,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detect-port@npm:1.3.0":
-  version: 1.3.0
-  resolution: "detect-port@npm:1.3.0"
+"detect-port@npm:1.5.1":
+  version: 1.5.1
+  resolution: "detect-port@npm:1.5.1"
   dependencies:
     address: ^1.0.1
-    debug: ^2.6.0
+    debug: 4
   bin:
-    detect: ./bin/detect-port
-    detect-port: ./bin/detect-port
-  checksum: 93c40febe714f56711d1fedc2b7a9cc4cbaa0fcddec0509876c46b9dd6099ed6bfd6662a4f35e5fa0301660f48ed516829253ab0fc90b9e79b823dd77786b379
+    detect: bin/detect-port.js
+    detect-port: bin/detect-port.js
+  checksum: b48da9340481742547263d5d985e65d078592557863402ecf538511735e83575867e94f91fe74405ea19b61351feb99efccae7e55de9a151d5654e3417cea05b
   languageName: node
   linkType: hard
 
@@ -3311,6 +3311,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mrmime@npm:1.0.1":
+  version: 1.0.1
+  resolution: "mrmime@npm:1.0.1"
+  checksum: cc979da44bbbffebaa8eaf7a45117e851f2d4cb46a3ada6ceb78130466a04c15a0de9a9ce1c8b8ba6f6e1b8618866b1352992bf1757d241c0ddca558b9f28a77
+  languageName: node
+  linkType: hard
+
 "ms@npm:2.0.0":
   version: 2.0.0
   resolution: "ms@npm:2.0.0"
@@ -3352,20 +3359,6 @@ __metadata:
   version: 0.6.2
   resolution: "negotiator@npm:0.6.2"
   checksum: dfddaff6c06792f1c4c3809e29a427b8daef8cd437c83b08dd51d7ee11bbd1c29d9512d66b801144d6c98e910ffd8723f2432e0cbf8b18d41d2a09599c975ab3
-  languageName: node
-  linkType: hard
-
-"node-fetch@npm:2.6.7":
-  version: 2.6.7
-  resolution: "node-fetch@npm:2.6.7"
-  dependencies:
-    whatwg-url: ^5.0.0
-  peerDependencies:
-    encoding: ^0.1.0
-  peerDependenciesMeta:
-    encoding:
-      optional: true
-  checksum: 8d816ffd1ee22cab8301c7756ef04f3437f18dace86a1dae22cf81db8ef29c0bf6655f3215cb0cdb22b420b6fe141e64b26905e7f33f9377a7fa59135ea3e10b
   languageName: node
   linkType: hard
 
@@ -4041,7 +4034,7 @@ __metadata:
     typescript: ^4.8.3
     vdf-parser: ^1.2.0
     vite: ^3.1.0
-    vite-plugin-monkey: ^2.3.1
+    vite-plugin-monkey: ^2.8.0
   languageName: unknown
   linkType: soft
 
@@ -4403,13 +4396,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tr46@npm:~0.0.3":
-  version: 0.0.3
-  resolution: "tr46@npm:0.0.3"
-  checksum: 726321c5eaf41b5002e17ffbd1fb7245999a073e8979085dacd47c4b4e8068ff5777142fc6726d6ca1fd2ff16921b48788b87225cbc57c72636f6efa8efbffe3
-  languageName: node
-  linkType: hard
-
 "tsconfig-paths@npm:^3.14.1":
   version: 3.14.1
   resolution: "tsconfig-paths@npm:3.14.1"
@@ -4574,19 +4560,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-plugin-monkey@npm:^2.3.1":
-  version: 2.3.1
-  resolution: "vite-plugin-monkey@npm:2.3.1"
+"vite-plugin-monkey@npm:^2.8.0":
+  version: 2.8.0
+  resolution: "vite-plugin-monkey@npm:2.8.0"
   dependencies:
     cross-spawn: 7.0.3
-    detect-port: 1.3.0
+    detect-port: 1.5.1
     htmlparser2: 8.0.1
-    node-fetch: 2.6.7
+    mrmime: 1.0.1
     open: 8.4.0
     picocolors: 1.0.0
   peerDependencies:
     vite: ^2.0.0 || ^3.0.0
-  checksum: 2f8050bfcca5c7b5ebca6fb3488f033ac3c6a8e0eada4d28208eed818c8bee24d6a4256da9bb106a0277812933d22b776c7aca409255a23b6b5b8c2da6e465cb
+  checksum: a9e8a86c4edf3ec10abccaf1ad94d40f1d0ceb22a8d99e7b4c96c12f020479f9ed2ff23346a6a1a7055713c30102127257623b0f83446b5b7c4bebcacb127f13
   languageName: node
   linkType: hard
 
@@ -4619,23 +4605,6 @@ __metadata:
   bin:
     vite: bin/vite.js
   checksum: 1a343e3d46450181f79f34ff49cca5ff59bb7472de51ea2c4a042aa076f597d27d25c49f48405e82f607af7d8c1c13a9e789402ccb1b23570132382132ec3903
-  languageName: node
-  linkType: hard
-
-"webidl-conversions@npm:^3.0.0":
-  version: 3.0.1
-  resolution: "webidl-conversions@npm:3.0.1"
-  checksum: c92a0a6ab95314bde9c32e1d0a6dfac83b578f8fa5f21e675bc2706ed6981bc26b7eb7e6a1fab158e5ce4adf9caa4a0aee49a52505d4d13c7be545f15021b17c
-  languageName: node
-  linkType: hard
-
-"whatwg-url@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "whatwg-url@npm:5.0.0"
-  dependencies:
-    tr46: ~0.0.3
-    webidl-conversions: ^3.0.0
-  checksum: b8daed4ad3356cc4899048a15b2c143a9aed0dfae1f611ebd55073310c7b910f522ad75d727346ad64203d7e6c79ef25eafd465f4d12775ca44b90fa82ed9e2c
   languageName: node
   linkType: hard
 
