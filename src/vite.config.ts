@@ -30,7 +30,6 @@ export default defineConfig(() => {
           downloadURL: `https://raw.githack.com/Sak32009/GetDLCInfoFromSteamDB/master/dist/${usFileMetaName}`,
           match: ['*://steamdb.info/app/*', '*://steamdb.info/depot/*', '*://store.steampowered.com/app/*'],
           grant: ['unsafeWindow'],
-          require: ['https://cdnjs.cloudflare.com/ajax/libs/core-js/3.25.1/minified.min.js'],
         },
         build: {
           fileName: usFileName,
