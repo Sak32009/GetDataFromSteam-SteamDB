@@ -28,7 +28,7 @@
     "@types/datatables.net": "^1.10.24",
     "@types/jquery": "^3.5.14",
     "@types/node": "^16.11.68",
-    "autoprefixer": "^10.4.12",
+    "autoprefixer": "^10.4.13",
     "bootstrap": "^5.2.2",
     "crypto-js": "^4.1.1",
     "eslint": "^8.26.0",
