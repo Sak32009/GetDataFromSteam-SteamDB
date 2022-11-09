@@ -4082,7 +4082,7 @@ __metadata:
     postcss: ^8.4.18
     postcss-prefix-selector: ^1.16.0
     prettier: ^2.7.1
-    sass: ^1.55.0
+    sass: ^1.56.1
     typescript: ^4.8.4
     vdf-parser: ^1.2.0
     vite: ^3.1.8
@@ -4090,16 +4090,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"sass@npm:^1.55.0":
-  version: 1.55.0
-  resolution: "sass@npm:1.55.0"
+"sass@npm:^1.56.1":
+  version: 1.56.1
+  resolution: "sass@npm:1.56.1"
   dependencies:
     chokidar: ">=3.0.0 <4.0.0"
     immutable: ^4.0.0
     source-map-js: ">=0.6.2 <2.0.0"
   bin:
     sass: sass.js
-  checksum: 7d769ed08efce4e6134e0f3dc11c4f07e32c413ac8eb43c5855f2686890fdcbd80da34165c91fb4ba407f478ca108e171574b5a60cb9814a5ed09d80f6014f96
+  checksum: 78e693e5992b149574c95d5adfe39ca3e5b97d80befa11191a20d1daa41fe201a98ac099beab726cd3095e2d2e7991a2c408ba0fcc3fa9f525879de7eee18dad
   languageName: node
   linkType: hard
 
