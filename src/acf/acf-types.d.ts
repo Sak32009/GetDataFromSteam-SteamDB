@@ -15,7 +15,7 @@ interface SteamCMDApiBranches {
 }
 
 interface SteamCMDApiDepotManifests {
-  public: number;
+  public: string;
 }
 
 interface SteamCMDApiDepotConfig {
@@ -53,7 +53,7 @@ interface SteamCMDAcfSharedDepots {
 }
 
 interface SteamCMDAcfInstalledDepot {
-  manifest: number;
+  manifest: string;
   size: number;
   dlcappid?: number;
 }

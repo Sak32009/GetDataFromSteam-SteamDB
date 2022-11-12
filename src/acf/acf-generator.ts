@@ -4,7 +4,7 @@
  * https://github.com/Sak32009/GetDLCInfoFromSteamDB
  * AND
  * https://github.com/Sak32009/SteamACFGenerator
- * VERSION: 1.0.3
+ * VERSION: 1.0.4
  */
 import { stringify as vdfStringify } from 'vdf-parser';
 import acfConsole from './acf-console';

@@ -16,31 +16,31 @@
     "prod": "yarn vite build -c ./src/vite.config.ts",
     "lint": "yarn tsc --noEmit && yarn eslint ."
   },
-  "packageManager": "yarn@3.2.3",
+  "packageManager": "yarn@3.2.4",
   "engines": {
     "node": ">=v16.18.0"
   },
   "private": true,
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^5.0.0",
-    "@types/bootstrap": "^5.2.5",
+    "@types/bootstrap": "^5.2.6",
     "@types/crypto-js": "^4.1.1",
     "@types/datatables.net": "^1.10.24",
     "@types/jquery": "^3.5.14",
-    "@types/node": "^16.11.68",
-    "autoprefixer": "^10.4.12",
+    "@types/node": "^16.18.3",
+    "autoprefixer": "^10.4.13",
     "bootstrap": "^5.2.2",
     "crypto-js": "^4.1.1",
-    "eslint": "^8.26.0",
-    "eslint-config-sak32009": "https://github.com/Sak32009/eslint-config-sak32009.git#commit=1c63f4809d364cdda6c1402690961a3624feb2cc",
+    "eslint": "^8.27.0",
+    "eslint-config-sak32009": "https://github.com/Sak32009/eslint-config-sak32009.git#commit=bed84abbf73763ec9a3d15fa8112a3508a200373",
     "jquery": "^3.6.1",
-    "postcss": "^8.4.18",
+    "postcss": "^8.4.19",
     "postcss-prefix-selector": "^1.16.0",
     "prettier": "^2.7.1",
-    "sass": "^1.55.0",
+    "sass": "^1.56.1",
     "typescript": "^4.8.4",
     "vdf-parser": "^1.2.0",
-    "vite": "^3.1.8",
+    "vite": "^3.2.3",
     "vite-plugin-monkey": "^2.8.0"
   }
 }

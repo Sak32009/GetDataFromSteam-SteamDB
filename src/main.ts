@@ -191,7 +191,7 @@ class Sak32009 {
 
         if (depotManifestId.length > 0) {
           steamCMDData[appId].depots[depotId].manifests = {
-            public: Number(depotManifestId),
+            public: depotManifestId,
           };
         }
 
