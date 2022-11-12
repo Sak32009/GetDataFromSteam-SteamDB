@@ -18,7 +18,7 @@
   },
   "packageManager": "yarn@3.2.4",
   "engines": {
-    "node": ">=v16.18.0"
+    "node": ">=v16.18.1"
   },
   "private": true,
   "devDependencies": {
