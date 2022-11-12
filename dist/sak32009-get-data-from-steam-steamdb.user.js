@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Get Data from Steam / SteamDB
 // @namespace    sak32009-gaxvyvrguokgtog
-// @version      4.5.8
+// @version      4.5.9
 // @author       Sak32009 (https://sak32009.github.io/)
 // @description  Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB) is a userscript that extracts all data needed to generate DLCs formats, depot.sha1 and appmanifest.acf for Steam games.
 // @license      MIT
@@ -411,7 +411,7 @@ disableuserinterface = false
   };
   const name = "sak32009-gaxvyvrguokgtog";
   const productName = "Get Data from Steam / SteamDB";
-  const version = "4.5.8";
+  const version = "4.5.9";
   const bootstrap2 = "";
   const unsafeWindowC = client.unsafeWindow;
   const unsafeJQuery = (typeof unsafeWindowC.jQuery === "undefined" ? unsafeWindowC.wrappedJSObject : unsafeWindowC).jQuery;
@@ -559,7 +559,7 @@ disableuserinterface = false
         }
         if (depotManifestId.length > 0) {
           steamCMDData[appId].depots[depotId].manifests = {
-            public: Number(depotManifestId)
+            public: depotManifestId
           };
         }
         const depotIsDlc = /DLC (?<dlcid>\d+)/u.exec(depotExtraInfo);

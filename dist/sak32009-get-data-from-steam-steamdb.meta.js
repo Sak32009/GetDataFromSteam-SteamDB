@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Get Data from Steam / SteamDB
 // @namespace    sak32009-gaxvyvrguokgtog
-// @version      4.5.8
+// @version      4.5.9
 // @author       Sak32009 (https://sak32009.github.io/)
 // @description  Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB) is a userscript that extracts all data needed to generate DLCs formats, depot.sha1 and appmanifest.acf for Steam games.
 // @license      MIT
