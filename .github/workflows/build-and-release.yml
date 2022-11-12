@@ -16,12 +16,12 @@ jobs:
 
     steps:
       - name: Action / Checkout
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v3.1.0
         with:
           ref: ${{ github.head_ref }}
 
       - name: Action / Setup Node v16
-        uses: actions/setup-node@v3.4.1
+        uses: actions/setup-node@v3.5.1
         with:
           node-version: 16
 
