@@ -4101,7 +4101,7 @@ __metadata:
     sass: ^1.56.1
     typescript: ^4.8.4
     vdf-parser: ^1.2.0
-    vite: ^3.2.3
+    vite: ^3.2.5
     vite-plugin-monkey: ^2.8.0
   languageName: unknown
   linkType: soft
@@ -4644,9 +4644,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^3.2.3":
-  version: 3.2.3
-  resolution: "vite@npm:3.2.3"
+"vite@npm:^3.2.5":
+  version: 3.2.5
+  resolution: "vite@npm:3.2.5"
   dependencies:
     esbuild: ^0.15.9
     fsevents: ~2.3.2
@@ -4678,7 +4678,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 3c7c618f7fb471cdfaf7f8eb769cb5f4174447e1103cd6221cbc2ae1ea1102bc28dd6a621ead250e6aa42c1e9ee3c8092666ea81078e1d88d2325c484218fd0a
+  checksum: ad35b7008c2b62a167d1d1a82f0a0c60fa457733f1969e9eedf0b0077f67a7ac74b4c9477e75a397895150f09b6551f0c17841c5b05c34d9fe302bb0b5dc28a8
   languageName: node
   linkType: hard
 
