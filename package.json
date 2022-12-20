@@ -16,7 +16,7 @@
     "prod": "yarn vite build -c ./src/vite.config.ts",
     "lint": "yarn tsc --noEmit && yarn eslint ."
   },
-  "packageManager": "yarn@3.2.4",
+  "packageManager": "yarn@3.3.1",
   "engines": {
     "node": ">=v16.18.1"
   },
