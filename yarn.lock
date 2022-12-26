@@ -4102,7 +4102,7 @@ __metadata:
     typescript: ^4.8.4
     vdf-parser: ^1.2.0
     vite: ^3.2.3
-    vite-plugin-monkey: ^2.8.0
+    vite-plugin-monkey: ^2.10.2
   languageName: unknown
   linkType: soft
 
@@ -4628,9 +4628,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-plugin-monkey@npm:^2.8.0":
-  version: 2.8.0
-  resolution: "vite-plugin-monkey@npm:2.8.0"
+"vite-plugin-monkey@npm:^2.10.2":
+  version: 2.10.2
+  resolution: "vite-plugin-monkey@npm:2.10.2"
   dependencies:
     cross-spawn: 7.0.3
     detect-port: 1.5.1
@@ -4639,8 +4639,8 @@ __metadata:
     open: 8.4.0
     picocolors: 1.0.0
   peerDependencies:
-    vite: ^2.0.0 || ^3.0.0
-  checksum: a9e8a86c4edf3ec10abccaf1ad94d40f1d0ceb22a8d99e7b4c96c12f020479f9ed2ff23346a6a1a7055713c30102127257623b0f83446b5b7c4bebcacb127f13
+    vite: ">=3.0.0"
+  checksum: e1679a1cfe1b2cf641878ef6d8c2dce6f919851e00bfde2bc737462f0a7c88762fc1dca3d13fa6c013dfa7d8bae389b437409181a51a6fae1af9139b1049da24
   languageName: node
   linkType: hard
 
