@@ -18,7 +18,7 @@
   },
   "packageManager": "yarn@3.2.4",
   "engines": {
-    "node": ">=v16.18.1"
+    "node": ">=v18.12.1"
   },
   "private": true,
   "devDependencies": {
@@ -27,7 +27,7 @@
     "@types/crypto-js": "^4.1.1",
     "@types/datatables.net": "^1.10.24",
     "@types/jquery": "^3.5.14",
-    "@types/node": "^16.18.3",
+    "@types/node": "^18.11.18",
     "autoprefixer": "^10.4.13",
     "bootstrap": "^5.2.2",
     "crypto-js": "^4.1.1",
