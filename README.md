@@ -1,6 +1,6 @@
 # Get Data from Steam / SteamDB
 
-**_Get Data from Steam / SteamDB_** (_ex Get DLC Info from SteamDB_) is a userscript that extracts all data needed to generate DLCs formats, depot.sha1 for Steam games.
+**_Get Data from Steam / SteamDB_** (_ex Get DLC Info from SteamDB_) is a userscript that extracts all data needed to generate DLCs formats and depot.sha1 for Steam games.
 
 [forum cs.rin.ru support](https://cs.rin.ru/forum/viewtopic.php?f=29&t=71837)
 
