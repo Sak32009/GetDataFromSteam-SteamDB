@@ -1,3 +1,0 @@
-[dlcs]; {dlcName}
-{dlcId}
-[/dlcs]

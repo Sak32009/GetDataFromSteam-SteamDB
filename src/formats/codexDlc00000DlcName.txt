@@ -1,3 +1,0 @@
-[dlcs prefix="5"]DLC{dlcIndex} = {dlcId}
-DLCName{dlcIndex} = {dlcName}
-[/dlcs]

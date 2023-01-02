@@ -1,6 +1,6 @@
 # Get Data from Steam / SteamDB
 
-**_Get Data from Steam / SteamDB_** (_ex Get DLC Info from SteamDB_) is a userscript that extracts all data needed to generate DLCs formats, depot.sha1 and appmanifest.acf for Steam games.
+**_Get Data from Steam / SteamDB_** (_ex Get DLC Info from SteamDB_) is a userscript that extracts all data needed to generate DLCs formats, depot.sha1 for Steam games.
 
 [forum cs.rin.ru support](https://cs.rin.ru/forum/viewtopic.php?f=29&t=71837)
 
@@ -26,10 +26,6 @@ Install a userscript from GitHub by clicking on the "RAW" button of the **[page]
 
   - Go to [https://steamdb.info/app/570/dlc/](https://steamdb.info/app/570/dlc/) for example, click on the button at bottom-right screen and choose the format.
 
-- **STEAMDB DEPOTS to .acf**
-
-  - Go to [https://steamdb.info/app/730/depots/](https://steamdb.info/app/730/depots/) for example, click on public branch (has a blue background), click on the button at bottom-right screen and the data are showed on textarea in .acf format.
-
 - **STEAMDB DEPOT to .sha1**
 
   - Go to [https://steamdb.info/depot/373303/](https://steamdb.info/depot/373303/) for example, click on "Click to view file hashes", click on the button at bottom-right screen and all entries are showed on textarea in .sha1 format.
@@ -51,4 +47,4 @@ Userscripts are set up to automatically update. You can check for updates from w
 
 ## License
 
-- [The MIT License](./LICENSE)
+> **_Get Data from Steam / SteamDB_** is released under the following license: [MIT](https://github.com/Sak32009/GetDLCInfoFromSteamDB/blob/main/LICENSE)
