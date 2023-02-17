@@ -4,12 +4,6 @@
 
 [forum cs.rin.ru support](https://cs.rin.ru/forum/viewtopic.php?f=29&t=71837)
 
-#### Donate
-
-> **Protect development and free things -- because their survival is in our hands.**
->
-> **You can donate by clicking on [paypal.me](https://www.paypal.me/sak32009a).**
-
 ## Installation
 
 Make sure you have userscripts manager enabled in your browser:
@@ -18,7 +12,7 @@ Make sure you have userscripts manager enabled in your browser:
 - [Violent Monkey](https://violentmonkey.github.io/) _(OPEN SOURCE)_
 - ~~Greasemonkey~~ _!!NOT WORKING ANYMORE ON THIS USERSCRIPTS MANAGER!!_
 
-Install a userscript from GitHub by clicking on the "RAW" button of the **[page](./dist/sak32009-get-data-from-steam-steamdb.user.js)** or click **[this](https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/dist/sak32009-get-data-from-steam-steamdb.user.js)** directly.
+Install a userscript from GitHub by clicking on the "RAW" button of the **[page](https://github.com/Sak32009/GetDLCInfoFromSteamDB/blob/master/dist/sak32009-get-data-from-steam-steamdb.user.js)** or click **[this](https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/dist/sak32009-get-data-from-steam-steamdb.user.js)** directly.
 
 ### Usage:
 
@@ -47,4 +41,4 @@ Userscripts are set up to automatically update. You can check for updates from w
 
 ## License
 
-> **_Get Data from Steam / SteamDB_** is released under the following license: [MIT](https://github.com/Sak32009/GetDLCInfoFromSteamDB/blob/main/LICENSE)
+> **_Get Data from Steam / SteamDB_** is released under the following license: [MIT](https://github.com/Sak32009/GetDLCInfoFromSteamDB/blob/master/LICENSE)
