@@ -1,6 +1,6 @@
 # Get Data from Steam / SteamDB
 
-**_Get Data from Steam / SteamDB_** (_ex Get DLC Info from SteamDB_) is a userscript that extracts all data needed to generate DLCs formats and depot.sha1 for Steam games.
+**_Get Data from Steam / SteamDB_** (_ex Get DLC Info from SteamDB_) is a userscript that extracts all the information needed to generate DLCs in the chosen format, depot.sha1 and appmanifest.acf for Steam games.
 
 [forum cs.rin.ru support](https://cs.rin.ru/forum/viewtopic.php?f=29&t=71837)
 
@@ -18,11 +18,15 @@ Install a userscript from GitHub by clicking on the "RAW" button of the **[page]
 
 - **STEAMDB**
 
-  - Go to [https://steamdb.info/app/570/dlc/](https://steamdb.info/app/570/dlc/) for example, click on the button at bottom-right screen and choose the format.
+  - Go to [https://steamdb.info/app/570/dlc/](https://steamdb.info/app/570/dlc/) for example, click on the button at the bottom right of the screen, choose the format and all dlcs will be shown in the textarea in the choosen format.
 
 - **STEAMDB DEPOT to .sha1**
 
-  - Go to [https://steamdb.info/depot/373303/](https://steamdb.info/depot/373303/) for example, click on "Click to view file hashes", click on the button at bottom-right screen and all entries are showed on textarea in .sha1 format.
+  - Go to [https://steamdb.info/depot/373303/](https://steamdb.info/depot/373303/) for example, click "Click to view file hashes", click on the button at the bottom right of the screen and all hashes will be shown in the textarea in .sha1 format.
+
+- **STEAMDB DEPOTS to .acf**
+
+  - Go to [https://steamdb.info/app/730/depots/](https://steamdb.info/app/730/depots/) for example, click on the public branch (it has a blue background), click on the button at the bottom right of the screen and the appmanifest will be shown in the textarea in .acf format.
 
 - **STORE.STEAMPOWERED.COM**
 
