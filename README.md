@@ -30,7 +30,7 @@ Install a userscript from GitHub by clicking on the "RAW" button of the **[page]
 
 - **STORE.STEAMPOWERED.COM**
 
-  - Go to [https://store.steampowered.com/app/440900/Conan_Exiles/](https://store.steampowered.com/app/440900/Conan_Exiles/) for example, click on the button at bottom-right screen and choose the format.
+  - Go to [https://store.steampowered.com/app/440900/Conan_Exiles/](https://store.steampowered.com/app/440900/Conan_Exiles/) for example, click on the button at the bottom right of the screen, choose the format and all dlcs will be shown in the textarea in the choosen format.
 
 ### Features:
 
