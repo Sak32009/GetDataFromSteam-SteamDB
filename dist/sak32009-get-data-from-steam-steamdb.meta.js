@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Get Data from Steam / SteamDB
 // @namespace      sak32009-gaxvyvrguokgtog
-// @version        5.0.0
+// @version        5.0.1
 // @author         Sak32009
 // @description    Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB) it is a userscript that extracts all the information needed to generate the list of dlc and achievements in the chosen format, it generates the hashes list of the depots in sha1 to check the integrity and the appmanifest.acf of the Steam games.
 // @license        MIT
@@ -19,5 +19,5 @@
 // @require        https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js
 // @require        https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
 // @grant          unsafeWindow
-// @updatedAT      Sat, 03 Jun 2023 17:49:51 GMT
+// @updatedAT      Sun, 04 Jun 2023 05:39:44 GMT
 // ==/UserScript==
