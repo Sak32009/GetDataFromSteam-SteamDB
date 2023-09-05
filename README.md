@@ -21,13 +21,13 @@ Install a userscript from GitHub by clicking on the "RAW" button of the **[page]
   1. Go to [https://steamdb.info/app/570/](https://steamdb.info/app/570/) for example.
   2. Click on the button at the bottom right of the screen and watch the magic happen.
 
-- **STEAMDB DEPOT to .sha1**
+- **STEAMDB DEPOT SHA1 HASHES CHECKER**
 
   1. Go to [https://steamdb.info/depot/373303/](https://steamdb.info/depot/373303/) for example or [https://steamdb.info/depot/373303/?show_hashes](https://steamdb.info/depot/373303/?show_hashes) to skip step 2.
   2. Click on "Click to view file hashes".
   3. Click on the button at the bottom right of the screen and create sha1 hashes of your game files and upload them here to compare with those in the depot.
 
-- **STEAMDB DEPOTS to .acf**
+- **STEAMDB DEPOTS TO .acf**
 
   1. Go to [https://steamdb.info/app/730/depots/](https://steamdb.info/app/730/depots/) for example or [https://steamdb.info/app/730/depots/?branch=public](https://steamdb.info/app/730/depots/?branch=public) to skip step 2.
   2. Click on the public branch (it has a blue background).
