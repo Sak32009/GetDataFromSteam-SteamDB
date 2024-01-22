@@ -12,7 +12,7 @@ Make sure you have userscripts manager enabled in your browser:
 - [Violent Monkey](https://violentmonkey.github.io/) _(OPEN SOURCE)_
 - ~~Greasemonkey~~ _!!NOT WORKING ANYMORE ON THIS USERSCRIPTS MANAGER!!_
 
-Install a userscript from GitHub by clicking on the "RAW" button of the **[page](https://github.com/Sak32009/GetDLCInfoFromSteamDB/blob/master/dist/sak32009-get-data-from-steam-steamdb.user.js)** or click **[this](https://github.com/Sak32009/GetDLCInfoFromSteamDB/raw/master/dist/sak32009-get-data-from-steam-steamdb.user.js)** directly.
+Install a userscript from GitHub by clicking on the "RAW" button of the **[page](https://github.com/Sak32009/GetDataFromSteam-SteamDB/blob/main/dist/sak32009-get-data-from-steam-steamdb.user.js)** or click **[this](https://github.com/Sak32009/GetDataFromSteam-SteamDB/raw/main/dist/sak32009-get-data-from-steam-steamdb.user.js)** directly.
 
 ### Usage:
 
@@ -51,4 +51,4 @@ Userscripts are set up to automatically update. You can check for updates from w
 
 ## License
 
-> **_Get Data from Steam / SteamDB_** is released under the following license: [MIT](https://github.com/Sak32009/GetDLCInfoFromSteamDB/blob/master/LICENSE)
+> **_Get Data from Steam / SteamDB_** is released under the following license: [MIT](https://github.com/Sak32009/GetDataFromSteam-SteamDB/blob/main/LICENSE)
