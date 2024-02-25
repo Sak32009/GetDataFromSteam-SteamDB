@@ -1,6 +1,4 @@
-# Get Data from Steam / SteamDB
-
-**_Get Data from Steam / SteamDB_** (_ex Get DLC Info from SteamDB_) it is a userscript that extracts all the information needed to generate the list of dlc and achievements in the chosen format, it generates the hashes list of the depots in sha1 to check the integrity and the appmanifest.acf of the Steam games.
+# Get Data from Steam / SteamDB (_ex Get DLC Info from SteamDB_)
 
 [forum cs.rin.ru support](https://cs.rin.ru/forum/viewtopic.php?f=29&t=71837)
 
@@ -21,6 +19,11 @@ Install a userscript from GitHub by clicking on the "RAW" button of the **[page]
   1. Go to [https://steamdb.info/app/570/](https://steamdb.info/app/570/) for example.
   2. Click on the button at the bottom right of the screen and watch the magic happen.
 
+- **STEAMDB INVENTORY**
+
+  1. Go to [https://steamdb.info/app/218620/items/](https://steamdb.info/app/218620/items/) for example.
+  2. Click on the button at the bottom right of the screen and watch the magic happen.
+
 - **STEAMDB RELATED DLC**
 
   1. Go to [https://steamdb.info/app/570/linked/](https://steamdb.info/app/570/linked/) for example.
@@ -31,12 +34,6 @@ Install a userscript from GitHub by clicking on the "RAW" button of the **[page]
   1. Go to [https://steamdb.info/depot/373303/](https://steamdb.info/depot/373303/) for example or [https://steamdb.info/depot/373303/?show_hashes](https://steamdb.info/depot/373303/?show_hashes) to skip step 2.
   2. Click on "Click to view file hashes".
   3. Click on the button at the bottom right of the screen and create sha1 hashes of your game files and upload them here to compare with those in the depot.
-
-- **STEAMDB DEPOTS TO appmanifest.acf**
-
-  1. Go to [https://steamdb.info/app/730/depots/](https://steamdb.info/app/730/depots/) for example or [https://steamdb.info/app/730/depots/?branch=public](https://steamdb.info/app/730/depots/?branch=public) to skip step 2.
-  2. Click on the public branch (it has a blue background).
-  3. Click on the button at the bottom right of the screen and watch the magic happen.
 
 - **STORE.STEAMPOWERED.COM**
 
