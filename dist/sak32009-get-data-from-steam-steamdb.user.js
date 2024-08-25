@@ -690,7 +690,8 @@ DLC{dlcIndex} = {dlcId}\\n[/dlcs]]\r
 [[achievements]{achievementName} Achieved={achievementIconBmp}\r
 {achievementName} Unachieved={achievementIconGrayBmp}\\n[/achievements]]\r
 # Unachieved=\r
-`,F={codex:{name:"CODEX",file:{name:"[[data]appId[/data]]_achievements_codex.ini.txt",text:_e,type:"general"}}},Se=`{"appid":[[data]appId[/data]],"name":"[[data]name[/data]]","binary":"[[data]launchBinaryBaseName[/data]]","icon":"[[data]iconUrlFileName[/data]]"}\r
+`,_j = `[[[achievements]{"description":"{achievementDescription}","displayName":"{achievementDisplayName}","hidden":"{achievementHidden}","icon":"images/{achievementIconBase}","icongray":"images/{achievementIconGrayBase}","name":"{achievementName}"},[/achievements]]]
+`,F={codex:{name:"CODEX",file:{name:"[[data]appId[/data]]_achievements_codex.ini.txt",text:_e,type:"general"}},goldberg:{name:"GOLDBERG",file:{name:"achievements.json",text:_j,type:"json"}}},Se=`{"appid":[[data]appId[/data]],"name":"[[data]name[/data]]","binary":"[[data]launchBinaryBaseName[/data]]","icon":"[[data]iconUrlFileName[/data]]"}\r
 `,$e=`{\r
   "appid": [[data]appId[/data]],\r
   "name": "[[data]name[/data]]",\r
