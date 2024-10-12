@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name           Get Data from Steam / SteamDB
 // @namespace      sak32009-gaxvyvrguokgtog
-// @version        5.3.9
+// @version        5.4.0
 // @author         Sak32009
 // @description    Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB)
 // @license        MIT
+// @copyright      Sak32009
 // @icon           https://steamdb.info/static/logos/192px.png
 // @homepage       https://github.com/Sak32009/GetDataFromSteam-SteamDB
 // @homepageURL    https://github.com/Sak32009/GetDataFromSteam-SteamDB
@@ -16,8 +17,7 @@
 // @match          *://steamdb.info/depot/*
 // @match          *://store.steampowered.com/app/*
 // @require        https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js
-// @require        https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js
-// @require        https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js
+// @require        https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.min.js
 // @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js
 // @require        https://cdn.jsdelivr.net/npm/jimp@0.22.12/browser/lib/jimp.min.js
@@ -25,8 +25,12 @@
 // @require        https://cdn.jsdelivr.net/npm/json5@2.2.3/dist/index.min.js
 // @connect        cdn.cloudflare.steamstatic.com
 // @grant          GM_addStyle
+// @grant          GM_addValueChangeListener
+// @grant          GM_getValue
+// @grant          GM_setValue
 // @grant          GM_xmlhttpRequest
 // @grant          unsafeWindow
+// @grant          window.close
 // @noframes
-// @updatedAT      Sun, 18 Aug 2024 18:15:50 GMT
+// @updatedAt      Sat, 12 Oct 2024 17:01:20 GMT
 // ==/UserScript==
