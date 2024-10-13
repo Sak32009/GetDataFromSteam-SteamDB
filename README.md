@@ -11,7 +11,7 @@
 
 1. Install **[Get Data from Steam / SteamDB](dist/sak32009-get-data-from-steam-steamdb.user.js?raw=true)** userscript.
 
-2. Visit [store.steampowered.com](https://store.steampowered.com/app/218620) or [steamdb.info](https://steamdb.info/app/218620) and look for the button at the bottom left!
+2. Visit [store.steampowered.com](https://store.steampowered.com/app/218620) or [steamdb.info](https://steamdb.info/app/218620) and look for the button at the bottom right!
 
 ## Updating
 
