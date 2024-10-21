@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Get Data from Steam / SteamDB
 // @namespace      sak32009-gaxvyvrguokgtog
-// @version        5.4.3
+// @version        5.4.4
 // @author         Sak32009
 // @description    Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB)
 // @license        MIT
@@ -27,10 +27,11 @@
 // @grant          GM_addStyle
 // @grant          GM_addValueChangeListener
 // @grant          GM_getValue
+// @grant          GM_openInTab
 // @grant          GM_setValue
 // @grant          GM_xmlhttpRequest
 // @grant          unsafeWindow
 // @grant          window.close
 // @noframes
-// @updatedAt      Sun, 20 Oct 2024 11:28:51 GMT
+// @updatedAt      Mon, 21 Oct 2024 17:27:06 GMT
 // ==/UserScript==
