@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Get Data from Steam / SteamDB
 // @namespace      sak32009-gaxvyvrguokgtog
-// @version        5.5.1
+// @version        12.01.25.0
 // @author         Sak32009
 // @description    Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB)
 // @license        MIT
@@ -16,15 +16,13 @@
 // @match          *://steamdb.info/app/*
 // @match          *://steamdb.info/depot/*
 // @match          *://store.steampowered.com/app/*
-// @require        https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js
-// @require        https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js
-// @require        https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.min.js
-// @require        https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js
-// @require        https://cdn.jsdelivr.net/npm/jimp@0.22.12/browser/lib/jimp.min.js
-// @require        https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
-// @require        https://cdn.jsdelivr.net/npm/json5@2.2.3/dist/index.min.js
-// @require        https://cdn.jsdelivr.net/npm/protobufjs@7.4.0/dist/light/protobuf.min.js
-// @require        https://cdn.jsdelivr.net/npm/bytebuffer@5.0.1/dist/bytebuffer.min.js
+// @require        https://unpkg.com/jquery@3.7.1/dist/jquery.min.js
+// @require        https://unpkg.com/@popperjs/core@2.11.8/dist/umd/popper.min.js
+// @require        https://unpkg.com/fflate@0.8.2/umd/index.js
+// @require        https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js
+// @require        https://unpkg.com/lodash@4.17.21/lodash.min.js
+// @require        https://unpkg.com/protobufjs@7.4.0/dist/light/protobuf.min.js
+// @require        https://unpkg.com/bytebuffer@5.0.1/dist/bytebuffer.min.js
 // @connect        cdn.cloudflare.steamstatic.com
 // @connect        github.com
 // @connect        raw.githubusercontent.com
@@ -36,6 +34,7 @@
 // @grant          GM_xmlhttpRequest
 // @grant          unsafeWindow
 // @grant          window.close
+// @run-at         document-end
 // @noframes
-// @updatedAt      Sun, 03 Nov 2024 14:27:21 GMT
+// @updatedAt      Sun, 12 Jan 2025 19:35:34 GMT
 // ==/UserScript==
