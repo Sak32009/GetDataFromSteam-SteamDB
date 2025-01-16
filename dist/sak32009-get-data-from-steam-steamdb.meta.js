@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Get Data from Steam / SteamDB
 // @namespace      sak32009-gaxvyvrguokgtog
-// @version        12.01.25.1
+// @version        16.01.25.0
 // @author         Sak32009
 // @description    Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB)
 // @license        MIT
@@ -19,15 +19,16 @@
 // @require        https://unpkg.com/jquery@3.7.1/dist/jquery.min.js
 // @require        https://unpkg.com/@popperjs/core@2.11.8/dist/umd/popper.min.js
 // @require        https://unpkg.com/fflate@0.8.2/umd/index.js
-// @require        https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js
 // @require        https://unpkg.com/lodash@4.17.21/lodash.min.js
-// @require        https://unpkg.com/protobufjs@7.4.0/dist/light/protobuf.min.js
+// @require        https://unpkg.com/long@5.2.4/umd/index.js
+// @require        https://unpkg.com/protobufjs@7.4.0/dist/minimal/protobuf.min.js
 // @require        https://unpkg.com/bytebuffer@5.0.1/dist/bytebuffer.min.js
 // @connect        cdn.cloudflare.steamstatic.com
 // @connect        github.com
 // @connect        raw.githubusercontent.com
 // @grant          GM_addStyle
 // @grant          GM_addValueChangeListener
+// @grant          GM_download
 // @grant          GM_getValue
 // @grant          GM_openInTab
 // @grant          GM_setValue
@@ -36,5 +37,5 @@
 // @grant          window.close
 // @run-at         document-end
 // @noframes
-// @updatedAt      Sun, 12 Jan 2025 20:20:55 GMT
+// @updatedAt      Thu, 16 Jan 2025 20:09:01 GMT
 // ==/UserScript==
