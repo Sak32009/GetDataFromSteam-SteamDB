@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Get Data from Steam / SteamDB
 // @namespace      sak32009-gaxvyvrguokgtog
-// @version        16.01.25.0
+// @version        17.01.25.0
 // @author         Sak32009
 // @description    Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB)
 // @license        MIT
@@ -22,7 +22,7 @@
 // @require        https://unpkg.com/lodash@4.17.21/lodash.min.js
 // @require        https://unpkg.com/long@5.2.4/umd/index.js
 // @require        https://unpkg.com/protobufjs@7.4.0/dist/minimal/protobuf.min.js
-// @require        https://unpkg.com/bytebuffer@5.0.1/dist/bytebuffer.min.js
+// @require        https://unpkg.com/path-browserify-esm@1.0.6/index.js
 // @connect        cdn.cloudflare.steamstatic.com
 // @connect        github.com
 // @connect        raw.githubusercontent.com
@@ -37,5 +37,5 @@
 // @grant          window.close
 // @run-at         document-end
 // @noframes
-// @updatedAt      Thu, 16 Jan 2025 20:09:01 GMT
+// @updatedAt      Fri, 17 Jan 2025 18:35:30 GMT
 // ==/UserScript==
