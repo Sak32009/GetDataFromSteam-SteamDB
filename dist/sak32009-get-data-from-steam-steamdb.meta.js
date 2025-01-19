@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Get Data from Steam / SteamDB
 // @namespace      sak32009-gaxvyvrguokgtog
-// @version        19.01.25.1
+// @version        19.01.25.2
 // @author         Sak32009
 // @description    Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB)
 // @license        MIT
@@ -37,5 +37,5 @@
 // @grant          window.close
 // @run-at         document-end
 // @noframes
-// @updatedAt      Sun, 19 Jan 2025 18:06:46 GMT
+// @updatedAt      Sun, 19 Jan 2025 18:51:41 GMT
 // ==/UserScript==
