@@ -1,0 +1,44 @@
+name: "\U0001F680 New feature proposal"
+title: "[FEATURE]: "
+description: Propose a new feature for the "Get Data from Steam / SteamDB" userscript.
+labels:
+  - enhancement
+
+body:
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature Description
+      description: |
+        Describe the feature you're proposing, including the problem it solves, how it would be used, and its benefits. Be as detailed as possible.
+      placeholder: |
+        I want the userscript to be able to extract the release date of a game from SteamDB so that i can easily see when a game was released by clicking a button.
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested-solution
+    attributes:
+      label: Suggested Solution
+      description: |
+        Describe how you would implement this feature.
+      placeholder: |
+        A possible implementation could involve adding a new function to parse the SteamDB game page and extract the release date. I would add the button in a new "Info" tab.
+
+  - type: textarea
+    id: alternative-solutions
+    attributes:
+      label: Alternative Solutions
+      description: |
+        Describe any other solutions you considered and why you think this one is best.
+      placeholder: |
+        I considered using the Steam API, but it doesn't provide the same level of detail as SteamDB.
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: |
+        Add any other helpful information, like screenshots or links.
+      placeholder: |
+        ...

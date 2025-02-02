@@ -1,0 +1,71 @@
+name: "\U0001F41E Bug report"
+title: "[BUG]: "
+description: Report an issue with the "Get Data from Steam / SteamDB" userscript.
+labels:
+  - bug
+
+body:
+  - type: textarea
+    id: bug-info
+    attributes:
+      label: Describe the bug
+      description: |
+        Please describe the bug you encountered with the userscript. Be as detailed as possible.
+      placeholder: |
+        What were you doing when it happened? What did you expect? What happened instead?
+    validations:
+      required: true
+
+  - type: input
+    id: browser-info
+    attributes:
+      label: Which browser are you using?
+      description: |
+        Please provide your browser and browser version.
+      placeholder: |
+        e.g., Google Chrome 114.0.5735.199, Firefox 115.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: manager-info
+    attributes:
+      label: Which userscript manager are you using?
+      description: |
+        Please select the userscript manager.
+      multiple: true
+      options:
+        - Tampermonkey
+        - Violentmonkey
+    validations:
+      required: true
+
+  - type: input
+    id: urls-info
+    attributes:
+      label: Steam/SteamDB URLs (optional)
+      description: |
+        If the bug is related to a specific Steam or SteamDB page, please provide the URLs.
+      placeholder: |
+        e.g., https://store.steampowered.com/app/123456, https://steamdb.app/app/123456
+
+  - type: textarea
+    id: console-info
+    attributes:
+      label: Browser Developer Console
+      description: |
+        To help us diagnose the issue, please provide the output from the browser's developer console.
+
+        Steps to open the browser's developer console:
+        1. Go to the relevant Steam or SteamDB page.
+        2. Press F12 or Ctrl+Shift+I (Cmd+Option+I on macOS).
+        3. Switch to the "Console" tab.
+        4. Copy and paste the console output here.
+
+        You can also attach a screenshot of the issue to help us better understand the issue.
+
+        **Important:** Please redact any personal information or API keys before sharing the console output.
+      placeholder: |
+        Paste console output here.
+    validations:
+      required: true
