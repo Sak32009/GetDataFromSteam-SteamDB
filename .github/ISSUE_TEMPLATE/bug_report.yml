@@ -69,3 +69,12 @@ body:
         Paste console output here.
     validations:
       required: true
+
+  - type: checkboxes
+    id: validations
+    attributes:
+      label: Validations
+      description: Before submitting the issue, please confirm the following:
+      options:
+        - label: I have tested the userscript with all browser extensions disabled, except for Tampermonkey or Violentmonkey.
+          required: true
