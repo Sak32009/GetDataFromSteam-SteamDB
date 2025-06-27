@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Get Data from Steam / SteamDB
 // @namespace      sak32009-gaxvyvrguokgtog
-// @version        25.04.13.1
+// @version        25.06.27.1
 // @author         Sak32009
 // @description    Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB)
 // @license        MIT
@@ -20,8 +20,8 @@
 // @require        https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js
 // @require        https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js
 // @require        https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
-// @require        https://cdn.jsdelivr.net/npm/long@5.3.1/umd/index.js
-// @require        https://cdn.jsdelivr.net/npm/protobufjs@7.4.0/dist/minimal/protobuf.min.js
+// @require        https://cdn.jsdelivr.net/npm/long@5.3.2/umd/index.js
+// @require        https://cdn.jsdelivr.net/npm/protobufjs@7.5.3/dist/minimal/protobuf.min.js
 // @require        https://cdn.jsdelivr.net/npm/path-browserify-esm@1.0.6/index.js
 // @connect        cdn.cloudflare.steamstatic.com
 // @connect        github.com
@@ -37,5 +37,5 @@
 // @grant          window.close
 // @run-at         document-end
 // @noframes
-// @updatedAt      Sun, 13 Apr 2025 18:43:19 GMT
+// @updatedAt      Fri, 27 Jun 2025 20:20:13 GMT
 // ==/UserScript==
