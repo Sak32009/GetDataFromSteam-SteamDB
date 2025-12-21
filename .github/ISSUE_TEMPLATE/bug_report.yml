@@ -1,5 +1,5 @@
-name: "\U0001F41E Bug report"
-title: "[BUG]: "
+name: 🐞 Bug report
+title: '[BUG]: '
 description: Report an issue with the "Get Data from Steam / SteamDB" userscript.
 labels:
   - bug
@@ -74,7 +74,7 @@ body:
     id: validations
     attributes:
       label: Validations
-      description: "Before submitting the issue, please confirm the following:"
+      description: 'Before submitting the issue, please confirm the following:'
       options:
         - label: I have tested the userscript with all browser extensions disabled, except for Tampermonkey or Violentmonkey.
           required: true
