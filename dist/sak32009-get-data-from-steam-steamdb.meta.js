@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Get Data from Steam / SteamDB
 // @namespace      sak32009-gaxvyvrguokgtog
-// @version        25.12.21.2
+// @version        25.12.28.1
 // @author         Sak32009
 // @description    Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB)
 // @license        MIT
@@ -22,7 +22,7 @@
 // @require        https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.js
 // @require        https://cdn.jsdelivr.net/npm/path-browserify-esm@1.0.6/index.js
 // @require        https://cdn.jsdelivr.net/npm/byte-size@9.0.1/dist/index.js
-// @connect        cdn.cloudflare.steamstatic.com
+// @connect        shared.fastly.steamstatic.com
 // @grant          GM_addStyle
 // @grant          GM_addValueChangeListener
 // @grant          GM_download
@@ -34,5 +34,5 @@
 // @grant          window.close
 // @run-at         document-end
 // @noframes
-// @updatedAt      Sun, 21 Dec 2025 14:49:59 GMT
+// @updatedAt      Sun, 28 Dec 2025 19:44:04 GMT
 // ==/UserScript==
