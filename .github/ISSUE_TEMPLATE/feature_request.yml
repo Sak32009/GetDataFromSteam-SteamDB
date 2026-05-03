@@ -1,18 +1,42 @@
-name: 🚀 New feature proposal
+name: 🚀 Feature request
 title: '[FEATURE]: '
-description: Propose a new feature for the "Get Data from Steam / SteamDB" userscript.
+description: Propose a feature for "Get Data from Steam / SteamDB" userscript.
 labels:
-  - enhancement
+  - pending triage
+type: feature
 
 body:
-  - type: textarea
-    id: feature-description
+  - type: markdown
     attributes:
-      label: Feature Description
+      value: |
+        ### Before you start
+        Please share enough detail to evaluate scope, value, and implementation effort.
+
+  - type: markdown
+    attributes:
+      value: |
+        ### Proposal details
+        Explain what problem this solves, your proposed solution, and expected user impact.
+
+  - type: textarea
+    id: feature-summary
+    attributes:
+      label: Feature summary
       description: |
-        Describe the feature you're proposing, including the problem it solves, how it would be used, and its benefits. Be as detailed as possible.
+        Provide a short and clear summary of the requested feature.
       placeholder: |
-        I want the userscript to be able to extract the release date of a game from SteamDB so that i can easily see when a game was released by clicking a button.
+        Example: Add export support for SteamDB DLC lists (DLC name, AppID, release date, and price).
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem-statement
+    attributes:
+      label: Problem statement
+      description: |
+        Describe the current limitation or pain point this feature would solve.
+      placeholder: |
+        Today I have to open the DLC tab on each SteamDB app page and copy DLC data manually.
     validations:
       required: true
 
@@ -21,24 +45,95 @@ body:
     attributes:
       label: Suggested Solution
       description: |
-        Describe how you would implement this feature.
+        Describe how this feature could work from a user perspective.
       placeholder: |
-        A possible implementation could involve adding a new function to parse the SteamDB game page and extract the release date. I would add the button in a new "Info" tab.
+        Add an "Export DLC" action in the existing panel to collect and format rows from the SteamDB DLC table.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-benefit
+    attributes:
+      label: Expected benefit
+      description: |
+        Explain the expected outcome and who benefits from this feature.
+      placeholder: |
+        This would speed up DLC analysis and reduce manual copy/paste errors for data collection workflows.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: feature-scope
+    attributes:
+      label: Feature scope
+      description: |
+        Which area is mainly affected by this proposal?
+      options:
+        - Steam
+        - SteamDB
+        - Both
+        - Not sure
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ### Related pages (optional)
+        If relevant, provide one or both URLs.
+
+  - type: input
+    id: steam-url
+    attributes:
+      label: Steam URL (optional)
+      placeholder: |
+        e.g., https://store.steampowered.com/app/620980
+
+  - type: input
+    id: steamdb-url
+    attributes:
+      label: SteamDB URL (optional)
+      placeholder: |
+        e.g., https://steamdb.app/app/620980/
 
   - type: textarea
     id: alternative-solutions
     attributes:
-      label: Alternative Solutions
+      label: Alternative solutions
       description: |
-        Describe any other solutions you considered and why you think this one is best.
+        Describe alternatives you considered and why this proposal is preferable.
       placeholder: |
-        I considered using the Steam API, but it doesn't provide the same level of detail as SteamDB.
+        I considered manual copy from the SteamDB DLC table, but it is slow and error-prone for large app catalogs.
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: |
+        How important is this feature for your workflow?
+      options:
+        - High
+        - Medium
+        - Low
+    validations:
+      required: true
 
   - type: textarea
     id: additional-context
     attributes:
-      label: Additional Context
+      label: Additional context
       description: |
         Add any other helpful information, like screenshots or links.
       placeholder: |
         ...
+
+  - type: checkboxes
+    id: validations
+    attributes:
+      label: Validations
+      description: 'Before submitting this feature request, please confirm the following:'
+      options:
+        - label: I have searched for existing feature requests and did not find a duplicate.
+          required: true
+        - label: I am using the latest available "Get Data from Steam / SteamDB" userscript version.
+          required: true

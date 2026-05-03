@@ -1,18 +1,83 @@
-name: 🐞 Bug report
-title: '[BUG]: '
-description: Report an issue with the "Get Data from Steam / SteamDB" userscript.
+name: 🐞 Issue report
+title: '[ISSUE]: '
+description: Report an issue in "Get Data from Steam / SteamDB" userscript.
 labels:
-  - bug
+  - pending triage
+type: issue
 
 body:
-  - type: textarea
-    id: bug-info
+  - type: markdown
     attributes:
-      label: Describe the bug
+      value: |
+        ### Before you start
+        Please provide as much detail as possible so we can reproduce and triage the issue quickly.
+
+  - type: markdown
+    attributes:
+      value: |
+        ### Reproduction details
+        Share a clear summary and exact steps to reproduce.
+
+  - type: textarea
+    id: issue-info
+    attributes:
+      label: Issue summary
       description: |
-        Please describe the bug you encountered with the userscript. Be as detailed as possible.
+        Provide a short and clear description of the issue.
       placeholder: |
-        What were you doing when it happened? What did you expect? What happened instead?
+        Example: The "Export DLC" button does not appear on SteamDB app pages with DLC lists.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: |
+        List the exact steps needed to reproduce the issue.
+      placeholder: |
+        1. Open a SteamDB app page with multiple DLC entries.
+        2. Click the "Export DLC" action in the script panel.
+        3. Observe the export output or UI behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: |
+        Describe what you expected to happen.
+      placeholder: |
+        The script should export DLC rows (for example DLC name, AppID, release date, and price) from the SteamDB DLC table.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual behavior
+      description: |
+        Describe what actually happened.
+      placeholder: |
+        The export returns an empty file and the console shows an error after clicking "Export DLC".
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ### Environment details
+        Include script/browser/manager versions to help identify compatibility issues.
+
+  - type: input
+    id: script-version
+    attributes:
+      label: '"Get Data from Steam / SteamDB" userscript version'
+      description: |
+        Provide the "Get Data from Steam / SteamDB" userscript version you are running.
+      placeholder: |
+        e.g., v26.01.18.1
     validations:
       required: true
 
@@ -33,7 +98,6 @@ body:
       label: Which userscript manager are you using?
       description: |
         Please select the userscript manager.
-      multiple: true
       options:
         - Tampermonkey
         - Violentmonkey
@@ -41,13 +105,57 @@ body:
       required: true
 
   - type: input
-    id: urls-info
+    id: manager-version
     attributes:
-      label: Steam/SteamDB URLs (optional)
+      label: Userscript manager version
       description: |
-        If the bug is related to a specific Steam or SteamDB page, please provide the URLs.
+        Provide the version of Tampermonkey or Violentmonkey you are using.
       placeholder: |
-        e.g., https://store.steampowered.com/app/123456, https://steamdb.app/app/123456
+        e.g., Tampermonkey v5.4.1
+    validations:
+      required: true
+
+  - type: dropdown
+    id: regression-info
+    attributes:
+      label: Is this a regression?
+      description: |
+        Did this work in a previous "Get Data from Steam / SteamDB" userscript version?
+      options:
+        - Yes
+        - No
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: regression-last-working-version
+    attributes:
+      label: Last known working "Get Data from Steam / SteamDB" userscript version (optional)
+      description: |
+        If this is a regression, provide the last version where it worked.
+      placeholder: |
+        e.g., v25.12.29.2
+
+  - type: markdown
+    attributes:
+      value: |
+        ### Related pages (optional)
+        If relevant, provide one or both page URLs below.
+
+  - type: input
+    id: steam-url
+    attributes:
+      label: Steam URL (optional)
+      placeholder: |
+        e.g., https://store.steampowered.com/app/620980
+
+  - type: input
+    id: steamdb-url
+    attributes:
+      label: SteamDB URL (optional)
+      placeholder: |
+        e.g., https://steamdb.app/app/620980/dlc/
 
   - type: textarea
     id: console-info
@@ -62,19 +170,53 @@ body:
         3. Switch to the "Console" tab.
         4. Copy and paste the console output here.
 
-        You can also attach a screenshot of the issue to help us better understand the issue.
+        You can also attach a screenshot of the issue to help us better understand it.
 
         **Important:** Please redact any personal information or API keys before sharing the console output.
       placeholder: |
+        Example:
+        Uncaught TypeError: Cannot read properties of null (reading 'querySelectorAll')
+            at exportDlcRows (...)
         Paste console output here.
     validations:
       required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: |
+        Select the impact level of this issue:
+        - Blocker: Core functionality is unusable and there is no workaround.
+        - High: Major functionality is broken and workaround is limited.
+        - Medium: Part of the functionality is affected, workaround exists.
+        - Low: Minor issue with limited impact (for example, cosmetic/UI).
+      options:
+        - Blocker
+        - High
+        - Medium
+        - Low
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context (optional)
+      description: |
+        Add any other context, screenshots, or notes that may help.
+      placeholder: |
+        Extra details, screenshots, related links, etc.
 
   - type: checkboxes
     id: validations
     attributes:
       label: Validations
-      description: 'Before submitting the issue, please confirm the following:'
+      description: 'Before submitting this issue report, please confirm the following:'
       options:
-        - label: I have tested the userscript with all browser extensions disabled, except for Tampermonkey or Violentmonkey.
+        - label: I have searched for existing issues and did not find a duplicate.
+          required: true
+        - label: I have tested "Get Data from Steam / SteamDB" userscript with all browser extensions disabled, except for Tampermonkey or Violentmonkey.
+          required: true
+        - label: I am using the latest available "Get Data from Steam / SteamDB" userscript version.
           required: true
