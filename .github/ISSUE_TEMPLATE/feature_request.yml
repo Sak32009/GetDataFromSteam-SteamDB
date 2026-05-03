@@ -3,7 +3,7 @@ title: '[FEATURE]: '
 description: Propose a feature for "Get Data from Steam / SteamDB" userscript.
 labels:
   - pending triage
-type: feature
+  - feature
 
 body:
   - type: markdown

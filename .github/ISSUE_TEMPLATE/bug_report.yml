@@ -3,7 +3,7 @@ title: '[ISSUE]: '
 description: Report an issue in "Get Data from Steam / SteamDB" userscript.
 labels:
   - pending triage
-type: issue
+  - issue
 
 body:
   - type: markdown
@@ -122,8 +122,8 @@ body:
       description: |
         Did this work in a previous "Get Data from Steam / SteamDB" userscript version?
       options:
-        - Yes
-        - No
+        - 'Yes'
+        - 'No'
         - Not sure
     validations:
       required: true
