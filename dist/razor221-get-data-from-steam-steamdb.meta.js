@@ -1,18 +1,18 @@
 // ==UserScript==
 // @name           Get Data from Steam / SteamDB
-// @namespace      sak32009-gaxvyvrguokgtog
+// @namespace      razor221-gaxvyvrguokgtog
 // @version        26.08.30.1
-// @author         Sak32009
+// @author         Razor221
 // @description    Get Data from Steam / SteamDB (ex Get DLC Info from SteamDB)
 // @license        MIT
-// @copyright      Sak32009
+// @copyright      Razor221
 // @icon           https://steamdb.info/static/logos/512px.png
-// @homepage       https://github.com/Sak32009/GetDataFromSteam-SteamDB
-// @homepageURL    https://github.com/Sak32009/GetDataFromSteam-SteamDB
-// @source         github:Sak32009/GetDataFromSteam-SteamDB
-// @supportURL     https://github.com/Sak32009/GetDataFromSteam-SteamDB/issues
-// @downloadURL    https://raw.githack.com/Sak32009/GetDataFromSteam-SteamDB/main/dist/sak32009-get-data-from-steam-steamdb.user.js
-// @updateURL      https://raw.githack.com/Sak32009/GetDataFromSteam-SteamDB/main/dist/sak32009-get-data-from-steam-steamdb.meta.js
+// @homepage       https://github.com/Razor221/GetDataFromSteam-SteamDB
+// @homepageURL    https://github.com/Razor221/GetDataFromSteam-SteamDB
+// @source         github:Razor221/GetDataFromSteam-SteamDB
+// @supportURL     https://github.com/Razor221/GetDataFromSteam-SteamDB/issues
+// @downloadURL    https://raw.githack.com/Razor221/GetDataFromSteam-SteamDB/main/dist/razor221-get-data-from-steam-steamdb.user.js
+// @updateURL      https://raw.githack.com/Razor221/GetDataFromSteam-SteamDB/main/dist/razor221-get-data-from-steam-steamdb.meta.js
 // @match          *://steamdb.info/app/*
 // @match          *://steamdb.info/depot/*
 // @match          *://store.steampowered.com/app/*
